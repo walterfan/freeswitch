@@ -55,7 +55,7 @@ def main() -> None:
                     copied += 1
                     changed = True
                 else:
-                    leftover.append(entry.msgid)
+                    leftover.append({"msgid": entry.msgid, "msgstr": ""})
                     remaining += 1
             if changed:
                 po.save()

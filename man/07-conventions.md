@@ -37,7 +37,7 @@ Practical C style for this tree: **match surrounding code**, use **tabs**, keep 
 | File | Role | Format |
 |------|------|--------|
 | `build/modules.conf.in` → copied to repo-root `modules.conf` by `bootstrap.sh` if missing | **Build**: which `src/mod/<category>/mod_*` trees are compiled | Lines like `endpoints/mod_sofia`; `#` comments disable |
-| `conf/vanilla/autoload_configs/modules.conf.xml` (installed under `$prefix/conf/`) | **Runtime**: which already-built modules the process loads | `<load module="mod_sofia"/>` |
+| `conf/vanilla/autoload_configs/modules.conf.xml` (installed under the configuration root; `$prefix/conf/` for the documented `--disable-fhs` developer install) | **Runtime**: which already-built modules the process loads | `<load module="mod_sofia"/>` |
 
 A module can be compiled and still not load, or listed in XML and missing from `mod/` because it was commented out at build time. `build/modules.conf.most` is the scan-build “almost everything” list, not the default.
 
@@ -108,7 +108,7 @@ A module can be compiled and still not load, or listed in XML and missing from `
 
 ---
 <!-- PKB-metadata
-last_updated: 2026-08-17
+last_updated: 2026-08-30
 commit: d94936cc10
 updated_by: human+ai
 review_status: pending

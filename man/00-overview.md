@@ -48,12 +48,33 @@ A directory user authenticates to a Sofia profile. After auth, that user’s `us
 
 At runtime those files are preprocessor-assembled into one XML document with sections `configuration`, `dialplan`, `chatplan`, `directory`, and `languages`. See [Architecture](02-architecture.md) and [Chapter 3](https://developer.signalwire.com/freeswitch/configuration/xml).
 
+## Install and Runtime Defaults
+
+The command examples in this PKB use a developer prefix with `--disable-fhs`, so
+configuration, modules, state, and logs stay below one `$prefix`. A custom
+prefix without that flag enables FHS layout in `configure.ac`; package
+installations use the distro paths shown below.
+
+| Concern | Developer prefix (`--disable-fhs`) | FHS/package layout |
+|---------|------------------------------------|--------------------|
+| Configuration root | `$prefix/conf` | `$prefix/etc/freeswitch` for a custom FHS prefix; `/etc/freeswitch` for Debian packages |
+| Modules | `$prefix/mod` | `$prefix/lib/freeswitch/mod` for a custom FHS prefix |
+| Database / logs / PID | `$prefix/db`, `$prefix/log`, `$prefix/run` | `$prefix/var/lib/freeswitch/db`, `$prefix/var/log/freeswitch`, `$prefix/var/run/freeswitch`; Debian uses `/var/lib/freeswitch`, `/var/log/freeswitch`, `/run/freeswitch` |
+| Vanilla ESL listener | `::`:8021 | Depends on the selected configuration |
+| `fs_cli` client default | `127.0.0.1:8021` with password `ClueCon` | Same client default unless overridden |
+
+The shipped vanilla server configuration listens on wildcard IPv6 `::` with
+the inbound ACL commented out. Whether that also accepts IPv4 depends on the
+host's dual-stack socket behavior. The module sample instead binds
+`127.0.0.1`. Change the ESL password, bind, and ACL before exposing the
+vanilla configuration beyond a trusted management network.
+
 ## System Snapshot
 
 - **Deployment model**: single long-running `freeswitch` process per host (Unix daemon or Windows service `FreeSWITCH`), plus optional sidecar apps talking ESL. Not a microservice mesh. Default install prefix is `/usr/local/freeswitch` (`configure.ac`).
 - **Core runtime shape**: threaded C core owns sessions, media, timers, and a state machine; features load as DSOs from `src/mod/` categories (`endpoints`, `applications`, `codecs`, `dialplans`, `event_handlers`, `languages`, `xml_int`, …).
 - **Primary data path**: signaling (SIP/Verto/Skinny/…) → session (`src/switch_core_session.c`) → XML dialplan / directory → applications (bridge, conference, voicemail, …) → RTP/SRTP media (`src/switch_rtp.c`, `src/switch_core_media.c`) → CDR/event consumers.
-- **Top risk or constraint**: real-time media and large UDP port ranges. Docker docs require host networking; vanilla ESL listens on `::`:8021 with password `ClueCon` (`event_socket.conf.xml`) — change bind/password before any non-loopback exposure (`fs_cli` still defaults to `127.0.0.1:8021`).
+- **Top risk or constraint**: real-time media and large UDP port ranges. Docker docs require host networking; vanilla ESL listens on wildcard `::`:8021 with password `ClueCon` (`event_socket.conf.xml`) — change bind/password and enable an ACL before any non-loopback exposure. `fs_cli` still defaults to `127.0.0.1:8021`.
 
 ```mermaid
 C4Context
@@ -85,7 +106,7 @@ This repo does not publish numeric SLOs. The table records what the code and def
 | Performance | Real-time media; default codec ptime assumption is **20 ms** (`conf/vanilla/autoload_configs/switch.conf.xml`) | Scale is a function of cores, codec mix, and whether the process is also bridging/transcoding. No p95 SLA in-tree. |
 | Availability | Process stays up; XML is compiled to a memory-mapped `freeswitch.xml.fsxml`; optional `switchname` for HA/clustered DB identity | [NEEDS INPUT: site RTO/RPO] — operators own HA (active/standby, Kamailio, etc.). |
 | Correctness | Channel/session state machine in core; dialplan and directory from XML (or curl/LDAP XML interfaces) | Default vanilla config is documented as a working PBX, not a production security baseline. |
-| Security | Report vulns to `security@signalwire.com` (`SECURITY.md`). Default ESL listen is loopback. | Change ESL password `ClueCon` and SIP credentials before production. MPL 1.1; some bundled libs use other licenses. |
+| Security | Report vulns to `security@signalwire.com` (`SECURITY.md`). Vanilla ESL listens on wildcard `::`; the module sample is loopback-only. | Change ESL password `ClueCon`, bind, and ACL, plus SIP credentials before production. MPL 1.1; some bundled libs use other licenses. |
 
 ## Key Project Facts
 
@@ -112,8 +133,8 @@ This repo does not publish numeric SLOs. The table records what the code and def
 
 ---
 <!-- PKB-metadata
-last_updated: 2026-08-17
-commit: d94936cc10
+last_updated: 2026-08-30
+commit: ea429c9d49
 updated_by: human+ai
 review_status: pending
 review_score: 0

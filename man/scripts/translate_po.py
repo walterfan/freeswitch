@@ -11,7 +11,7 @@ Usage:
 Workflow:
     1. Define translation dictionaries in TRANSLATIONS below (msgid -> msgstr).
     2. Run this script to apply translations to all matching .po files.
-    3. Run `make intl-build` to compile .mo files.
+    3. Run `make compile-intl` to compile .mo files.
     4. Run `make html-zh` to rebuild Chinese HTML.
 
 To add translations for a new file, add a new entry to TRANSLATIONS:
@@ -65,6 +65,7 @@ def apply_translations(po_dir: str) -> int:
         for entry in po.untranslated_entries():
             if entry.msgid in trans_dict:
                 entry.msgstr = trans_dict[entry.msgid]
+                entry.flags = [flag for flag in entry.flags if flag != "fuzzy"]
                 filled += 1
         if filled > 0:
             po.save()
@@ -78,7 +79,7 @@ def show_stats(po_dir: str) -> None:
     print("\nTranslation coverage:")
     overall_translated = 0
     overall_total = 0
-    for po_path in sorted(glob.glob(os.path.join(po_dir, "*.po"))):
+    for po_path in sorted(glob.glob(os.path.join(po_dir, "**", "*.po"), recursive=True)):
         po = polib.pofile(po_path)
         total = len([e for e in po if not e.obsolete])
         translated = len(po.translated_entries())

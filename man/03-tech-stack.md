@@ -12,7 +12,7 @@ A threaded C core (`libfreeswitch`) plus loadable DSOs implement SIP/WebRTC swit
 
 ## System View
 
-```{mermaid}
+```mermaid
 flowchart TD
     ua["SIP / WebRTC UA"] --> ep["Endpoints: Sofia, Verto"]
     cli["fs_cli / ESL app"] --> esl["mod_event_socket TCP 8021"]
@@ -37,7 +37,7 @@ flowchart TD
 | Storage | SQLite `>= 3.6.20` (core); optional PostgreSQL / MariaDB `>= 3.0.9` | Scoreboard, voicemail/CDR backends |
 | Build | Autotools (autoconf `>= 2.59`, automake `>= 1.7`, libtool `>= 1.5.14`) | Unix; Windows via `Freeswitch.2017.sln` |
 | Testing | FCTX macros in `src/include/test/switch_fct.h` via `switch_test.h` | `tests/unit/` Autotools programs |
-| Docs PKB | Sphinx + MyST + sphinx-intl (`man/pyproject.toml`, Python `^3.10`) | This knowledge base only — not linked into `freeswitch` |
+| Docs PKB | Sphinx + MyST + sphinx-intl (`man/pyproject.toml`, Python `>=3.10,<4.0`) | This knowledge base only — not linked into `freeswitch` |
 
 ## Main Languages and Frameworks
 
@@ -77,6 +77,13 @@ Minimum versions are **configure floors**. Distro packages may be newer. Out-of-
 
 Optional/module-only floors also exist for mpg123, shout, AMR, codec2, flite, mongoc, memcached, AMQP `librabbitmq >= 0.5.2`, pocketsphinx `>= 5`, OpenCV, VLC, ImageMagick, and others in `configure.ac` — enable the matching `modules.conf` line or the check is skipped.
 
+The stock build is not limited to the hard core dependencies: uncommented
+entries in `build/modules.conf.in` enable `mod_av`, `mod_pgsql`, and
+`mod_sndfile`, and the vanilla runtime configuration loads them. Install
+FFmpeg/libswscale, libpq, and libsndfile development packages for that
+default module set, or disable both the build entry and the corresponding
+runtime `<load>` when those capabilities are not needed.
+
 ## Runtime Interaction Model
 
 1. **Signaling** (Sofia/Verto) accepts a call and asks the core for a `switch_core_session_t`.
@@ -88,7 +95,7 @@ Layers do **not** talk over HTTP internally. The process is the unit of composit
 
 ## Build and Packaging Notes
 
-- **Local development**: `./bootstrap.sh -j && ./configure --prefix=... && make && make install` ([Quick Start](01-quick-start.md)). Debug: `./devel-bootstrap.sh`.
+- **Local development**: `./bootstrap.sh -j && ./configure --prefix=... --disable-fhs && make && make install` ([Quick Start](01-quick-start.md)). Debug: `./devel-bootstrap.sh`.
 - **CI**: `.github/workflows/ci.yml` (Debian bookworm-amd64 base `signalwire/freeswitch-public-ci-base`), `macos.yml` (Homebrew + `signalwire/homebrew-signalwire/{libks2,signalwire-c2,spandsp}`), `windows.yml`, `scan-build.yml` (clang-14).
 - **Production / distro**: Debian packages via FSGET/FSDEB (`scripts/packaging/`); module `Build-Depends` in `debian/control-modules` (Bookworm vs Trixie ffmpeg package names differ). Docker packaged images need a SignalWire token (`docker/master/Dockerfile`); source image recipe is `docker/examples/Debian11/Dockerfile`.
 - **Windows**: Visual Studio 2017 solution `Freeswitch.2017.sln`, projects under `w32/`.
@@ -118,7 +125,7 @@ Layers do **not** talk over HTTP internally. The process is the unit of composit
 
 ---
 <!-- PKB-metadata
-last_updated: 2026-08-17
+last_updated: 2026-08-30
 commit: d94936cc10
 updated_by: human+ai
 review_status: pending

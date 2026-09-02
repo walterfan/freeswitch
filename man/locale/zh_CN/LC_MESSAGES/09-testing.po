@@ -1,17 +1,17 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2026, Zoom Video Communications
 # This file is distributed under the same license as the FreeSWITCH package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+# Walter Fan <walter.fan@ustc.etu>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: FreeSWITCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 22:33+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_CN <LL@li.org>\n"
+"POT-Creation-Date: 2026-08-30 22:59+0800\n"
+"PO-Revision-Date: 2026-08-30 23:13+0800\n"
+"Last-Translator: Walter Fan <walter.fan@ustc.etu>\n"
+"Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -734,13 +734,15 @@ msgstr ""
 
 #: ../../09-testing.md:138 1ea0c630ebdc4b5fb949cab09799c831
 msgid ""
-"`fs_cli -x \"module_exists mod_event_socket\"` and `fs_cli -x version` — ESL"
-" on `127.0.0.1:8021` password `ClueCon` unless you changed it."
+"`fs_cli -x \"module_exists mod_event_socket\"` and `fs_cli -x version` — "
+"`fs_cli` targets `127.0.0.1:8021` with password `ClueCon` unless you changed"
+" it; vanilla server configuration listens on `::`:8021."
 msgstr ""
-"`fs_cli -x \"module_exists mod_event_socket\"` 以及 `fs_cli -x version` ——ESL "
-"在 `127.0.0.1:8021`，密码 `ClueCon`（除非你改过）。"
+"`fs_cli -x \"module_exists mod_event_socket\"` 以及 `fs_cli -x version` "
+"——除非你修改过，`fs_cli` 默认目标为 `127.0.0.1:8021`，密码为 `ClueCon`；vanilla 服务端配置监听 "
+"`::`:8021。"
 
-#: ../../09-testing.md:139 0a8d89b3b9964fcd81a517c15e0748cb
+#: ../../09-testing.md:141 0a8d89b3b9964fcd81a517c15e0748cb
 msgid ""
 "Directory users `1000`–`1019` exist in vanilla config — **demo passwords**; "
 "do not expose on a public IP. A two-phone register/call is the usual "
@@ -749,7 +751,7 @@ msgstr ""
 "vanilla 配置中存在 directory 用户 `1000`–`1019`——**演示密码**；不要暴露在公网 IP "
 "上。两部电话注册/呼叫是常见的媒体/SIP 冒烟；仓库内没有脚本去打这通电话。"
 
-#: ../../09-testing.md:140 f5fd0b5b43d444588607589a64dbbaf2
+#: ../../09-testing.md:142 f5fd0b5b43d444588607589a64dbbaf2
 msgid ""
 "Docker: `docker/README.md` expects **host networking**; RTP/SIP published-"
 "port setups are a common false failure."
@@ -757,32 +759,32 @@ msgstr ""
 "Docker：`docker/README.md` 期望 **host networking**；把 RTP/SIP 做成 published-port"
 " 是常见的假失败。"
 
-#: ../../09-testing.md:142 03326f6d9c374292832e3f58f2ff920d
+#: ../../09-testing.md:144 03326f6d9c374292832e3f58f2ff920d
 msgid "Documentation Verification"
 msgstr "文档校验"
 
-#: ../../09-testing.md:144 7b1337f93a0a4dac9d4d6bf912986216
+#: ../../09-testing.md:146 7b1337f93a0a4dac9d4d6bf912986216
 msgid "PKB lives in `man/` at the repo root (not `docs/man/`)."
 msgstr "PKB 在仓库根目录的 `man/`（不是 `docs/man/`）。"
 
-#: ../../09-testing.md:154 8eb181ebbc624d379705596e02179fd8
+#: ../../09-testing.md:157 8eb181ebbc624d379705596e02179fd8
 msgid ""
 "Bilingual HTML: `make html-all` (see [Build](08-build.md) and [Documentation"
 " Process](12-document.md))."
 msgstr ""
 "双语 HTML：`make html-all`（见 [构建](08-build.md) 与 [文档流程](12-document.md)）。"
 
-#: ../../09-testing.md:156 31697894ed63496083834d61246287af
+#: ../../09-testing.md:159 31697894ed63496083834d61246287af
 msgid "Regression Additions"
 msgstr "回归用例补充"
 
-#: ../../09-testing.md:158 797fde12ea9e4eac8192fa59da782b3a
+#: ../../09-testing.md:161 797fde12ea9e4eac8192fa59da782b3a
 msgid ""
 "When a bug is fixed, add the smallest check that would have failed before "
 "the fix:"
 msgstr "修复缺陷时，补上修复前本应失败的最小检查："
 
-#: ../../09-testing.md:160 4667d2cf400a4abeb71aa1082f245440
+#: ../../09-testing.md:163 4667d2cf400a4abeb71aa1082f245440
 msgid ""
 "Prefer a new `FST_TEST_BEGIN` / `FST_SESSION_BEGIN` in an existing "
 "`tests/unit/*.c` that already loads the right `conf_*` tree."
@@ -790,7 +792,7 @@ msgstr ""
 "优先在已经加载正确 `conf_*` 树的现有 `tests/unit/*.c` 中新增 `FST_TEST_BEGIN` / "
 "`FST_SESSION_BEGIN`。"
 
-#: ../../09-testing.md:161 66f5d7c3d2e7450a8776e6f426905776
+#: ../../09-testing.md:164 66f5d7c3d2e7450a8776e6f426905776
 msgid ""
 "New file: add the `.c` to `tests/unit/Makefile.am` `noinst_PROGRAMS` (that "
 "list **is** `TESTS`). Use `src/include/test/switch_test.h` only."
@@ -798,7 +800,7 @@ msgstr ""
 "新文件：把 `.c` 加到 `tests/unit/Makefile.am` 的 `noinst_PROGRAMS`（该列表**就是** "
 "`TESTS`）。只使用 `src/include/test/switch_test.h`。"
 
-#: ../../09-testing.md:162 1878b495085548c99891ab3cfeba9ea2
+#: ../../09-testing.md:165 1878b495085548c99891ab3cfeba9ea2
 msgid ""
 "Module-specific: add `noinst_PROGRAMS` + `TESTS` in that module’s "
 "`Makefile.am` so `print_tests` emits `src/mod/.../test/...`."
@@ -806,20 +808,20 @@ msgstr ""
 "模块相关：在该模块的 `Makefile.am` 中加入 `noinst_PROGRAMS` + `TESTS`，以便 `print_tests` 输出"
 " `src/mod/.../test/...`。"
 
-#: ../../09-testing.md:163 7c168f4e34554d40b596324e2db632e2
+#: ../../09-testing.md:166 7c168f4e34554d40b596324e2db632e2
 msgid ""
 "ESL protocol bugs: extend `libs/esl/tests/` (Autotools `TESTS`) rather than "
 "only a live `fs_cli` check."
 msgstr "ESL 协议缺陷：扩展 `libs/esl/tests/`（Autotools `TESTS`），不要只做在线 `fs_cli` 检查。"
 
-#: ../../09-testing.md:164 9b20e5bcb3644a54a1a2ec7ed152286a
+#: ../../09-testing.md:167 9b20e5bcb3644a54a1a2ec7ed152286a
 msgid ""
 "Record here: original failure, expected behavior, and the command (`./run-"
 "tests.sh` vs `make -C libs/esl check` vs a smoke step)."
 msgstr ""
 "在此记录：原先的失败、期望行为，以及命令（`./run-tests.sh` vs `make -C libs/esl check` vs 冒烟步骤）。"
 
-#: ../../09-testing.md:166 40d58f34c6af4ae4b0b9444e1d3bf31f
+#: ../../09-testing.md:169 40d58f34c6af4ae4b0b9444e1d3bf31f
 msgid ""
 "Existing tests that already look like regression/security locks: XML entity "
 "expansion (`switch_xml`), STUN integrity/truncation (`switch_stun`), ESL "
@@ -833,39 +835,39 @@ msgstr ""
 "`libs/esl/tests/test_recv_event.c`）、Verto POST 413（`test_mod_verto`）、RTP "
 "NACK 长度（`switch_rtp_pcap`）、加密 key-salt 边界（`switch_core_media`）。"
 
-#: ../../09-testing.md:168 fa1616dc750a4a1e915c44d7ad8cf3a0
+#: ../../09-testing.md:171 fa1616dc750a4a1e915c44d7ad8cf3a0
 msgid ""
 "[NEEDS INPUT: named production incidents or ticket IDs to attach to those "
 "tests — none are referenced in the C sources.]"
 msgstr "[NEEDS INPUT: 可挂到这些测试上的具名生产事故或工单 ID——C 源中没有任何引用。]"
 
-#: ../../09-testing.md:170 5a48ac0c8ac84f1c88aaee4ed5233d4c
+#: ../../09-testing.md:173 5a48ac0c8ac84f1c88aaee4ed5233d4c
 msgid "Related Documentation"
 msgstr "相关文档"
 
-#: ../../09-testing.md:172 a061c36f710041499eb307ec64672296
+#: ../../09-testing.md:175 a061c36f710041499eb307ec64672296
 msgid ""
 "[Quick Start](01-quick-start.md) — local install and first `run-tests.sh`"
 msgstr "[快速开始](01-quick-start.md) — 本地安装与首次 `run-tests.sh`"
 
-#: ../../09-testing.md:173 45c332a5e53f46b1a6e7bf64d3649ef5
+#: ../../09-testing.md:176 45c332a5e53f46b1a6e7bf64d3649ef5
 msgid ""
 "[Build, Release, and Publish](08-build.md) — `ci.yml` matrix, `ci.sh`, "
 "packaging"
 msgstr "[构建、发布与文档发布](08-build.md) — `ci.yml` 矩阵、`ci.sh`、打包"
 
-#: ../../09-testing.md:174 9cb46f3b976141dbae53b1d04aadfb79
+#: ../../09-testing.md:177 9cb46f3b976141dbae53b1d04aadfb79
 msgid "[Workflows](06-workflows.md)"
 msgstr "[工作流](06-workflows.md)"
 
-#: ../../09-testing.md:175 2e2bbb32ed674e74ba8cd0325e252699
+#: ../../09-testing.md:178 2e2bbb32ed674e74ba8cd0325e252699
 msgid "[Runbook](10-runbook.md)"
 msgstr "[运维手册](10-runbook.md)"
 
-#: ../../09-testing.md:176 91e3ab1b38924b89b5b5cdff8690e68d
+#: ../../09-testing.md:179 91e3ab1b38924b89b5b5cdff8690e68d
 msgid "[Observability](11-observability.md)"
 msgstr "[可观测性](11-observability.md)"
 
-#: ../../09-testing.md:177 7e9d5583049145d69d41e5fa27dc5492
+#: ../../09-testing.md:180 7e9d5583049145d69d41e5fa27dc5492
 msgid "[Documentation Process](12-document.md)"
 msgstr "[文档流程](12-document.md)"

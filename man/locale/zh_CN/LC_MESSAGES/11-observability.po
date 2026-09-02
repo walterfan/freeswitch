@@ -1,17 +1,17 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2026, Zoom Video Communications
 # This file is distributed under the same license as the FreeSWITCH package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+# Walter Fan <walter.fan@ustc.etu>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: FreeSWITCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 23:38+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_CN <LL@li.org>\n"
+"POT-Creation-Date: 2026-08-30 22:59+0800\n"
+"PO-Revision-Date: 2026-08-30 23:13+0800\n"
+"Last-Translator: Walter Fan <walter.fan@ustc.etu>\n"
+"Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -346,8 +346,8 @@ msgid "Log directory"
 msgstr "日志目录"
 
 #: ../../11-observability.md 6c28932a848c4c608d16ba6dbbf09297
-msgid "Prefix (`./configure --prefix=$HOME/fs`)"
-msgstr "前缀（`./configure --prefix=$HOME/fs`）"
+msgid "Prefix (`./configure --prefix=$HOME/fs --disable-fhs`)"
+msgstr "前缀（`./configure --prefix=$HOME/fs --disable-fhs`）"
 
 #: ../../11-observability.md b5a137b7af4f4c269e8b1e3c3952ed78
 msgid "`$prefix/log` → `$HOME/fs/log/freeswitch.log`"
@@ -387,23 +387,28 @@ msgstr ""
 "Vanilla `logfile.conf.xml` 把 `<param name=\"logfile\" "
 "value=\"/var/log/freeswitch.log\"/>` **注释掉了**；真正打开的是计算得到的 `log_dir` 路径。"
 
-#: ../../11-observability.md:67 cbe1506901c54f68b2715e9f16a634a4
+#: ../../11-observability.md:67 a6e48b47a76a42fc82e1a435da72ab87
 msgid ""
 "Rotation: `rollover` 1048576000 bytes, `maximum-rotate` 32, `rotate-on-hup` "
-"true. Debian unit `ExecReload=/usr/bin/kill -HUP $MAINPID` "
-"(`build/freeswitch.service`); that fires `SWITCH_EVENT_TRAP` `Trapped-"
-"Signal=HUP` and `mod_logfile` rotates."
+"true. The Debian unit (`debian/freeswitch-systemd.freeswitch.service`) does "
+"not define `ExecReload`; use `fs_cli -x \"fsctl send_sighup\"` or an "
+"explicit `kill -HUP`. The separate template `build/freeswitch.service` does "
+"define `ExecReload=/usr/bin/kill -HUP $MAINPID`. Either HUP path fires "
+"`SWITCH_EVENT_TRAP` with `Trapped-Signal=HUP`, allowing `mod_logfile` to "
+"rotate."
 msgstr ""
-"轮转：`rollover` 1048576000 字节，`maximum-rotate` 32，`rotate-on-hup` true。Debian "
-"unit `ExecReload=/usr/bin/kill -HUP "
-"$MAINPID`（`build/freeswitch.service`）；这会触发 `SWITCH_EVENT_TRAP` `Trapped-"
-"Signal=HUP`，由 `mod_logfile` 轮转。"
+"轮转：`rollover` 为 1048576000 字节，`maximum-rotate` 为 32，`rotate-on-hup` 为 "
+"true。Debian unit（`debian/freeswitch-systemd.freeswitch.service`）没有定义 "
+"`ExecReload`；请使用 `fs_cli -x \"fsctl send_sighup\"` 或显式执行 `kill -HUP`。单独的模板 "
+"`build/freeswitch.service` 定义了 `ExecReload=/usr/bin/kill -HUP $MAINPID`。任一 "
+"HUP 路径都会触发带有 `Trapped-Signal=HUP` 的 `SWITCH_EVENT_TRAP`，使 `mod_logfile` "
+"能够轮转。"
 
-#: ../../11-observability.md:69 853cc6c84b414323999a7ffb72d1f1c6
+#: ../../11-observability.md:76 853cc6c84b414323999a7ffb72d1f1c6
 msgid "systemd journal vs the log file"
 msgstr "systemd journal 与日志文件"
 
-#: ../../11-observability.md:71 fbcd35c5b9f9445f8019113faf4dc238
+#: ../../11-observability.md:78 fbcd35c5b9f9445f8019113faf4dc238
 msgid ""
 "Debian `debian/freeswitch-systemd.freeswitch.service` is `Type=forking` with"
 " `-ncwait`. It does **not** set `StandardOutput=journal`. `journalctl -u "
@@ -414,7 +419,7 @@ msgstr ""
 "`Type=forking`。它 **没有** 设置 `StandardOutput=journal`。`journalctl -u "
 "freeswitch` 显示 unit 启停（以及 fork 父进程残留的 stdout），**不是** 完整的交换机日志。"
 
-#: ../../11-observability.md:73 a006e68cdbbf44878546f390b6c52dd4
+#: ../../11-observability.md:80 a006e68cdbbf44878546f390b6c52dd4
 msgid ""
 "`mod_syslog` is **compiled** (`build/modules.conf.in`: `loggers/mod_syslog`)"
 " but **not loaded** in vanilla (`modules.conf.xml` comments it out). If you "
@@ -428,7 +433,7 @@ msgstr ""
 "`user`、ident `freeswitch`、默认级别 `warning` 发送，并带 UUID。在 systemd 主机上，这通常经 "
 "syslog 套接字出现在 journal 里。"
 
-#: ../../11-observability.md:75 b0274d0c38c341a1b420e1b8562c8d3c
+#: ../../11-observability.md:82 b0274d0c38c341a1b420e1b8562c8d3c
 msgid ""
 "`mod_graylog2` exists under `src/mod/loggers/mod_graylog2/` but is commented"
 " in both `modules.conf.in` and vanilla `modules.conf.xml`."
@@ -436,11 +441,11 @@ msgstr ""
 "`mod_graylog2` 位于 `src/mod/loggers/mod_graylog2/`，但在 `modules.conf.in` 和 "
 "vanilla `modules.conf.xml` 中都被注释。"
 
-#: ../../11-observability.md:77 f8feba7c6d9c4933bc7b4b714016e691
+#: ../../11-observability.md:84 f8feba7c6d9c4933bc7b4b714016e691
 msgid "Runtime verbosity"
 msgstr "运行时详细程度"
 
-#: ../../11-observability.md:93 557bbecf8bc64010b91a6a86fcc077dd
+#: ../../11-observability.md:100 557bbecf8bc64010b91a6a86fcc077dd
 msgid ""
 "`fs_cli -l debug` / `-x` one-shots: `libs/esl/fs_cli.c`. Function keys 7/8 "
 "default to `/log console` and `/log debug`."
@@ -448,7 +453,7 @@ msgstr ""
 "`fs_cli -l debug` / `-x` 一次性命令：`libs/esl/fs_cli.c`。功能键 7/8 默认对应 `/log "
 "console` 和 `/log debug`。"
 
-#: ../../11-observability.md:95 e407ec1fa1d242f1a7e32d196fdb27cd
+#: ../../11-observability.md:102 e407ec1fa1d242f1a7e32d196fdb27cd
 msgid ""
 "Loaded loggers in vanilla `modules.conf.xml`: `mod_console`, `mod_logfile`. "
 "Optional JSON console lines: `console json on` (`switch_log_node_to_json`); "
@@ -457,11 +462,54 @@ msgstr ""
 "vanilla `modules.conf.xml` 中已加载的记录器：`mod_console`、`mod_logfile`。可选 JSON "
 "控制台行：`console json on`（`switch_log_node_to_json`）；默认关闭。"
 
-#: ../../11-observability.md:97 a1853ceaf8c345069cbd710c680222c8
+#: ../../11-observability.md:104 89ffe24e4cc740ab84d850cf87485adf
+msgid "Container SIP trace"
+msgstr "容器 SIP 跟踪"
+
+#: ../../11-observability.md:106 7eb9da23a42a4d5ab8bcade043d6d880
+msgid ""
+"For the Docker source image, enable SIP tracing on the profile under test, "
+"follow the container output, reproduce one registration or call, and disable"
+" tracing immediately afterward:"
+msgstr "对于 Docker 源码镜像，请在待测配置档上启用 SIP 跟踪，查看容器输出，重现一次注册或呼叫，然后立即关闭跟踪："
+
+#: ../../11-observability.md:121 ff5c8aa21f0d4c6e8a3137ce1244afa5
+msgid ""
+"The file logger normally writes the same runtime log under the image prefix."
+" Follow it directly when the trace is not visible in `docker logs`:"
+msgstr "文件日志记录器通常会在镜像前缀下写入相同的运行时日志。如果在 `docker logs` 中看不到跟踪信息，请直接跟踪该日志文件："
+
+#: ../../11-observability.md:128 5d853670fe1e425886658358bd1a6080
+msgid ""
+"Use `sofia global siptrace on` only when all SIP profiles are required. It "
+"is much noisier. A normal digest-authenticated call commonly contains an "
+"initial `407`, an authenticated retry, `100 Trying`, and `200 OK`; the `407`"
+" is expected challenge/response behavior, not necessarily a call failure."
+msgstr ""
+"仅当需要所有 SIP 配置档时才使用 `sofia global siptrace on`，因为它会产生更多噪声。正常的 digest "
+"认证呼叫通常包含初始 `407`、认证重试、`100 Trying` 和 `200 OK`；`407` 是预期的质询/响应行为，不一定表示呼叫失败。"
+
+#: ../../11-observability.md:130 873832b22dad418c9e2b1620d0f055e0
+msgid ""
+"Representative redacted trace for a call from Zoiper user `1000` to MoH "
+"`9664`:"
+msgstr "从 Zoiper 用户 `1000` 呼叫 MoH `9664` 的脱敏跟踪示例："
+
+#: ../../11-observability.md:174 9c72497d921e4637a7acdeaf59e968be
+msgid ""
+"Redact `Proxy-Authorization`, digest nonces, call IDs, session UUIDs, phone "
+"numbers, and IP addresses before sharing traces. Turn tracing off after "
+"capture to avoid log volume and unnecessary credential-related data "
+"retention."
+msgstr ""
+"分享跟踪信息前，请脱敏 `Proxy-Authorization`、digest nonce、呼叫 ID、会话 UUID、电话号码和 IP "
+"地址。采集完成后关闭跟踪，以避免日志量增加和不必要的凭据相关数据留存。"
+
+#: ../../11-observability.md:176 a1853ceaf8c345069cbd710c680222c8
 msgid "Metrics"
 msgstr "指标"
 
-#: ../../11-observability.md:99 cdcd73ff967643a8b1d4d28927aaa6c4
+#: ../../11-observability.md:178 cdcd73ff967643a8b1d4d28927aaa6c4
 msgid ""
 "**No first-party metrics backend in this repo.** There is no "
 "`src/mod/**/mod_prometheus*`, no OpenTelemetry/Zipkin/Jaeger module, and no "
@@ -470,56 +518,56 @@ msgstr ""
 "**本仓库没有第一方指标后端。** 没有 `src/mod/**/mod_prometheus*`，没有 "
 "OpenTelemetry/Zipkin/Jaeger 模块，也没有 Grafana 仪表盘文件。"
 
-#: ../../11-observability.md:101 e71adb3f0d0749c8be5e4eed846f95fc
+#: ../../11-observability.md:180 e71adb3f0d0749c8be5e4eed846f95fc
 msgid "What you can scrape or poll instead:"
 msgstr "可以抓取或轮询的替代项："
 
-#: ../../11-observability.md:103 820d7c735482490aadb81021c42b7152
+#: ../../11-observability.md:182 820d7c735482490aadb81021c42b7152
 msgid "`fs_cli -x status` (`mod_commands` `status_function`)"
 msgstr "`fs_cli -x status`（`mod_commands` 的 `status_function`）"
 
-#: ../../11-observability.md:105 c2d15f82c3834436b4d15cc0147de6ac
+#: ../../11-observability.md:184 c2d15f82c3834436b4d15cc0147de6ac
 msgid "Printed every time you ask:"
 msgstr "每次查询都会打印："
 
-#: ../../11-observability.md:107 b4bbbf3e31d448448b13470dfb48ad99
+#: ../../11-observability.md:186 b4bbbf3e31d448448b13470dfb48ad99
 msgid "uptime"
 msgstr "uptime（运行时间）"
 
-#: ../../11-observability.md:108 f93a23ddd57a4cc78f919cc5e785ba7b
+#: ../../11-observability.md:187 f93a23ddd57a4cc78f919cc5e785ba7b
 msgid "version and ready / not ready"
 msgstr "版本以及 ready / not ready"
 
-#: ../../11-observability.md:109 1da2593d029b41109ed3da15c47dbcb0
+#: ../../11-observability.md:188 1da2593d029b41109ed3da15c47dbcb0
 msgid "sessions since startup"
 msgstr "启动以来的会话数"
 
-#: ../../11-observability.md:110 3a8e33b059ed43f3b65befee22acecd8
+#: ../../11-observability.md:189 3a8e33b059ed43f3b65befee22acecd8
 msgid "current sessions, peak, last-5-min peak"
 msgstr "当前会话、峰值、最近 5 分钟峰值"
 
-#: ../../11-observability.md:111 0c726f91634d42ec8e81d84e731deccb
+#: ../../11-observability.md:190 0c726f91634d42ec8e81d84e731deccb
 msgid "sessions per second (last / max / peak / last-5-min peak)"
 msgstr "每秒会话数（last / max / peak / 最近 5 分钟 peak）"
 
-#: ../../11-observability.md:112 bc8853f0556449a3b295b4241d8a425b
+#: ../../11-observability.md:191 bc8853f0556449a3b295b4241d8a425b
 msgid "`max-sessions` (vanilla `1000` in `switch.conf.xml`)"
 msgstr "`max-sessions`（vanilla `switch.conf.xml` 中为 `1000`）"
 
-#: ../../11-observability.md:113 9f99391495064a1ab2c73185d6289c21
+#: ../../11-observability.md:192 9f99391495064a1ab2c73185d6289c21
 msgid "min idle CPU / current idle CPU"
 msgstr "最小空闲 CPU / 当前空闲 CPU"
 
-#: ../../11-observability.md:114 02a0139170204f33a950b86e1996026d
+#: ../../11-observability.md:193 02a0139170204f33a950b86e1996026d
 msgid "stack size (when available)"
 msgstr "栈大小（若可用）"
 
-#: ../../11-observability.md:116 fadb78f05c9f429d97a5cc2ae5de2bd5
+#: ../../11-observability.md:195 fadb78f05c9f429d97a5cc2ae5de2bd5
 msgid ""
 "`sessions-per-second` vanilla cap is `30`. `min-idle-cpu` is commented out."
 msgstr "vanilla `sessions-per-second` 上限为 `30`。`min-idle-cpu` 被注释掉。"
 
-#: ../../11-observability.md:118 c7b52f74161e4ec0abf5f2672345efdf
+#: ../../11-observability.md:197 c7b52f74161e4ec0abf5f2672345efdf
 msgid ""
 "Same numbers are fired on **HEARTBEAT** every 20s by default "
 "(`runtime.event_heartbeat_interval` in `src/switch_core.c`; XML `event-"
@@ -531,11 +579,11 @@ msgstr ""
 "`switch.conf.xml` 中被注释）：`Session-Count`、`Max-Sessions`、`Session-Per-"
 "Sec*`、`Session-Peak-*`、`Idle-CPU`、`Up-Time`。"
 
-#: ../../11-observability.md:120 9c89a0843c704471a2bfd73a8b6c64f8
+#: ../../11-observability.md:199 9c89a0843c704471a2bfd73a8b6c64f8
 msgid "Optional SNMP (`mod_snmp`)"
 msgstr "可选 SNMP（`mod_snmp`）"
 
-#: ../../11-observability.md:122 389ff706032e430ea9261496321c8dcc
+#: ../../11-observability.md:201 389ff706032e430ea9261496321c8dcc
 msgid ""
 "Directory exists: `src/mod/event_handlers/mod_snmp/` plus `FREESWITCH-MIB` "
 "(enterprise `27880`). **Commented** in `build/modules.conf.in` and vanilla "
@@ -546,7 +594,7 @@ msgstr ""
 "`27880`）。在 `build/modules.conf.in` 和 vanilla `modules.conf.xml` 中被 "
 "**注释**。MIB 仪表与 `status` 重叠：uptime、当前/最大会话、每秒会话数、当前呼叫、core UUID。"
 
-#: ../../11-observability.md:124 ec89fef6b5e0486fb20f6368e3acdb2b
+#: ../../11-observability.md:203 ec89fef6b5e0486fb20f6368e3acdb2b
 msgid "CDRs (post-call counters, not live metrics)"
 msgstr "CDR（通话后计数，不是实时指标）"
 
@@ -571,7 +619,6 @@ msgid "`mod_cdr_csv`"
 msgstr "`mod_cdr_csv`"
 
 #: ../../11-observability.md 6f8925d6eecb45358c9a7839e960f838
-#: 95c1eab74ffe48f28c80df75b16786da
 msgid "yes"
 msgstr "是"
 
@@ -587,8 +634,7 @@ msgstr "`$log_dir/cdr-csv/Master.csv`"
 msgid "`mod_cdr_sqlite`"
 msgstr "`mod_cdr_sqlite`"
 
-#: ../../11-observability.md 2ae9de70c7fb47f6a814e953dfbc191f
-#: 4b4e268d0a9547589d0a0971846fae4d 8899493dea5c475ba6abeb606a7d52bc
+#: ../../11-observability.md 4b4e268d0a9547589d0a0971846fae4d
 msgid "no"
 msgstr "否"
 
@@ -621,7 +667,7 @@ msgstr "已注释"
 msgid "PostgreSQL; spool `$${log_dir}/cdr-pg-csv`"
 msgstr "PostgreSQL；spool `$${log_dir}/cdr-pg-csv`"
 
-#: ../../11-observability.md:133 dd3d4e96c49e4904b7b308e8dd5defcc
+#: ../../11-observability.md:212 dd3d4e96c49e4904b7b308e8dd5defcc
 #, python-brace-format
 msgid ""
 "Vanilla CDR template includes `${uuid}`, hangup cause, codecs, stamps "
@@ -630,17 +676,17 @@ msgstr ""
 "Vanilla CDR 模板包含 `${uuid}`、挂断原因、编解码、时间戳（`conf/vanilla` / 模块样例 "
 "`cdr_csv.conf.xml`）。"
 
-#: ../../11-observability.md:135 ae4efac67f2b461e9f79e0d2602fba6b
+#: ../../11-observability.md:214 ae4efac67f2b461e9f79e0d2602fba6b
 msgid "Tracing or Correlation"
 msgstr "追踪与关联"
 
-#: ../../11-observability.md:137 b980ce33c66b405cbf056a366be59833
+#: ../../11-observability.md:216 b980ce33c66b405cbf056a366be59833
 msgid ""
 "There is **no distributed trace exporter**. Correlation is the **session "
 "UUID**."
 msgstr "**没有分布式追踪导出器**。关联键是 **session UUID**。"
 
-#: ../../11-observability.md:139 d8c5ce4eb11741cd96ee11b68a8e1c12
+#: ../../11-observability.md:218 d8c5ce4eb11741cd96ee11b68a8e1c12
 msgid ""
 "Generated in `switch_core_session` request (`src/switch_core_session.c`): "
 "`switch_uuid_get` + `switch_uuid_format` into `session->uuid_str`, unless a "
@@ -653,11 +699,11 @@ msgstr ""
 "`uuid` 与 `call_uuid` 设为同一字符串。`switch.conf.xml` 中可选 `uuid-version` `4` 或 "
 "`7`（已注释；默认编译行为）。"
 
-#: ../../11-observability.md:140 fc9665001f7b467a98fd5287c571bfc0
+#: ../../11-observability.md:219 fc9665001f7b467a98fd5287c571bfc0
 msgid "Accessor: `switch_core_session_get_uuid()`."
 msgstr "访问器：`switch_core_session_get_uuid()`。"
 
-#: ../../11-observability.md:141 36a6b8c8694b48a6845f2ce8a40b38de
+#: ../../11-observability.md:220 36a6b8c8694b48a6845f2ce8a40b38de
 msgid ""
 "Log macros: `SWITCH_CHANNEL_SESSION_LOG(session)` / "
 "`SWITCH_CHANNEL_UUID_LOG(uuid)` (`src/include/switch_types.h`). File logger "
@@ -667,7 +713,7 @@ msgstr ""
 "`SWITCH_CHANNEL_UUID_LOG(uuid)`（`src/include/switch_types.h`）。文件记录器在 "
 "`uuid=true` 时把该 UUID 加到行首。"
 
-#: ../../11-observability.md:142 a1bb6307e42d48f78ab847cb9576fd2e
+#: ../../11-observability.md:221 a1bb6307e42d48f78ab847cb9576fd2e
 msgid ""
 "Channel events (`switch_channel.c`) carry header **`Unique-ID`**. Bridges "
 "add `Bridge-A-Unique-ID` / `Bridge-B-Unique-ID`."
@@ -675,16 +721,16 @@ msgstr ""
 "通道事件（`switch_channel.c`）携带头 **`Unique-ID`**。桥接会加上 `Bridge-A-Unique-ID` / "
 "`Bridge-B-Unique-ID`。"
 
-#: ../../11-observability.md:143 4d49caaa7519475cb0b84068127c79f1
+#: ../../11-observability.md:222 4d49caaa7519475cb0b84068127c79f1
 msgid ""
 "Process identity: `core_uuid` (`switch_core.c` at startup). Not a call id."
 msgstr "进程标识：`core_uuid`（启动时在 `switch_core.c`）。不是呼叫 ID。"
 
-#: ../../11-observability.md:144 966bd1c66e96437b89cb47336b7304ee
+#: ../../11-observability.md:223 966bd1c66e96437b89cb47336b7304ee
 msgid "`fs_cli` `/uuid <uuid>` filters the ESL log stream to one call."
 msgstr "`fs_cli` 的 `/uuid <uuid>` 把 ESL 日志流过滤到一路呼叫。"
 
-#: ../../11-observability.md:146 cb77fbb2295a4cf6864f50108a2eb152
+#: ../../11-observability.md:225 cb77fbb2295a4cf6864f50108a2eb152
 msgid ""
 "Subscribe to events over ESL (`mod_event_socket`, vanilla listen `::` port "
 "**8021**, password `ClueCon` in `event_socket.conf.xml` — change that before"
@@ -695,11 +741,11 @@ msgstr ""
 "**8021**，`event_socket.conf.xml` 中密码为 `ClueCon` — 任何网络暴露前请改掉）。交互等价命令是 "
 "`fs_cli /event plain all`。"
 
-#: ../../11-observability.md:148 7d85d804bdf64a7cbb2999196e477e7a
+#: ../../11-observability.md:227 7d85d804bdf64a7cbb2999196e477e7a
 msgid "Alerts and Health Signals"
 msgstr "告警与健康信号"
 
-#: ../../11-observability.md:150 334125fecb18494b9a0c191a27ef92ed
+#: ../../11-observability.md:229 334125fecb18494b9a0c191a27ef92ed
 msgid ""
 "This repo does **not** ship alert rules, PagerDuty/Slack hooks, or "
 "dashboards. Operators typically alert off HEARTBEAT / `status` (or SNMP if "
@@ -816,7 +862,7 @@ msgstr "ESL 上长时间（≫ 20s）没有 `HEARTBEAT`"
 msgid "Event system or process stuck; capture `status` and log tail"
 msgstr "事件系统或进程卡住；抓取 `status` 和日志尾部"
 
-#: ../../11-observability.md:163 d05a43eb46334235b9b97da85ad52965
+#: ../../11-observability.md:242 d05a43eb46334235b9b97da85ad52965
 msgid ""
 "`[NEEDS INPUT: production paging destinations and numeric thresholds for "
 "sessions / SPS / idle CPU — not defined in this tree]`"
@@ -824,11 +870,11 @@ msgstr ""
 "`[NEEDS INPUT: production paging destinations and numeric thresholds for "
 "sessions / SPS / idle CPU — not defined in this tree]`"
 
-#: ../../11-observability.md:165 3be24459f06b4baeaaa021b6acb62154
+#: ../../11-observability.md:244 3be24459f06b4baeaaa021b6acb62154
 msgid "Diagnostic Tools"
 msgstr "诊断工具"
 
-#: ../../11-observability.md:167 38ceae43abd644ccb05d0f67e8e8cac5
+#: ../../11-observability.md:246 38ceae43abd644ccb05d0f67e8e8cac5
 msgid ""
 "Vanilla `switch.conf.xml` CLI keybindings are the intended first panel: "
 "`help`, `status`, `show channels`, `show calls`, `sofia status`, "
@@ -943,7 +989,7 @@ msgstr "`mod_cdr_csv` 的 `Master.csv`"
 msgid "After-the-fact hangup cause / duration"
 msgstr "事后挂断原因 / 时长"
 
-#: ../../11-observability.md:184 4d47763e97974acc8d61ba9cd4a2e510
+#: ../../11-observability.md:263 4d47763e97974acc8d61ba9cd4a2e510
 msgid ""
 "clang **scan-build** in `.github/workflows/` is CI static analysis, not a "
 "runtime signal (see [Build](08-build.md))."
@@ -951,83 +997,83 @@ msgstr ""
 "`.github/workflows/` 中的 clang **scan-build** 是 CI 静态分析，不是运行时信号（见 "
 "[构建](08-build.md)）。"
 
-#: ../../11-observability.md:186 9b65663b092a493a9d822942faf50816
+#: ../../11-observability.md:265 9b65663b092a493a9d822942faf50816
 msgid "Operational Checklist"
 msgstr "运维检查清单"
 
-#: ../../11-observability.md:188 ad84e42e18d548fb8f2cd0e3b591c63b
+#: ../../11-observability.md:267 ad84e42e18d548fb8f2cd0e3b591c63b
 msgid ""
 "Know `log_dir`: prefix `log/freeswitch.log` vs Debian `/var/log/freeswitch`"
 msgstr ""
 "弄清 `log_dir`：前缀安装的 `log/freeswitch.log` vs Debian 的 `/var/log/freeswitch`"
 
-#: ../../11-observability.md:189 39591788c88640cca29579b0fce222bc
+#: ../../11-observability.md:268 39591788c88640cca29579b0fce222bc
 msgid ""
 "`fs_cli -x status` shows **ready**, sessions below `max-sessions`, SPS below"
 " cap"
 msgstr "`fs_cli -x status` 显示 **ready**，会话数低于 `max-sessions`，SPS 低于上限"
 
-#: ../../11-observability.md:190 c5ef00b8ea00496893601cd4a59f662b
+#: ../../11-observability.md:269 c5ef00b8ea00496893601cd4a59f662b
 msgid ""
 "Console is `info` (vanilla); raise to `debug` only while reproducing; `fsctl"
 " loglevel` is the global cap"
 msgstr "控制台为 `info`（vanilla）；仅在复现问题时升到 `debug`；`fsctl loglevel` 是全局上限"
 
-#: ../../11-observability.md:191 9a6e82364b154bdeb95f71aa5c432afe
+#: ../../11-observability.md:270 9a6e82364b154bdeb95f71aa5c432afe
 msgid ""
 "File logger still capturing debug if you need post-mortem (vanilla mappings "
 "include `debug`)"
 msgstr "若需要事后分析，文件记录器仍在捕获 debug（vanilla 映射包含 `debug`）"
 
-#: ../../11-observability.md:192 7cecd9b41ed44f59be44f891e924932d
+#: ../../11-observability.md:271 7cecd9b41ed44f59be44f891e924932d
 #, python-brace-format
 msgid "Correlate with session UUID (`Unique-ID`, log prefix, CDR `${uuid}`)"
 msgstr "用 session UUID 关联（`Unique-ID`、日志前缀、CDR `${uuid}`）"
 
-#: ../../11-observability.md:193 f63a72030dc04d1ba8e91267a634c286
+#: ../../11-observability.md:272 f63a72030dc04d1ba8e91267a634c286
 msgid ""
 "Sofia: `sofia status` before siptrace; turn siptrace **off** after capture"
 msgstr "Sofia：先 `sofia status` 再 siptrace；抓完后把 siptrace **关掉**"
 
-#: ../../11-observability.md:194 84adc049de4349789d1fcaab852e9640
+#: ../../11-observability.md:273 84adc049de4349789d1fcaab852e9640
 msgid "ESL password not left at `ClueCon` on a reachable 8021"
 msgstr "可达的 8021 上不要把 ESL 密码留成 `ClueCon`"
 
-#: ../../11-observability.md:195 eceff17a99f74c6ab6b9b517cfafd878
+#: ../../11-observability.md:274 eceff17a99f74c6ab6b9b517cfafd878
 msgid ""
 "HEARTBEAT or periodic `status` is what you would page on — there is no in-"
 "tree alert backend"
 msgstr "你会对 HEARTBEAT 或周期性 `status` 做寻呼 — 树内没有告警后端"
 
-#: ../../11-observability.md:196 b7cdfd0068b64207b3c3c6305982c2ae
+#: ../../11-observability.md:275 b7cdfd0068b64207b3c3c6305982c2ae
 msgid ""
 "HUP/reload rotates logs (`rotate-on-hup`); confirm disk after incidents"
 msgstr "HUP/reload 会轮转日志（`rotate-on-hup`）；事故后确认磁盘"
 
-#: ../../11-observability.md:197 77c55f67a1e242b7a31edb5290176405
+#: ../../11-observability.md:276 77c55f67a1e242b7a31edb5290176405
 msgid "Do not expect Prometheus/Grafana from this git tree"
 msgstr "不要指望从这个 git 树得到 Prometheus/Grafana"
 
-#: ../../11-observability.md:199 b5dba0a72a0d412393e65e8ea8236273
+#: ../../11-observability.md:278 b5dba0a72a0d412393e65e8ea8236273
 msgid "Related Documentation"
 msgstr "相关文档"
 
-#: ../../11-observability.md:201 49aade7f44b24f6f9eff61f290e224ea
+#: ../../11-observability.md:280 49aade7f44b24f6f9eff61f290e224ea
 msgid "[Quick Start](01-quick-start.md) — first `fs_cli -x status`"
 msgstr "[快速开始](01-quick-start.md) — 第一次 `fs_cli -x status`"
 
-#: ../../11-observability.md:202 7f4564791bbc4fa9a69abba1e7f33d51
+#: ../../11-observability.md:281 7f4564791bbc4fa9a69abba1e7f33d51
 msgid "[Architecture](02-architecture.md)"
 msgstr "[架构](02-architecture.md)"
 
-#: ../../11-observability.md:203 db59253f55334b1fbc90f0a9cbea5d83
+#: ../../11-observability.md:282 db59253f55334b1fbc90f0a9cbea5d83
 msgid "[Build](08-build.md) — CI including scan-build"
 msgstr "[构建](08-build.md) — 含 scan-build 的 CI"
 
-#: ../../11-observability.md:204 ec2f492a6228472f8a215fa9a029c043
+#: ../../11-observability.md:283 ec2f492a6228472f8a215fa9a029c043
 msgid "[Testing](09-testing.md)"
 msgstr "[测试策略](09-testing.md)"
 
-#: ../../11-observability.md:205 9f9f9f5a454547f6a22694143c20385b
+#: ../../11-observability.md:284 9f9f9f5a454547f6a22694143c20385b
 msgid "[Runbook](10-runbook.md)"
 msgstr "[运行手册](10-runbook.md)"

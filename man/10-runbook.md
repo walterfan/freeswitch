@@ -6,7 +6,11 @@ Ops after a working install. First-time bootstrap, Autotools, and package instal
 
 Vanilla XML is a **demo PBX**, not a production baseline (`conf/vanilla/README_IMPORTANT.txt`). Change SIP/VM passwords (or run `scripts/perl/randomize-passwords.pl`) and the ESL password before any public IP.
 
-`$PREFIX` below is the configure prefix. Developer path in this PKB: `"$HOME/fs"`. Autotools default without `--prefix`: `/usr/local/freeswitch` (`configure.ac`). Debian packages use FHS paths (see [Inspect Local State](#inspect-local-state)).
+`$PREFIX` below is the configure prefix. The developer path in this PKB is
+`"$HOME/fs"` configured with `--disable-fhs`, so its `bin/`, `conf/`, `mod/`,
+`db/`, `log/`, and `run/` directories are below the prefix. A custom prefix
+without that flag uses FHS paths; Debian packages use distro FHS paths (see
+[Inspect Local State](#inspect-local-state)).
 
 ## Prerequisites
 
@@ -31,7 +35,7 @@ If `make install` or a Debian package already landed binaries and config, you ar
 # see 01-quick-start.md — FSGET + apt-get install freeswitch-meta-all
 ```
 
-Confirm the install layout exists:
+Confirm the single-prefix developer layout exists:
 
 ```bash
 ls "$PREFIX/bin/freeswitch" "$PREFIX/bin/fs_cli" "$PREFIX/conf" "$PREFIX/mod" "$PREFIX/db" "$PREFIX/log" "$PREFIX/run"
@@ -108,7 +112,7 @@ Runtime load list is **not** `modules.conf`. That file (copied from `build/modul
 
 ## Inspect Local State
 
-| State | Prefix install (`$PREFIX`) | Debian / FHS | How to inspect |
+| State | Prefix install (`--disable-fhs`, `$PREFIX`) | Debian / FHS | How to inspect |
 |-------|----------------------------|--------------|----------------|
 | PID | `$PREFIX/run/freeswitch.pid` | `/run/freeswitch/freeswitch.pid` | `cat …/freeswitch.pid`; `ps -p $(cat …)` |
 | Process | `freeswitch` | `systemctl status freeswitch` | `ps aux \| grep '[f]reeswitch'` |
@@ -136,7 +140,7 @@ fs_cli -x "show calls"
 fs_cli -x "show modules"
 ```
 
-After XML edits: `fs_cli -x reloadxml`. Directory and dialplan changes apply on the **next** call. Sofia bind/codec/gateway XML needs `sofia profile internal rescan` (or restart); ACL lists need `reloadacl`. `reloadxml` does **not** load/unload modules — use `load` / `unload` / `reload mod_name` ([Chapter 5](https://developer.signalwire.com/freeswitch/configuration/module-loading/)).
+After XML edits: `fs_cli -x reloadxml`. Directory and dialplan changes apply on the **next** call. `sofia profile internal rescan` applies supported profile data and reparses gateways, domains, and aliases, but does not rebind `sip-ip`, `sip-port`, TLS, `ws-binding`, or `wss-binding`; restart the profile or process for those changes. ACL lists need `reloadacl`. `reloadxml` does **not** load/unload modules — use `load` / `unload` / `reload mod_name` ([Chapter 5](https://developer.signalwire.com/freeswitch/configuration/module-loading/)).
 
 Vanilla SIP ports (`conf/vanilla/vars.xml`): internal **5060** / TLS **5061**, external **5080** / TLS **5081**. RTP default range **16384–32768** (`src/switch_rtp.c`; commented overrides in `conf/vanilla/autoload_configs/switch.conf.xml`). Docker also documents UDP **64535–65535**.
 
@@ -182,7 +186,7 @@ Operator configuration: [FreeSWITCH Users Manual](https://developer.signalwire.c
 
 ---
 <!-- PKB-metadata
-last_updated: 2026-08-17
+last_updated: 2026-08-30
 commit: d94936cc10
 updated_by: human+ai
 review_status: pending

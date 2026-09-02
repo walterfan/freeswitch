@@ -135,7 +135,9 @@ Automation does not start a long-lived vanilla PBX and place a SIP call. After [
 
 1. `"$prefix/bin/freeswitch" -ncwait -nonat` then `"$prefix/bin/fs_cli" -x status` — line starts with `UP` (same check as `docker/base_image/healthcheck.sh`).
 2. `fs_cli -x sofia status` — internal/external profiles present when `mod_sofia` is loaded.
-3. `fs_cli -x "module_exists mod_event_socket"` and `fs_cli -x version` — ESL on `127.0.0.1:8021` password `ClueCon` unless you changed it.
+3. `fs_cli -x "module_exists mod_event_socket"` and `fs_cli -x version` —
+   `fs_cli` targets `127.0.0.1:8021` with password `ClueCon` unless you
+   changed it; vanilla server configuration listens on `::`:8021.
 4. Directory users `1000`–`1019` exist in vanilla config — **demo passwords**; do not expose on a public IP. A two-phone register/call is the usual media/SIP smoke; there is no in-tree script that places that call.
 5. Docker: `docker/README.md` expects **host networking**; RTP/SIP published-port setups are a common false failure.
 
@@ -149,6 +151,7 @@ poetry install
 make html-en          # _build/site/en/
 make pkb-check        # scripts/check_pkb_staleness.py
 make pkb-check-i18n   # zh_CN catalog drift, if locale files exist
+make pkb-check-links  # internal links and canonical page numbering
 ```
 
 Bilingual HTML: `make html-all` (see [Build](08-build.md) and [Documentation Process](12-document.md)).
@@ -178,7 +181,7 @@ Existing tests that already look like regression/security locks: XML entity expa
 
 ---
 <!-- PKB-metadata
-last_updated: 2026-08-17
+last_updated: 2026-08-30
 commit: d94936cc10
 updated_by: human+ai
 review_status: pending

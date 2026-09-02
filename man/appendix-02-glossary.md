@@ -16,7 +16,7 @@ Terms humans and AI commonly mix up in this tree. Prefer the **Notes** path over
 | bridge | Association that joins two channels so media flows between them | Dialplan app `bridge`; core `switch_ivr_bridge`. Users Manual Ch 1 term. |
 | call | Pair of legs in core SQL | Table `calls`: `call_uuid`, `caller_uuid`, `callee_uuid` (`src/switch_core_sqldb.c`). Not one session. Users Manual: one or more associated channels. |
 | channel | One call leg’s state, variables, hangup cause | `switch_channel_t` inside a session. Dialplan/apps key off channel state. `src/switch_channel.c`. Users Manual: one leg between FreeSWITCH and a single endpoint. |
-| configuration root | Directory that contains `freeswitch.xml` | Source default: `/usr/local/freeswitch/conf`. Debian: `/etc/freeswitch`. Users Manual paths are relative to this root. |
+| configuration root | Directory that contains `freeswitch.xml` | Source default: `/usr/local/freeswitch/conf`; the documented `--disable-fhs` developer prefix uses `$prefix/conf`; a custom FHS prefix uses `$prefix/etc/freeswitch`. Debian: `/etc/freeswitch`. Users Manual paths are relative to this root. |
 | dialplan | XML (or other) routing: match extension, run apps | Vanilla section in `conf/vanilla/freeswitch.xml`; default context `conf/vanilla/dialplan/default.xml`. Hunt in `CS_ROUTING` via `mod_dialplan_xml`. [Ch 12](https://developer.signalwire.com/freeswitch/dialplan/xml). |
 | directory | XML users / domains (SIP digest, VM, channel vars) | Vanilla `conf/vanilla/directory/` (`1000.xml` …). Directory users are **not** OS users. [Ch 6](https://developer.signalwire.com/freeswitch/users-and-endpoints/user-directory). |
 | endpoint | Protocol interface that originates or receives calls | A module: Sofia (`mod_sofia`) for SIP, Verto (`mod_verto`) for WebRTC. Users Manual Ch 1. |
@@ -30,7 +30,7 @@ Terms humans and AI commonly mix up in this tree. Prefer the **Notes** path over
 | `modules.conf` | **Build-time** list of `src/mod/...` trees to compile | Copied from `build/modules.conf.in` by `bootstrap.sh`. Commented lines are not built. |
 | `modules.conf.xml` | **Runtime** autoload list of compiled modules | `conf/vanilla/autoload_configs/modules.conf.xml`. Loader: `src/switch_loadable_module.c`. Companions: `pre_load_modules.conf.xml`, `post_load_modules.conf.xml`. [Ch 5](https://developer.signalwire.com/freeswitch/configuration/module-loading/). |
 | PKB | Project Knowledge Base (this Sphinx/MyST doc set) | Lives in **`man/`**, not `docs/man/`. Tooling: `man/pyproject.toml`. Not linked into the `freeswitch` binary. Does not replace the Users Manual. |
-| prefix | Autotools install root | Default `/usr/local/freeswitch` (`AC_PREFIX_DEFAULT` in `configure.ac`). Layout: `bin/`, `mod/`, `conf/`, `log/`, `db/`, `scripts/`, `htdocs/`, `sounds/`. |
+| prefix | Autotools install root | Default `/usr/local/freeswitch` (`AC_PREFIX_DEFAULT` in `configure.ac`). With `--disable-fhs`, layout is `bin/`, `mod/`, `conf/`, `log/`, `db/`, `scripts/`, `htdocs/`, `sounds/`; a custom prefix without that flag uses FHS `etc/`, `lib/`, `var/`, and `share/` locations. |
 | RTP | Real-time media path (audio/video over UDP) | Core: `src/switch_rtp.c`, `src/switch_core_media.c`. Docker needs host networking for the UDP ranges. Media modes: [Ch 17](https://developer.signalwire.com/freeswitch/media-and-codecs/handling). |
 | session | One call leg’s thread, codecs, queues, UUID | `switch_core_session_t` wraps a channel. One session thread owns the state machine. `src/switch_core_session.c`. Users Manual: runtime container for a channel and its application state. |
 | Sofia-SIP | External SIP stack (`sofia-sip-ua >= 1.13.18`) | **Not** vendored under `libs/`. CI clones `freeswitch/sofia-sip`. Used by `mod_sofia`. |
@@ -52,7 +52,7 @@ Terms humans and AI commonly mix up in this tree. Prefer the **Notes** path over
 
 ---
 <!-- PKB-metadata
-last_updated: 2026-08-17
+last_updated: 2026-08-30
 commit: d94936cc10
 updated_by: human+ai
 review_status: pending

@@ -25,6 +25,8 @@ SECTIONS = [
     ("Design & Structure", ["02-architecture", "03-tech-stack", "04-repo-map", "05-data-and-api", "06-workflows"]),
     ("Development", ["07-conventions", "08-build", "09-testing"]),
     ("Operations", ["10-runbook", "11-observability", "12-document"]),
+    ("AI & Maintenance", ["ai-guide"]),
+    ("Decision Records & Change Proposals", ["adr/index", "changes/index"]),
 ]
 
 
@@ -59,6 +61,10 @@ def existing_docs(doc_dir: str) -> set[str]:
     return {name[:-3] for name in os.listdir(doc_dir) if name.endswith(".md")}
 
 
+def doc_exists(doc_dir: str, docs: set[str], entry: str) -> bool:
+    return entry in docs or os.path.isfile(os.path.join(doc_dir, f"{entry}.md"))
+
+
 def emit_toctree(caption: str, entries: Iterable[str]) -> str:
     joined = "\n".join(entries)
     return (
@@ -82,18 +88,15 @@ def build_index(doc_dir: str, title: str) -> str:
     ]
 
     for caption, ordered_entries in SECTIONS:
-        present = [entry for entry in ordered_entries if entry in docs]
+        present = [entry for entry in ordered_entries if doc_exists(doc_dir, docs, entry)]
         if present:
             blocks.append(emit_toctree(caption, present))
 
     appendix = sorted(name for name in docs if name.startswith("appendix-"))
     appendix_entries: List[str] = appendix[:]
-    if "ai-guide" in docs:
-        appendix_entries.append("ai-guide")
-    if os.path.isfile(os.path.join(doc_dir, "adr", "index.md")):
-        appendix_entries.append("adr/index")
-    if os.path.isfile(os.path.join(doc_dir, "changes", "index.md")):
-        appendix_entries.append("changes/index")
+    for name in ("diagrams-guide", "CHANGELOG"):
+        if name in docs and name not in appendix_entries:
+            appendix_entries.append(name)
     if appendix_entries:
         blocks.append(emit_toctree("Appendix", appendix_entries))
 
@@ -113,7 +116,7 @@ def build_index(doc_dir: str, title: str) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate a PKB index.md candidate")
-    parser.add_argument("--doc-dir", default="doc", help="PKB doc directory")
+    parser.add_argument("--doc-dir", default="man", help="PKB doc directory")
     parser.add_argument("--title", help="Optional explicit index title")
     parser.add_argument("--stdout", action="store_true", help="Print raw generated index candidate")
     parser.add_argument("--output-file", help="Optional sidecar artifact file")

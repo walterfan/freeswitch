@@ -3,7 +3,7 @@
 # PKB Repo Map Generator — deterministic repo tree refresh
 #
 # Usage:
-#   ./gen_repo_map.sh --repo-root . --doc-dir doc
+#   ./gen_repo_map.sh --repo-root . --doc-dir man
 #   ./gen_repo_map.sh --repo-root . --stdout
 # =============================================================================
 
@@ -13,7 +13,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/generated_output.sh"
 
 REPO_ROOT="."
-DOC_DIR="doc"
+DOC_DIR="man"
 OUTPUT_FILE=""
 DEPTH=3
 STDOUT_ONLY=0

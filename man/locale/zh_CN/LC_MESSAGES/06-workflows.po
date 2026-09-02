@@ -1,17 +1,17 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2026, Zoom Video Communications
 # This file is distributed under the same license as the FreeSWITCH package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+# Walter Fan <walter.fan@ustc.etu>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: FreeSWITCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 23:38+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_CN <LL@li.org>\n"
+"POT-Creation-Date: 2026-08-30 22:59+0800\n"
+"PO-Revision-Date: 2026-08-30 23:13+0800\n"
+"Last-Translator: Walter Fan <walter.fan@ustc.etu>\n"
+"Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -95,7 +95,7 @@ msgid "Inbound SIP Call"
 msgstr "呼入 SIP 呼叫"
 
 #: ../../06-workflows.md:22 ../../06-workflows.md:121
-#: ../../06-workflows.md:205 ../../06-workflows.md:293
+#: ../../06-workflows.md:205 ../../06-workflows.md:296
 #: ca4e5e67b30845d29b6f6b64fa50705e
 msgid "Trigger and Goal"
 msgstr "触发条件与目标"
@@ -124,13 +124,13 @@ msgstr ""
 "响应/`BYE`/`CANCEL` 挂断并产生 CDR/事件。"
 
 #: ../../06-workflows.md:27 ../../06-workflows.md:128
-#: ../../06-workflows.md:212 ../../06-workflows.md:298
+#: ../../06-workflows.md:215 ../../06-workflows.md:301
 #: 3bb504972bd147b09b2b05e0ce9af4fc
 msgid "Main Flow"
 msgstr "主流程"
 
 #: ../../06-workflows.md:65 ../../06-workflows.md:159
-#: ../../06-workflows.md:245 ../../06-workflows.md:327
+#: ../../06-workflows.md:248 ../../06-workflows.md:330
 #: c37824ad827441a2a7cffa133516fc9d
 msgid "Key Steps"
 msgstr "关键步骤"
@@ -287,25 +287,25 @@ msgstr ""
 "`CS_DESTROY`。Vanilla CDR 由 `mod_cdr_csv` 产生，而非核心 SQL。"
 
 #: ../../06-workflows.md:78 ../../06-workflows.md:170
-#: ../../06-workflows.md:257 ../../06-workflows.md:337
+#: ../../06-workflows.md:260 ../../06-workflows.md:340
 #: 65f1600f17a5474b809f151feba50b7b
 msgid "Error and Edge Cases"
 msgstr "错误与边界情况"
 
 #: ../../06-workflows.md:29 ../../06-workflows.md:130
-#: ../../06-workflows.md:214 ../../06-workflows.md:300
+#: ../../06-workflows.md:217 ../../06-workflows.md:303
 #: 26d095b5019e4cc9b0b74cd2a915ecc6
 msgid "Case"
 msgstr "情形"
 
 #: ../../06-workflows.md:29 ../../06-workflows.md:130
-#: ../../06-workflows.md:214 ../../06-workflows.md:300
+#: ../../06-workflows.md:217 ../../06-workflows.md:303
 #: 6de5de77e2d646de95894aa0f56a20df
 msgid "Where handled"
 msgstr "处理位置"
 
 #: ../../06-workflows.md:29 ../../06-workflows.md:130
-#: ../../06-workflows.md:214 ../../06-workflows.md:300
+#: ../../06-workflows.md:217 ../../06-workflows.md:303
 #: 95fcaa6697404399aae766abd2f9aef9
 msgid "Expected outcome"
 msgstr "预期结果"
@@ -451,7 +451,7 @@ msgid "**491** Request Pending; redo outbound invite"
 msgstr "**491** Request Pending；重做呼出 invite"
 
 #: ../../06-workflows.md:94 ../../06-workflows.md:184
-#: ../../06-workflows.md:271 ../../06-workflows.md:349
+#: ../../06-workflows.md:274 ../../06-workflows.md:352
 #: 406cc472c2f04fb7aecc8f3395bbb110
 msgid "Data and Contracts Involved"
 msgstr "涉及的数据与约定"
@@ -505,7 +505,7 @@ msgstr ""
 "`disable_q850_reason`，否则可选 Q.850 `Reason`。"
 
 #: ../../06-workflows.md:103 ../../06-workflows.md:192
-#: ../../06-workflows.md:278 ../../06-workflows.md:355
+#: ../../06-workflows.md:281 ../../06-workflows.md:358
 #: 6134f19323c04bd6bd9603d492fe4a8b
 msgid "Code References"
 msgstr "代码引用"
@@ -815,7 +815,7 @@ msgstr ""
 msgid "`cacheable` user XML"
 msgstr "`cacheable` 用户 XML"
 
-#: ../../06-workflows.md:130 ../../06-workflows.md:300
+#: ../../06-workflows.md:130 ../../06-workflows.md:303
 #: 987a19fa4dd14ebb97ddc5f743fee14a
 msgid "`switch_xml_locate_user_merged`"
 msgstr "`switch_xml_locate_user_merged`"
@@ -944,16 +944,17 @@ msgstr ""
 "`sendmsg`（`call-command: execute|hangup|…`）驱动活动 UUID。呼出模式：dialplan 应用 "
 "`socket` **从** FreeSWITCH 连到控制器。"
 
-#: ../../06-workflows.md:210 1cf575d945b64fdea99075b2c7045608
+#: ../../06-workflows.md:210 9e5563438ed7426eb93fa12916186566
 msgid ""
-"Do not bind ESL beyond loopback in production without changing `ClueCon` — "
-"vanilla `listen-ip` is `::` (all interfaces). **[NEEDS INPUT: site ESL bind "
-"and password]**."
+"For production, bind ESL to loopback or a trusted management network, enable"
+" an inbound ACL, and replace `ClueCon`; the vanilla `listen-ip` is `::` "
+"(wildcard IPv6, with IPv4 behavior dependent on the host socket settings). "
+"**[NEEDS INPUT: site ESL bind and password]**."
 msgstr ""
-"生产环境不要在未更改 `ClueCon` 的情况下把 ESL 绑到回环以外 — vanilla 的 `listen-ip` 是 "
-"`::`（所有接口）。**[NEEDS INPUT: 站点 ESL 绑定地址与密码]**。"
+"生产环境应将 ESL 绑定到 loopback 或可信管理网络，启用入站 ACL 并替换 `ClueCon`；vanilla 的 `listen-ip`"
+" 为 `::`（通配 IPv6，IPv4 行为取决于主机套接字设置）。**[NEEDS INPUT: 站点 ESL 绑定地址和密码]**。"
 
-#: ../../06-workflows.md:247 a94969fb28334d88a5f1b6177a92c9d8
+#: ../../06-workflows.md:250 a94969fb28334d88a5f1b6177a92c9d8
 msgid ""
 "**Accept and challenge.** Listener thread sends `Content-Type: "
 "auth/request`. Until `LFLAG_AUTHED`, only `auth <password>` (compared to "
@@ -966,7 +967,7 @@ msgstr ""
 " `esl-password` / `esl-allowed-api` / `esl-allowed-events`）。密码错误：`-ERR "
 "invalid` 并关闭套接字。"
 
-#: ../../06-workflows.md:248 4fc8c215bc7448eaa2db0a49ceb8a4a3
+#: ../../06-workflows.md:251 4fc8c215bc7448eaa2db0a49ceb8a4a3
 msgid ""
 "**Parse commands.** `parse_command()` in `mod_event_socket.c`. After auth: "
 "`api`, `bgapi` (async + `Job-UUID` + `BACKGROUND_JOB`), `event` / `nixevent`"
@@ -978,7 +979,7 @@ msgstr ""
 "`myevents`、`sendmsg`、`sendevent`、`getvar`、`log`、`linger`、`exit`（`+OK "
 "bye`）。回复为 `+OK` 或 `-ERR`。"
 
-#: ../../06-workflows.md:249 6ee4a674276b4ed3b2656f4a426437ae
+#: ../../06-workflows.md:252 6ee4a674276b4ed3b2656f4a426437ae
 msgid ""
 "**`api originate`.** `originate_function` in `mod_commands.c`. Syntax: "
 "`<call url> <exten>|&<application_name>(<app_args>) [<dialplan>] [<context>]"
@@ -993,7 +994,7 @@ msgstr ""
 "`default`，超时 **60s**。调用 `switch_ivr_originate()`。成功时新会话转入 extension 或 "
 "`&app(args)` 内联 extension；失败则 `-ERR` 加上 `switch_channel_cause2str(cause)`。"
 
-#: ../../06-workflows.md:250 adc49defd4fe4455a28b71229f43cf4b
+#: ../../06-workflows.md:253 adc49defd4fe4455a28b71229f43cf4b
 msgid ""
 "**Outbound SIP leg.** `sofia_outgoing_channel()` sets `TFLAG_OUTBOUND` and "
 "`CS_INIT`. `sofia_on_init()` then `sofia_glue_do_invite()` sends the INVITE."
@@ -1003,7 +1004,7 @@ msgstr ""
 "`sofia_on_init()` 再由 `sofia_glue_do_invite()` 发送 INVITE。核心还会为呼出腿触发 "
 "`SWITCH_EVENT_CHANNEL_ORIGINATE`。"
 
-#: ../../06-workflows.md:251 5851245272f048dabf81d8c59c7e9ae4
+#: ../../06-workflows.md:254 5851245272f048dabf81d8c59c7e9ae4
 msgid ""
 "**`sendmsg`.** Headers include `call-command`. `switch_ivr_parse_event()` "
 "hashes `execute` (needs `execute-app-name` / `execute-app-arg`), `hangup`, "
@@ -1016,7 +1017,7 @@ msgstr ""
 "arg`）、`hangup`、`nomedia`、`unicast`、`xferext`。有 UUID "
 "时事件入队到该会话（`switch_core_session_queue_private_event`）；呼出 `socket` 会话可内联执行。"
 
-#: ../../06-workflows.md:252 1f4688cdf92844d6948655e3e9e127cb
+#: ../../06-workflows.md:255 1f4688cdf92844d6948655e3e9e127cb
 msgid ""
 "**Outbound ESL (`socket` app).** `SWITCH_ADD_APP(..., \"socket\", ..., "
 "socket_function, \"<ip>[:<port>]\")`. The channel connects out; the "
@@ -1027,7 +1028,7 @@ msgstr ""
 "socket_function, \"<ip>[:<port>]\")`。通道向外连接；控制器发送同一套 `sendmsg` "
 "词汇。`LFLAG_OUTBOUND` 且无 `LFLAG_FULL` 时跳过仅呼入命令（`api`、`sendevent`、…）。"
 
-#: ../../06-workflows.md:253 bd8586a035c84f1eaddf95cc359a84ae
+#: ../../06-workflows.md:256 bd8586a035c84f1eaddf95cc359a84ae
 msgid ""
 "**Events to the client.** `mod_event_socket` binds `SWITCH_EVENT_ALL`. "
 "Serialize with `switch_event_serialize()` (plain) or JSON. Do not block the "
@@ -1036,128 +1037,128 @@ msgstr ""
 "**发给客户端的事件。** `mod_event_socket` 绑定 `SWITCH_EVENT_ALL`。用 "
 "`switch_event_serialize()`（plain）或 JSON 序列化。不要阻塞事件线程（`switch_event.h`）。"
 
-#: ../../06-workflows.md:255 e8a9ccfe53414781a18fdcf2cca17290
+#: ../../06-workflows.md:258 e8a9ccfe53414781a18fdcf2cca17290
 msgid ""
 "`bgapi` is the non-blocking form of `api`; `originate` itself can block up "
 "to the timeout (the API logs a notice if invoked on an existing session)."
 msgstr ""
 "`bgapi` 是 `api` 的非阻塞形式；`originate` 本身可阻塞直到超时（若在已有会话上调用，API 会记一条 notice）。"
 
-#: ../../06-workflows.md:214 3c7e307d1272488dbeb68b7526399944
+#: ../../06-workflows.md:217 3c7e307d1272488dbeb68b7526399944
 msgid "Bad ESL password"
 msgstr "错误的 ESL 密码"
 
-#: ../../06-workflows.md:214 ff3f3e6c94ae47789326e781567096c4
+#: ../../06-workflows.md:217 ff3f3e6c94ae47789326e781567096c4
 msgid "`parse_command` auth"
 msgstr "`parse_command` 鉴权"
 
-#: ../../06-workflows.md:214 0280328d6cbc4be98377cdfad3fe4bf1
+#: ../../06-workflows.md:217 0280328d6cbc4be98377cdfad3fe4bf1
 msgid "`-ERR invalid`; connection dropped"
 msgstr "`-ERR invalid`；连接断开"
 
-#: ../../06-workflows.md:214 aa6100080a4e4c51909d80709e368c28
+#: ../../06-workflows.md:217 aa6100080a4e4c51909d80709e368c28
 msgid "Command before auth"
 msgstr "鉴权前的命令"
 
-#: ../../06-workflows.md:214 b86b61971b284c758f865a9f464ba02b
+#: ../../06-workflows.md:217 b86b61971b284c758f865a9f464ba02b
 msgid "`LFLAG_AUTHED` check"
 msgstr "`LFLAG_AUTHED` 检查"
 
-#: ../../06-workflows.md:214 80695ce500f844d09a22b332532c98f7
+#: ../../06-workflows.md:217 80695ce500f844d09a22b332532c98f7
 msgid "Ignored except `auth` / `userauth`"
 msgstr "除 `auth` / `userauth` 外忽略"
 
-#: ../../06-workflows.md:214 3735be36837840f7a82755704ba0372b
+#: ../../06-workflows.md:217 3735be36837840f7a82755704ba0372b
 msgid "`userauth` API not in allow-list"
 msgstr "`userauth` API 不在允许列表"
 
-#: ../../06-workflows.md:214 728b69113f9e4f198e11d6167c368408
+#: ../../06-workflows.md:217 728b69113f9e4f198e11d6167c368408
 msgid "`auth_api_command`"
 msgstr "`auth_api_command`"
 
-#: ../../06-workflows.md:214 231c21474b6f4a42b60b8e74e766d53e
+#: ../../06-workflows.md:217 231c21474b6f4a42b60b8e74e766d53e
 msgid "`-ERR permission denied`"
 msgstr "`-ERR permission denied`"
 
-#: ../../06-workflows.md:214 5f479b5b1d324743a71791e6af96111f
+#: ../../06-workflows.md:217 5f479b5b1d324743a71791e6af96111f
 msgid "`originate` argc not 2–7"
 msgstr "`originate` 的 argc 不是 2–7"
 
-#: ../../06-workflows.md:214 dc1385c2ebf04fe89f7f8d44be776d3e
+#: ../../06-workflows.md:217 dc1385c2ebf04fe89f7f8d44be776d3e
 msgid "`originate_function`"
 msgstr "`originate_function`"
 
-#: ../../06-workflows.md:214 7e019caac7464609be68e48bf425d51c
+#: ../../06-workflows.md:217 7e019caac7464609be68e48bf425d51c
 msgid "`-USAGE:` plus `ORIGINATE_SYNTAX`"
 msgstr "`-USAGE:` 加上 `ORIGINATE_SYNTAX`"
 
-#: ../../06-workflows.md:214 2b410a9d72284562b4fe50dd33f54fef
+#: ../../06-workflows.md:217 2b410a9d72284562b4fe50dd33f54fef
 msgid "Originate timeout / SIP fail"
 msgstr "Originate 超时 / SIP 失败"
 
-#: ../../06-workflows.md:214 6e571a51f94f4dcd8fcca5c12d83ee5b
+#: ../../06-workflows.md:217 6e571a51f94f4dcd8fcca5c12d83ee5b
 msgid "`switch_ivr_originate`"
 msgstr "`switch_ivr_originate`"
 
-#: ../../06-workflows.md:214 5a951a85a44a4e62865cc90b7541aefe
+#: ../../06-workflows.md:217 5a951a85a44a4e62865cc90b7541aefe
 msgid "`-ERR` cause string (`NO_ANSWER`, `USER_BUSY`, …)"
 msgstr "`-ERR` 原因字符串（`NO_ANSWER`、`USER_BUSY`、…）"
 
-#: ../../06-workflows.md:214 a2f2193efccd45cd9020c87a307821e3
+#: ../../06-workflows.md:217 a2f2193efccd45cd9020c87a307821e3
 msgid "`sendmsg` unknown UUID"
 msgstr "`sendmsg` 未知 UUID"
 
-#: ../../06-workflows.md:214 58c1169df1e74b4d80ec5e384dfc3965
+#: ../../06-workflows.md:217 58c1169df1e74b4d80ec5e384dfc3965
 msgid "`parse_command`"
 msgstr "`parse_command`"
 
-#: ../../06-workflows.md:214 e23efacb1c884fbbbf0030f1be38124e
+#: ../../06-workflows.md:217 e23efacb1c884fbbbf0030f1be38124e
 msgid "`-ERR invalid session id [… ]`"
 msgstr "`-ERR invalid session id [… ]`"
 
-#: ../../06-workflows.md:214 b78b1cf43f634d629cd38dd44645db67
+#: ../../06-workflows.md:217 b78b1cf43f634d629cd38dd44645db67
 msgid "Missing `call-command`"
 msgstr "缺少 `call-command`"
 
-#: ../../06-workflows.md:214 0895106e1cc14d6e814c483747f668cc
+#: ../../06-workflows.md:217 0895106e1cc14d6e814c483747f668cc
 msgid "`switch_ivr_parse_event`"
 msgstr "`switch_ivr_parse_event`"
 
-#: ../../06-workflows.md:214 c37c670fd9af437aa757a3e46b413b4d
+#: ../../06-workflows.md:217 c37c670fd9af437aa757a3e46b413b4d
 msgid "Log `\"Invalid Command!\"`; `SWITCH_STATUS_FALSE`"
 msgstr "日志 `\"Invalid Command!\"`；`SWITCH_STATUS_FALSE`"
 
-#: ../../06-workflows.md:214 c9e1446c472742e3b74a858ed7410cf9
+#: ../../06-workflows.md:217 c9e1446c472742e3b74a858ed7410cf9
 msgid "Unload/reload `mod_event_socket` via `api`"
 msgstr "通过 `api` 卸载/重载 `mod_event_socket`"
 
-#: ../../06-workflows.md:214 6b3bb47338fe4d50a91c42dd94e7d32e
+#: ../../06-workflows.md:217 6b3bb47338fe4d50a91c42dd94e7d32e
 msgid "cheat rewrite"
 msgstr "作弊改写"
 
-#: ../../06-workflows.md:214 e327547b821642c0ba64bf264f4ee757
+#: ../../06-workflows.md:217 e327547b821642c0ba64bf264f4ee757
 msgid "Forced to `bgapi` so the listener thread is not torn down mid-command"
 msgstr "强制改为 `bgapi`，以免监听线程在命令执行中被拆掉"
 
-#: ../../06-workflows.md:214 adf85e29e38545a59e4c5ad7055fa8f7
+#: ../../06-workflows.md:217 adf85e29e38545a59e4c5ad7055fa8f7
 msgid "Slow ESL consumer"
 msgstr "缓慢的 ESL 消费者"
 
-#: ../../06-workflows.md:214 f0aa2c2650ad4c76b71569e80858e6a6
+#: ../../06-workflows.md:217 f0aa2c2650ad4c76b71569e80858e6a6
 msgid "event delivery thread"
 msgstr "事件投递线程"
 
-#: ../../06-workflows.md:214 6c7cf560e19c446a9341b81a5d72e722
+#: ../../06-workflows.md:217 6c7cf560e19c446a9341b81a5d72e722
 msgid "Core warns; client must queue locally"
 msgstr "核心发出警告；客户端必须本地排队"
 
-#: ../../06-workflows.md:273 79fd4d5f8460438c8f7a1f4c97abbd41
+#: ../../06-workflows.md:276 79fd4d5f8460438c8f7a1f4c97abbd41
 msgid ""
 "ESL line protocol after `auth` (see [Data and API](05-data-and-api.md) "
 "command table)."
 msgstr "`auth` 之后的 ESL 行协议（见 [数据与 API](05-data-and-api.md) 命令表）。"
 
-#: ../../06-workflows.md:274 ad147608fa79425881db617774a59486
+#: ../../06-workflows.md:277 ad147608fa79425881db617774a59486
 msgid ""
 "Console APIs: `originate`, `uuid_kill`, `uuid_bridge`, `uuid_transfer`, "
 "`status`, `show channels` (`mod_commands.c`)."
@@ -1165,17 +1166,17 @@ msgstr ""
 "控制台 API：`originate`、`uuid_kill`、`uuid_bridge`、`uuid_transfer`、`status`、`show"
 " channels`（`mod_commands.c`）。"
 
-#: ../../06-workflows.md:275 624d9fc1a93f4f93a4b906dcdb9366f6
+#: ../../06-workflows.md:278 624d9fc1a93f4f93a4b906dcdb9366f6
 msgid "Events as subscribed; `BACKGROUND_JOB` for `bgapi`."
 msgstr "按订阅投递事件；`bgapi` 对应 `BACKGROUND_JOB`。"
 
-#: ../../06-workflows.md:276 0a28cf1f7a694d55a909d40f2b358297
+#: ../../06-workflows.md:279 0a28cf1f7a694d55a909d40f2b358297
 msgid ""
 "Channel UUID returned on successful originate — handle for later `sendmsg` /"
 " `uuid_*`."
 msgstr "成功 originate 返回的通道 UUID — 供后续 `sendmsg` / `uuid_*` 使用。"
 
-#: ../../06-workflows.md:280 0ccaaf0c390e4c24b668bd43059f4947
+#: ../../06-workflows.md:283 0ccaaf0c390e4c24b668bd43059f4947
 msgid ""
 "`src/mod/event_handlers/mod_event_socket/mod_event_socket.c` — "
 "`parse_command`, `LFLAG_AUTHED`, `socket_function`"
@@ -1183,18 +1184,18 @@ msgstr ""
 "`src/mod/event_handlers/mod_event_socket/mod_event_socket.c` — "
 "`parse_command`、`LFLAG_AUTHED`、`socket_function`"
 
-#: ../../06-workflows.md:281 315dc8e378fe4c15b01b03c0b377b056
+#: ../../06-workflows.md:284 315dc8e378fe4c15b01b03c0b377b056
 msgid "`libs/esl/src/esl.c` — `esl_connect_timeout`, `esl_send_recv`"
 msgstr "`libs/esl/src/esl.c` — `esl_connect_timeout`、`esl_send_recv`"
 
-#: ../../06-workflows.md:282 8321830cdc3141b180d96acb300575e9
+#: ../../06-workflows.md:285 8321830cdc3141b180d96acb300575e9
 msgid ""
 "`libs/esl/fs_cli.c` — default host/port/password; `-x` one-shot (`fs_cli -x "
 "status`)"
 msgstr ""
 "`libs/esl/fs_cli.c` — 默认 host/port/password；`-x` 一次性命令（`fs_cli -x status`）"
 
-#: ../../06-workflows.md:283 2209edfef1944e7e9955b7e9c32bdd97
+#: ../../06-workflows.md:286 2209edfef1944e7e9955b7e9c32bdd97
 msgid ""
 "`src/mod/applications/mod_commands/mod_commands.c` — `originate_function`, "
 "`ORIGINATE_SYNTAX`"
@@ -1202,7 +1203,7 @@ msgstr ""
 "`src/mod/applications/mod_commands/mod_commands.c` — "
 "`originate_function`、`ORIGINATE_SYNTAX`"
 
-#: ../../06-workflows.md:284 88df48f0a81b426abcfc3a752badf967
+#: ../../06-workflows.md:287 88df48f0a81b426abcfc3a752badf967
 msgid ""
 "`src/include/switch_ivr.h` / `src/switch_ivr_originate.c` — "
 "`switch_ivr_originate`"
@@ -1210,23 +1211,23 @@ msgstr ""
 "`src/include/switch_ivr.h` / `src/switch_ivr_originate.c` — "
 "`switch_ivr_originate`"
 
-#: ../../06-workflows.md:285 6dc494d5046d40d987709cd267eb1b07
+#: ../../06-workflows.md:288 6dc494d5046d40d987709cd267eb1b07
 msgid "`src/switch_ivr.c` — `switch_ivr_parse_event` (`call-command`)"
 msgstr "`src/switch_ivr.c` — `switch_ivr_parse_event`（`call-command`）"
 
-#: ../../06-workflows.md:286 f6dcc78a6d5748b4b830fc7a109c1359
+#: ../../06-workflows.md:289 f6dcc78a6d5748b4b830fc7a109c1359
 msgid "`src/switch_event.c` — bus, `switch_event_serialize`"
 msgstr "`src/switch_event.c` — 事件总线，`switch_event_serialize`"
 
-#: ../../06-workflows.md:287 5cc117e199db4071b1322606bec67e57
+#: ../../06-workflows.md:290 5cc117e199db4071b1322606bec67e57
 msgid "`conf/vanilla/autoload_configs/event_socket.conf.xml`"
 msgstr "`conf/vanilla/autoload_configs/event_socket.conf.xml`"
 
-#: ../../06-workflows.md:291 005b3764fcdf4ee7a8c45f66d824f4e8
+#: ../../06-workflows.md:294 005b3764fcdf4ee7a8c45f66d824f4e8
 msgid "XML Reload"
 msgstr "XML 重载"
 
-#: ../../06-workflows.md:295 6f6c5abcfd5c4c6bb6994a4dd930ed9a
+#: ../../06-workflows.md:298 6f6c5abcfd5c4c6bb6994a4dd930ed9a
 msgid ""
 "**Trigger**: console/ESL `reloadxml` (`reload_xml_function` in "
 "`mod_commands.c`), or `reloadacl` / `sofia profile <name> rescan` which also"
@@ -1236,7 +1237,7 @@ msgstr ""
 "`reload_xml_function`），或同样会调用 `switch_xml_reload()` 的 `reloadacl` / `sofia "
 "profile <name> rescan`。"
 
-#: ../../06-workflows.md:296 c92536da4e4a44cd9577143ca8ce50c4
+#: ../../06-workflows.md:299 c92536da4e4a44cd9577143ca8ce50c4
 msgid ""
 "**Goal**: re-parse `conf_dir` + `freeswitch.xml` (vanilla root "
 "`conf/vanilla/freeswitch.xml` with preprocessor includes), replace "
@@ -1249,7 +1250,7 @@ msgstr ""
 "`SWITCH_EVENT_RELOADXML`，使**新的** dialplan 查找和 directory "
 "定位看到新树。进行中的会话仍保留已经查到的 extension。"
 
-#: ../../06-workflows.md:325 d98b6ae8a88b412caaed4409f8771b89
+#: ../../06-workflows.md:328 d98b6ae8a88b412caaed4409f8771b89
 #, python-format
 msgid ""
 "(`reload_xml_function` always prints `+OK [%s]` with the `err` string from "
@@ -1259,7 +1260,7 @@ msgstr ""
 "（`reload_xml_function` 始终打印带 `switch_xml_reload` 返回的 `err` 字符串的 `+OK [%s]` —"
 " 包括失败文本。请检查方括号内的消息，不要只看 `+OK`。）"
 
-#: ../../06-workflows.md:329 6b8e98a1feb9418caabcadad8693fd76
+#: ../../06-workflows.md:332 6b8e98a1feb9418caabcadad8693fd76
 msgid ""
 "**Re-open root.** `switch_xml_reload()` → `switch_xml_open_root(1, err)` → "
 "`__switch_xml_open_root()`. Path: `SWITCH_GLOBAL_dirs.conf_dir` + "
@@ -1272,7 +1273,7 @@ msgstr ""
 "`SWITCH_GLOBAL_filenames.conf_name`。预处理器展开 `X-PRE-PROCESS` / `#include` / "
 "`#set`。展平副本仍为 `freeswitch.xml.fsxml`（运行中不要编辑）。"
 
-#: ../../06-workflows.md:330 7c1cbe6a9c994e3c82fd76b0e9bbd25e
+#: ../../06-workflows.md:333 7c1cbe6a9c994e3c82fd76b0e9bbd25e
 msgid ""
 "**Commit or keep old.** Parse error: `switch_xml_error()` copied to `err`, "
 "new tree discarded, previous root stays. Success: "
@@ -1281,7 +1282,7 @@ msgstr ""
 "**提交或保留旧树。** 解析错误：`switch_xml_error()` 复制到 `err`，新树丢弃，保留原 "
 "root。成功：`switch_xml_set_root(new_main)`，`err` = `\"Success\"`。"
 
-#: ../../06-workflows.md:331 3efd65872b7c4916a0ad21e8ca8c59c5
+#: ../../06-workflows.md:334 3efd65872b7c4916a0ad21e8ca8c59c5
 msgid ""
 "**Notify.** If a root is returned, `SWITCH_EVENT_RELOADXML` is fired "
 "(`switch_xml_open_root`). Modules that `switch_event_bind(..., "
@@ -1296,7 +1297,7 @@ msgstr ""
 "来刷新主配置；`mod_enum`、`mod_cidlookup`、`mod_loopback`、`mod_avmd`、`mod_tts_commandline`"
 " 会绑定）。"
 
-#: ../../06-workflows.md:332 85b7bf7767434fb98135df09125cbe18
+#: ../../06-workflows.md:335 85b7bf7767434fb98135df09125cbe18
 msgid ""
 "**What picks up immediately.** Next `dialplan_hunt()` / "
 "`switch_xml_locate_user()` reads the new root. Vanilla file users without "
@@ -1305,22 +1306,24 @@ msgstr ""
 "**立即生效的部分。** 下一次 `dialplan_hunt()` / `switch_xml_locate_user()` 读取新 root。没有 "
 "`cacheable` 的 vanilla 文件用户会从 XML 重新读取。"
 
-#: ../../06-workflows.md:333 a7268064345d4b9091257e9d20fd873e
+#: ../../06-workflows.md:336 a7268064345d4b9091257e9d20fd873e
 msgid ""
 "**What does not auto-apply.** `mod_sofia` does **not** bind "
-"`SWITCH_EVENT_RELOADXML`. SIP profile parameters, gateways, and codecs need "
-"`sofia profile <name> rescan` (that API itself calls `switch_xml_reload` "
-"then `config_sofia(SOFIA_CONFIG_RESCAN)`). ACL lists: `reloadacl` reloads "
-"XML **and** `switch_load_network_lists(SWITCH_TRUE)`. Loaded DSOs: `reload "
-"<module>` is separate from XML."
+"`SWITCH_EVENT_RELOADXML`. `sofia profile <name> rescan` reloads supported "
+"profile data and reparses gateways, domains, and aliases, but it does not "
+"rebind transport sockets. Changes to `sip-ip`, `sip-port`, TLS, `ws-"
+"binding`, or `wss-binding` require a profile restart or process restart. ACL"
+" lists: `reloadacl` reloads XML **and** "
+"`switch_load_network_lists(SWITCH_TRUE)`. Loaded DSOs: `reload <module>` is "
+"separate from XML."
 msgstr ""
-"**不会自动生效的部分。** `mod_sofia` **不会**绑定 `SWITCH_EVENT_RELOADXML`。SIP "
-"配置档参数、网关和编解码需要 `sofia profile <name> rescan`（该 API 自身先调用 `switch_xml_reload`"
-" 再 `config_sofia(SOFIA_CONFIG_RESCAN)`）。ACL 列表：`reloadacl` 重载 XML **并且**调用 "
-"`switch_load_network_lists(SWITCH_TRUE)`。已加载的 DSO：`reload <module>` 与 XML "
-"是分开的。"
+"**不会自动生效的部分。** `mod_sofia` **不会**绑定 `SWITCH_EVENT_RELOADXML`。`sofia profile "
+"<name> rescan` 会重新加载支持的配置档数据并重新解析网关、域和别名，但不会重新绑定传输套接字。修改 `sip-ip`、`sip-"
+"port`、TLS、`ws-binding` 或 `wss-binding` 后必须重启配置档或进程。ACL 列表：`reloadacl` 会重载 "
+"XML **并**调用 `switch_load_network_lists(SWITCH_TRUE)`。已加载的 DSO：`reload "
+"<module>` 与 XML 分开处理。"
 
-#: ../../06-workflows.md:335 5f01558040844a3091664dd9ebdc90dc
+#: ../../06-workflows.md:338 5f01558040844a3091664dd9ebdc90dc
 msgid ""
 "`mod_xml_curl` (when enabled) may replace `__switch_xml_open_root` via "
 "`switch_xml_set_open_root_function()` — then “reload” is whatever that hook "
@@ -1331,94 +1334,94 @@ msgstr ""
 "`__switch_xml_open_root` — 此时“reload”就是该钩子所做的事（HTTP 拉取）。**[NEEDS INPUT: "
 "本次部署是否用 `mod_xml_curl` 提供实时 XML]**。"
 
-#: ../../06-workflows.md:300 bc8c37ef096241edb56fa962c5d80a0d
+#: ../../06-workflows.md:303 bc8c37ef096241edb56fa962c5d80a0d
 msgid "Broken include / bad XML"
 msgstr "损坏的 include / 错误 XML"
 
-#: ../../06-workflows.md:300 970c33ecc06342b6b4d90b49efbc0c5f
+#: ../../06-workflows.md:303 970c33ecc06342b6b4d90b49efbc0c5f
 msgid "`__switch_xml_open_root`"
 msgstr "`__switch_xml_open_root`"
 
-#: ../../06-workflows.md:300 0b7a10b33ce3433598782f54bf899c01
+#: ../../06-workflows.md:303 0b7a10b33ce3433598782f54bf899c01
 msgid ""
 "`err` set (e.g. parser message or `\"Cannot Open log directory or XML "
 "Root!\"`); old root kept"
 msgstr "设置 `err`（例如解析器消息或 `\"Cannot Open log directory or XML Root!\"`）；保留旧 root"
 
-#: ../../06-workflows.md:300 b7633d1e23894eb998d7f8456daafebd
+#: ../../06-workflows.md:303 b7633d1e23894eb998d7f8456daafebd
 msgid "Success string vs API prefix"
 msgstr "成功字符串 vs API 前缀"
 
-#: ../../06-workflows.md:300 f5ca15af857a45129debbc15bc6361c2
+#: ../../06-workflows.md:303 f5ca15af857a45129debbc15bc6361c2
 msgid "`reload_xml_function`"
 msgstr "`reload_xml_function`"
 
-#: ../../06-workflows.md:300 3344fa413ab649759f24b5316fe6629f
+#: ../../06-workflows.md:303 3344fa413ab649759f24b5316fe6629f
 #, python-format
 msgid "Stream is always `+OK [%s]\\n` — inspect `%s`"
 msgstr "输出流始终为 `+OK [%s]\\n` — 检查 `%s`"
 
-#: ../../06-workflows.md:300 c2e8194377424e5baa602a1ef1c99020
+#: ../../06-workflows.md:303 c2e8194377424e5baa602a1ef1c99020
 msgid "In-call session"
 msgstr "通话中的会话"
 
-#: ../../06-workflows.md:300 4d828a436d0a4d35b7dbe4a62b7ae04e
+#: ../../06-workflows.md:303 4d828a436d0a4d35b7dbe4a62b7ae04e
 msgid "dialplan already hunted"
 msgstr "dialplan 已经查找过"
 
-#: ../../06-workflows.md:300 2dd2ebec4b5d41dd8172bce137df80df
+#: ../../06-workflows.md:303 2dd2ebec4b5d41dd8172bce137df80df
 msgid "Continues current extension; next transfer/new call uses new XML"
 msgstr "继续当前 extension；下一次 transfer/新呼叫使用新 XML"
 
-#: ../../06-workflows.md:300 b9874cbd92be4e1aafd3cc230b2bc0d2
+#: ../../06-workflows.md:303 b9874cbd92be4e1aafd3cc230b2bc0d2
 msgid "`cacheable` directory users"
 msgstr "`cacheable` directory 用户"
 
-#: ../../06-workflows.md:300 3da614b6c0084ef1ac99bccf18900854
+#: ../../06-workflows.md:303 3da614b6c0084ef1ac99bccf18900854
 msgid ""
 "Cache **not** cleared by `switch_xml_set_root`; stale user until TTL or "
 "`switch_xml_clear_user_cache`"
 msgstr ""
 "`switch_xml_set_root` **不会**清除缓存；用户会过期直到 TTL 或 `switch_xml_clear_user_cache`"
 
-#: ../../06-workflows.md:300 94d95c6c9e77477089b69f09a3693c8f
+#: ../../06-workflows.md:303 94d95c6c9e77477089b69f09a3693c8f
 msgid "Sofia bind/codec/gateway XML"
 msgstr "Sofia 绑定/编解码/网关 XML"
 
-#: ../../06-workflows.md:300 8fba8fb917c148a08141e3df04591746
+#: ../../06-workflows.md:303 8fba8fb917c148a08141e3df04591746
 msgid "`mod_sofia` (no RELOADXML bind)"
 msgstr "`mod_sofia`（未绑定 RELOADXML）"
 
-#: ../../06-workflows.md:300 95a2a04f59c64e7fab9da43be5add4e8
+#: ../../06-workflows.md:303 95a2a04f59c64e7fab9da43be5add4e8
 msgid ""
 "Still running old profile until `sofia profile <name> rescan` / `restart`"
 msgstr "仍运行旧配置档，直到 `sofia profile <name> rescan` / `restart`"
 
-#: ../../06-workflows.md:300 fc126963ceb84a799b420c9c31d69a09
+#: ../../06-workflows.md:303 fc126963ceb84a799b420c9c31d69a09
 msgid "ACL XML only"
 msgstr "仅 ACL XML"
 
-#: ../../06-workflows.md:300 d8e7325379e146cf9e1b4cfbad4c3cc8
+#: ../../06-workflows.md:303 d8e7325379e146cf9e1b4cfbad4c3cc8
 msgid "`reloadxml` alone"
 msgstr "仅 `reloadxml`"
 
-#: ../../06-workflows.md:300 0ccf85cdf2644e41a77fa3a619e7c4ce
+#: ../../06-workflows.md:303 0ccf85cdf2644e41a77fa3a619e7c4ce
 msgid "Network lists not rebuilt until `reloadacl`"
 msgstr "网络列表直到 `reloadacl` 才重建"
 
-#: ../../06-workflows.md:300 c29215596e4146509c2e2a2cae7686f1
+#: ../../06-workflows.md:303 c29215596e4146509c2e2a2cae7686f1
 msgid "`reloadacl reloadxml` extra arg"
 msgstr "`reloadacl reloadxml` 额外参数"
 
-#: ../../06-workflows.md:300 f01a3bf267b2491aa64b0c980f5e3e5d
+#: ../../06-workflows.md:303 f01a3bf267b2491aa64b0c980f5e3e5d
 msgid "`reload_acl_function`"
 msgstr "`reload_acl_function`"
 
-#: ../../06-workflows.md:300 d5bbbd7b9f6147f0b15b4e86f5f1554e
+#: ../../06-workflows.md:303 d5bbbd7b9f6147f0b15b4e86f5f1554e
 msgid "Deprecated notice; ACL path **always** reloads XML now"
 msgstr "已弃用提示；ACL 路径现在**总是**重载 XML"
 
-#: ../../06-workflows.md:351 5b3cafe87c464ee6ab1d2b32b04134b0
+#: ../../06-workflows.md:354 5b3cafe87c464ee6ab1d2b32b04134b0
 msgid ""
 "XML sections: `configuration`, `dialplan`, `directory`, `chatplan`, "
 "`languages` (`conf/vanilla/freeswitch.xml`)."
@@ -1426,11 +1429,11 @@ msgstr ""
 "XML "
 "段：`configuration`、`dialplan`、`directory`、`chatplan`、`languages`（`conf/vanilla/freeswitch.xml`）。"
 
-#: ../../06-workflows.md:352 d6a46b624918438e80f88763ef3e8fd3
+#: ../../06-workflows.md:355 d6a46b624918438e80f88763ef3e8fd3
 msgid "Event `SWITCH_EVENT_RELOADXML` (`switch_types.h`)."
 msgstr "事件 `SWITCH_EVENT_RELOADXML`（`switch_types.h`）。"
 
-#: ../../06-workflows.md:353 18e02efcc1c2469686445bc19c45c066
+#: ../../06-workflows.md:356 18e02efcc1c2469686445bc19c45c066
 msgid ""
 "Sofia CLI: `sofia profile <name> [start\\|stop\\|restart\\|rescan]` "
 "(`mod_sofia.c`)."
@@ -1438,7 +1441,7 @@ msgstr ""
 "Sofia CLI：`sofia profile <name> "
 "[start\\|stop\\|restart\\|rescan]`（`mod_sofia.c`）。"
 
-#: ../../06-workflows.md:357 0c9c0ea04e5e4e23a2274cc031c80039
+#: ../../06-workflows.md:360 0c9c0ea04e5e4e23a2274cc031c80039
 msgid ""
 "`src/mod/applications/mod_commands/mod_commands.c` — `reload_xml_function`, "
 "`reload_acl_function`"
@@ -1446,7 +1449,7 @@ msgstr ""
 "`src/mod/applications/mod_commands/mod_commands.c` — "
 "`reload_xml_function`、`reload_acl_function`"
 
-#: ../../06-workflows.md:358 5033509a3b8949e6bfdc9b2344105987
+#: ../../06-workflows.md:361 5033509a3b8949e6bfdc9b2344105987
 msgid ""
 "`src/switch_xml.c` — `switch_xml_reload`, `switch_xml_open_root`, "
 "`__switch_xml_open_root`, `switch_xml_set_root`"
@@ -1454,35 +1457,35 @@ msgstr ""
 "`src/switch_xml.c` — "
 "`switch_xml_reload`、`switch_xml_open_root`、`__switch_xml_open_root`、`switch_xml_set_root`"
 
-#: ../../06-workflows.md:359 323fb965a071430a94089c24e361fcf5
+#: ../../06-workflows.md:362 323fb965a071430a94089c24e361fcf5
 msgid "`src/mod/endpoints/mod_sofia/mod_sofia.c` — `sofia profile … rescan`"
 msgstr "`src/mod/endpoints/mod_sofia/mod_sofia.c` — `sofia profile … rescan`"
 
-#: ../../06-workflows.md:360 daab6ac254ab4e07b097f6061667711b
+#: ../../06-workflows.md:363 daab6ac254ab4e07b097f6061667711b
 msgid "`conf/vanilla/freeswitch.xml`"
 msgstr "`conf/vanilla/freeswitch.xml`"
 
-#: ../../06-workflows.md:364 bc25790ee01e4c849ad01dac9b932325
+#: ../../06-workflows.md:367 bc25790ee01e4c849ad01dac9b932325
 msgid "Related Documentation"
 msgstr "相关文档"
 
-#: ../../06-workflows.md:366 edadb7050d3a4058aaf4a10150dcacdd
+#: ../../06-workflows.md:369 edadb7050d3a4058aaf4a10150dcacdd
 msgid "[Architecture](02-architecture.md)"
 msgstr "[架构](02-architecture.md)"
 
-#: ../../06-workflows.md:367 827f6d4a8afb4ecda031fc7f807d2517
+#: ../../06-workflows.md:370 827f6d4a8afb4ecda031fc7f807d2517
 msgid "[Data and API](05-data-and-api.md)"
 msgstr "[数据与 API](05-data-and-api.md)"
 
-#: ../../06-workflows.md:368 460d155e7a2a45bf8ceb8510fed42de6
+#: ../../06-workflows.md:371 460d155e7a2a45bf8ceb8510fed42de6
 msgid "[Testing](09-testing.md)"
 msgstr "[测试](09-testing.md)"
 
-#: ../../06-workflows.md:369 70f40be2aa11483893e0ebeb231d4ec9
+#: ../../06-workflows.md:372 70f40be2aa11483893e0ebeb231d4ec9
 msgid "[Runbook](10-runbook.md)"
 msgstr "[运维手册](10-runbook.md)"
 
-#: ../../06-workflows.md:370 387be6c42280433bb378daf6976b9b4e
+#: ../../06-workflows.md:373 387be6c42280433bb378daf6976b9b4e
 msgid ""
 "[Users Manual Ch "
 "1](https://developer.signalwire.com/freeswitch/foundations/introduction), "

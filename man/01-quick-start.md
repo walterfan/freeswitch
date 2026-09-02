@@ -39,13 +39,13 @@ Install Sofia-SIP (and libks / SpanDSP / signalwire-c) first, the same way CI an
 
 ```bash
 ./bootstrap.sh -j
-./configure --prefix="$HOME/fs"
+./configure --prefix="$HOME/fs" --disable-fhs
 make -j"$(nproc 2>/dev/null || sysctl -n hw.ncpu)"
 make install
 ```
 
 - `bootstrap.sh` copies `build/modules.conf.in` → `modules.conf` if missing, then runs Autotools. `-j` parallelizes library bootstraps.
-- Default prefix without `--prefix` is `/usr/local/freeswitch` (`configure.ac`). A home prefix avoids root and matches the macOS CI pattern (`--prefix=.../OUT`).
+- Default prefix without `--prefix` is `/usr/local/freeswitch` (`configure.ac`). The explicit `--disable-fhs` keeps this developer install under `$HOME/fs`; a custom prefix without that flag uses FHS paths such as `$HOME/fs/etc/freeswitch` and `$HOME/fs/var/log/freeswitch`.
 - `make install` also installs vanilla sample config when `$(confdir)` does not exist (`Makefile.am`: `test -d $(DESTDIR)$(confdir) || $(MAKE) samples-conf`).
 - Prompts and music-on-hold are **not** in this git tree. After `make install`, [Chapter 2](https://developer.signalwire.com/freeswitch/foundations/getting-started) also runs `make cd-sounds-install cd-moh-install` (Callie 8 kHz packages; `Makefile.am` `sounds-install`). Skip only if you do not need playback/echo tests.
 - Debug symbols without changing configure flags: `./devel-bootstrap.sh` sets `CFLAGS`/`CXXFLAGS` to `-ggdb3 -O0` then bootstraps and configures.
@@ -68,9 +68,115 @@ Meta packages (Users Manual Ch 2): `freeswitch-meta-all` (every module), `freesw
 
 ### Docker
 
-Packaged image (`docker/master/Dockerfile`) also needs a SignalWire `TOKEN` build-arg. For a **source** image without that token, follow `docker/examples/Debian11/Dockerfile` (clone deps, `./bootstrap.sh -j`, `./configure`, `make && make install`).
+Packaged image (`docker/master/Dockerfile`) also needs a SignalWire `TOKEN` build-arg. The Debian 11 example is a **source image**, but its Dockerfile clones FreeSWITCH and its dependencies during the image build; it does not compile the checkout you are reading. From the repository root, build and run that example with:
 
-Runtime containers expect **host networking** (`docker/README.md`). Typical ports: SIP 5060/5080, TLS 5061/5081, WebSocket 5066/7443, ESL **8021**, RTP UDP ranges 16384–32768 and 64535–65535.
+```bash
+./docker/examples/Debian11/freeswitch-compose.sh up
+```
+
+For a source image built from this exact checkout, use the native source-build path above or create a separate Dockerfile that copies this tree into the build context.
+
+Runtime containers expect **host networking** (`docker/README.md`). Typical
+ports: SIP 5060/5080, TLS 5061/5081, Sofia SIP WebSocket 5066/7443, Verto
+WS/WSS 8081/8082, ESL **8021**, RTP UDP ranges 16384–32768 and 64535–65535.
+
+#### Run and smoke-test `freeswitch:local` on Ubuntu
+
+The Compose wrapper builds the Debian 11 example as `freeswitch:local` and starts one detached container:
+
+```bash
+docker run -d \
+  --name freeswitch \
+  --network host \
+  --restart unless-stopped \
+  freeswitch:local \
+  /usr/local/freeswitch/bin/freeswitch -nf -nonat
+```
+
+Host networking is a Linux feature and avoids publishing the large RTP ranges individually. Do not add `-p` options when using `--network host`.
+
+Check the container, FreeSWITCH core, and SIP profiles:
+
+```bash
+docker ps --filter name=freeswitch
+docker exec freeswitch /usr/local/freeswitch/bin/fs_cli -x status
+docker exec freeswitch /usr/local/freeswitch/bin/fs_cli -x "sofia status"
+```
+
+A healthy smoke test shows the container as `Up`, an `UP` line from `status`, and `internal` / `external` profiles from `sofia status`. If a check fails, inspect the latest logs:
+
+```bash
+docker logs --tail 100 freeswitch
+```
+
+For a call-path test, configure a SIP softphone on a machine that can reach the Ubuntu host:
+
+```text
+Username / authentication ID: 1000
+Password:                     1234
+Domain / server:              <Ubuntu host IP>
+Port:                         5060
+Transport:                    UDP
+```
+
+Confirm the registration, then dial **`9196`** and verify that speech is echoed back:
+
+```bash
+docker exec freeswitch /usr/local/freeswitch/bin/fs_cli \
+  -x "sofia status profile internal reg"
+```
+
+UDP 5060 and RTP 16384–32768 must be reachable from the softphone.
+
+#### Install and test Music on Hold (MoH)
+
+The source image may not include `curl`, which `build/getsounds.sh` needs to download the MoH archive. Install it in the running container, then explicitly set the download command:
+
+```bash
+docker exec -u 0 -it freeswitch bash -lc \
+  'apt-get update && apt-get install -y --no-install-recommends curl'
+
+docker exec -u 0 -it freeswitch bash -lc \
+  'export DOWNLOAD_CMD="$(command -v curl) -fL -O" &&
+   cd /usr/src/freeswitch &&
+   make cd-moh-install'
+```
+
+Restart the existing container and call **`9664`** from the softphone. You should hear Music on Hold:
+
+```bash
+docker restart freeswitch
+docker exec freeswitch /usr/local/freeswitch/bin/fs_cli -x status
+```
+
+The sound files survive `docker restart` but are lost when the container is removed and recreated. For a persistent image, add `curl` and `make cd-moh-install` to the Dockerfile build instead of installing them only in a running container.
+
+#### Open UFW for SIP clients from any address
+
+First check whether UFW is active. If it reports `Status: inactive`, UFW is not blocking the traffic:
+
+```bash
+sudo ufw status verbose
+```
+
+For UDP SIP and RTP from any client, add these rules:
+
+```bash
+sudo ufw allow 5060/udp comment 'FreeSWITCH SIP'
+sudo ufw allow 16384:32768/udp comment 'FreeSWITCH RTP'
+sudo ufw reload
+sudo ufw status numbered
+```
+
+Only when clients are configured for SIP over TCP, also add:
+
+```bash
+sudo ufw allow 5060/tcp comment 'FreeSWITCH SIP TCP'
+```
+
+With `--network host`, these host firewall rules apply directly and Docker `-p` options remain unnecessary. A cloud VM also needs equivalent inbound security-group rules for UDP 5060 and UDP 16384–32768; opening UFW alone cannot bypass the provider firewall.
+
+Opening these rules to any address exposes SIP to internet scanning and toll-fraud attempts. The vanilla users and password above are deliberately insecure demo values; replace all SIP passwords and apply authentication/rate-limiting controls first. Keep ESL port **8021** restricted to localhost or a trusted management network; Linphone does not need it. Stop and remove the test container with `docker stop freeswitch && docker rm freeswitch`.
 
 ## Run Locally
 
@@ -86,14 +192,22 @@ After a prefix install:
 - Foreground console instead: `freeswitch -c -nonat`.
 - Stop: `freeswitch -stop` (same prefix `bin/`).
 
-Default Event Socket is `127.0.0.1:8021` with password `ClueCon` (`src/mod/event_handlers/mod_event_socket/conf/autoload_configs/event_socket.conf.xml`, `libs/esl/fs_cli.conf`). `fs_cli` uses that by default.
+The `fs_cli` client defaults to `127.0.0.1:8021` with password `ClueCon`
+(`libs/esl/fs_cli.conf`). The vanilla runtime configuration listens on
+wildcard IPv6 `::`:8021 with the inbound ACL commented out
+(`conf/vanilla/autoload_configs/event_socket.conf.xml`); the module sample
+binds `127.0.0.1`
+(`src/mod/event_handlers/mod_event_socket/conf/autoload_configs/event_socket.conf.xml`).
+Change the password, bind, and ACL before exposing the vanilla configuration
+outside a trusted management network.
 
 The **configuration root** is the directory that contains `freeswitch.xml` ([Chapter 2](https://developer.signalwire.com/freeswitch/foundations/getting-started)):
 
 | Install type | Typical configuration root |
 |--------------|----------------------------|
-| Source build (this PKB, `--prefix="$HOME/fs"`) | `$HOME/fs/conf` |
+| Source build (this PKB, `--prefix="$HOME/fs" --disable-fhs`) | `$HOME/fs/conf` |
 | Source build (Autotools default prefix) | `/usr/local/freeswitch/conf` |
+| Source build (custom prefix with default FHS) | `$prefix/etc/freeswitch` |
 | Debian package | `/etc/freeswitch` |
 
 **Working looks like:**
@@ -134,7 +248,7 @@ Unit tests are Autotools programs under `tests/unit/` linking `libfreeswitch`. C
 # after configure + make + make install (CI path)
 cd tests/unit
 ./run-tests.sh                  # all tests
-./run-tests.sh 4 1              # chunk 1 of 4, as in GitHub Actions
+./run-tests.sh 2 1              # group 1 of 2, as in GitHub Actions
 make -C ../../libs/esl check    # ESL tests; CI runs this on group 1
 ```
 
@@ -154,12 +268,12 @@ Sofia-SIP must already be built/installed for that flow (see `.github/workflows/
 
 | Goal | Command / path |
 |------|----------------|
-| Unix prefix install | `./bootstrap.sh -j && ./configure --prefix=... && make && make install` |
+| Unix prefix install | `./bootstrap.sh -j && ./configure --prefix=... --disable-fhs && make && make install` |
 | Debian packages from a **git** tree | `scripts/packaging/build/README.md` (`FSDEB`); tarball checkouts are not supported |
 | Docker (packages) | `docker/master/Dockerfile` with `TOKEN` |
 | Windows | `Freeswitch.2017.sln` / `w32/` |
 
-Install layout under `--prefix` (defaults in `configure.ac`): `bin/`, `mod/`, `conf/`, `log/`, `db/`, `scripts/`, `htdocs/`, `sounds/`.
+Install layout under the documented developer prefix (`--disable-fhs`): `bin/`, `mod/`, `conf/`, `log/`, `db/`, `scripts/`, `htdocs/`, `sounds/`. A custom prefix without `--disable-fhs` uses the FHS layout described above.
 
 Before any public deployment: change SIP and voicemail passwords (or run `scripts/perl/randomize-passwords.pl`), change the ESL password, and start with `-nonat` unless NAT helpers are intentional.
 
@@ -170,7 +284,7 @@ Before any public deployment: change SIP and voicemail passwords (or run `script
 | `bootstrap.sh` exits on autoconf/automake/libtool | Tool versions below `scripts/ci/build-requirements.sh` | Install GNU autotools; on macOS use Homebrew `autoconf` `automake` `libtool` |
 | `configure` / link fails on Sofia, KS, SpanDSP, or signalwire | Those libraries are out-of-tree | Build them first as in `docker/examples/Debian11/Dockerfile` or `.github/workflows/unit-test.yml` / `macos.yml` |
 | `modules.conf` missing modules you expected | File is a copy of `build/modules.conf.in`; commented lines are disabled | Uncomment the `src/mod/...` path, then rebuild that module (`make mod_lua` style targets in top-level `Makefile.am`) |
-| `fs_cli` cannot connect | Switch not up, or ESL not on 8021 | `freeswitch -ncwait`; confirm `mod_event_socket` loaded; default bind is loopback |
+| `fs_cli` cannot connect | Switch not up, or ESL not on 8021 | `freeswitch -ncwait`; confirm `mod_event_socket` loaded; `fs_cli` targets loopback but vanilla server config listens on `::` |
 | Router “pinhole” / unexpected inbound SIP | Auto NAT (UPnP/NATPMP) | Start with `-nonat` |
 | Compromised demo extensions | Vanilla users 1000–1019 and ESL `ClueCon` | Randomize passwords; do not publish 5060/8021 without ACLs |
 | `FSGET` / `docker/master` apt repo 401 | No SignalWire PAT | Create a PAT as linked from `scripts/packaging/README.md`, or build from source |
@@ -190,8 +304,8 @@ Operator configuration: [FreeSWITCH Users Manual](https://developer.signalwire.c
 
 ---
 <!-- PKB-metadata
-last_updated: 2026-08-17
-commit: d94936cc10
+last_updated: 2026-08-30
+commit: ea429c9d49
 updated_by: human+ai
 review_status: pending
 review_score: 0

@@ -90,12 +90,30 @@ def fs_last_modified(path: str) -> Optional[datetime]:
         return None
 
 
+def worktree_is_dirty(repo_root: str, path: str) -> bool:
+    """Return whether a path has uncommitted or untracked changes."""
+    rel_path = os.path.relpath(path, repo_root)
+    try:
+        result = subprocess.run(
+            ["git", "status", "--porcelain", "--untracked-files=all", "--", rel_path],
+            capture_output=True,
+            text=True,
+            cwd=repo_root,
+            timeout=10,
+        )
+        return result.returncode == 0 and bool(result.stdout.strip())
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        return False
+
+
 def best_mtime(repo_root: str, path: str, use_git: bool) -> Optional[datetime]:
     rel_path = os.path.relpath(path, repo_root)
-    mtime = git_last_modified(rel_path, repo_root) if use_git else None
-    if mtime is None:
-        mtime = fs_last_modified(path)
-    return mtime
+    filesystem_time = fs_last_modified(path)
+    if not use_git:
+        return filesystem_time
+    if worktree_is_dirty(repo_root, path):
+        return filesystem_time or git_last_modified(rel_path, repo_root)
+    return git_last_modified(rel_path, repo_root) or filesystem_time
 
 
 def iter_source_docs(doc_dir: str) -> Iterable[str]:
@@ -197,17 +215,25 @@ def parse_header_datetime(value: Optional[str]) -> Optional[datetime]:
     return None
 
 
+def is_placeholder_header(value: Optional[str]) -> bool:
+    """Detect gettext template metadata that was never filled in."""
+    if not value:
+        return True
+    return any(marker in value for marker in ("YEAR-MO-DA", "FULL NAME", "EMAIL@ADDRESS"))
+
+
 def level_for_translation(
     *,
     missing_po: bool,
     untranslated_count: int,
     fuzzy_count: int,
     header_stale: bool,
+    header_invalid: bool,
     source_newer: bool,
 ) -> str:
     if missing_po or untranslated_count > 0:
         return "critical"
-    if fuzzy_count > 0 or header_stale or source_newer:
+    if fuzzy_count > 0 or header_stale or header_invalid or source_newer:
         return "warning"
     return "info"
 
@@ -247,6 +273,7 @@ def detect_translation_sync(
         po_revision_raw = None
         po_mtime = None
         header_stale = False
+        header_invalid = False
         source_newer = False
 
         if not os.path.isfile(po_file):
@@ -260,6 +287,17 @@ def detect_translation_sync(
             po_revision_raw = header.get("PO-Revision-Date")
             pot_creation = parse_header_datetime(pot_creation_raw)
             po_revision = parse_header_datetime(po_revision_raw)
+            header_invalid = False
+
+            if is_placeholder_header(pot_creation_raw):
+                header_invalid = True
+                issues.append("POT-Creation-Date is missing or a placeholder")
+            if is_placeholder_header(po_revision_raw):
+                header_invalid = True
+                issues.append("PO-Revision-Date is missing or a placeholder")
+            if is_placeholder_header(header.get("Last-Translator")):
+                header_invalid = True
+                issues.append("Last-Translator is missing or a placeholder")
 
             for entry in entries[1:]:
                 if entry.obsolete:
@@ -294,6 +332,7 @@ def detect_translation_sync(
                 untranslated_count=untranslated_count,
                 fuzzy_count=fuzzy_count,
                 header_stale=header_stale,
+                header_invalid=header_invalid,
                 source_newer=source_newer,
             )
             if obsolete_count and level == "info":
@@ -378,7 +417,7 @@ def print_report(results: List[TranslationStatus], as_json: bool) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Check whether zh_CN translations are in sync with English docs")
     parser.add_argument("--repo-root", default=".", help="Repository root")
-    parser.add_argument("--doc-dir", default="doc", help="English PKB doc directory")
+    parser.add_argument("--doc-dir", default="man", help="English PKB doc directory")
     parser.add_argument("--locale-root", help="Locale root directory (defaults to <doc-dir>/locale)")
     parser.add_argument("--lang", default="zh_CN", help="Locale language code")
     parser.add_argument("--no-git", action="store_true", help="Use filesystem mtime instead of git time")

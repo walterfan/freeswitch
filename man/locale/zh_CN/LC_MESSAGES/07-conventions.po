@@ -1,17 +1,17 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2026, Zoom Video Communications
 # This file is distributed under the same license as the FreeSWITCH package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+# Walter Fan <walter.fan@ustc.etu>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: FreeSWITCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 22:33+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_CN <LL@li.org>\n"
+"POT-Creation-Date: 2026-08-30 22:59+0800\n"
+"PO-Revision-Date: 2026-08-30 23:13+0800\n"
+"Last-Translator: Walter Fan <walter.fan@ustc.etu>\n"
+"Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -356,11 +356,14 @@ msgstr "**构建**：编译哪些 `src/mod/<category>/mod_*` 目录树"
 msgid "Lines like `endpoints/mod_sofia`; `#` comments disable"
 msgstr "形如 `endpoints/mod_sofia` 的行；`#` 注释表示禁用"
 
-#: ../../07-conventions.md 5f4eff0d503e41c1a8be28df6ca201ca
+#: ../../07-conventions.md 00dafeab6a8448c5b81c09a8625253e6
 msgid ""
-"`conf/vanilla/autoload_configs/modules.conf.xml` (installed under "
-"`$prefix/conf/`)"
-msgstr "`conf/vanilla/autoload_configs/modules.conf.xml`（安装到 `$prefix/conf/`）"
+"`conf/vanilla/autoload_configs/modules.conf.xml` (installed under the "
+"configuration root; `$prefix/conf/` for the documented `--disable-fhs` "
+"developer install)"
+msgstr ""
+"`conf/vanilla/autoload_configs/modules.conf.xml`（安装在配置根下；文档所述 `--disable-"
+"fhs` 开发者安装使用 `$prefix/conf/`）"
 
 #: ../../07-conventions.md b664735b2c1c4a3cae390a5738239c56
 msgid "**Runtime**: which already-built modules the process loads"

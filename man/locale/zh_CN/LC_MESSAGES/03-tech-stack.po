@@ -1,17 +1,17 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2026, Zoom Video Communications
 # This file is distributed under the same license as the FreeSWITCH package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+# Walter Fan <walter.fan@ustc.etu>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: FreeSWITCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 22:33+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_CN <LL@li.org>\n"
+"POT-Creation-Date: 2026-08-30 22:59+0800\n"
+"PO-Revision-Date: 2026-08-30 23:13+0800\n"
+"Last-Translator: Walter Fan <walter.fan@ustc.etu>\n"
+"Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -181,8 +181,10 @@ msgid "Docs PKB"
 msgstr "文档 PKB"
 
 #: ../../03-tech-stack.md:15 8bdd01305e854216b1b86d0e059c18f5
-msgid "Sphinx + MyST + sphinx-intl (`man/pyproject.toml`, Python `^3.10`)"
-msgstr "Sphinx + MyST + sphinx-intl（`man/pyproject.toml`，Python `^3.10`）"
+msgid ""
+"Sphinx + MyST + sphinx-intl (`man/pyproject.toml`, Python `>=3.10,<4.0`)"
+msgstr ""
+"Sphinx + MyST + sphinx-intl（`man/pyproject.toml`，Python `>=3.10,<4.0`）"
 
 #: ../../03-tech-stack.md:15 328d5182a05747b0971dccb428158f75
 msgid "This knowledge base only — not linked into `freeswitch`"
@@ -557,55 +559,69 @@ msgstr ""
 "0.5.2`、pocketsphinx `>= 5`、OpenCV、VLC、ImageMagick 以及 `configure.ac` "
 "中的其他库也有可选/仅模块下限——启用对应的 `modules.conf` 行，否则检查会被跳过。"
 
-#: ../../03-tech-stack.md:80 b38c1ac036fc4fecab7f1a713a1251f8
+#: ../../03-tech-stack.md:80 07c4cd37d2c14d008e155e5535b391be
+msgid ""
+"The stock build is not limited to the hard core dependencies: uncommented "
+"entries in `build/modules.conf.in` enable `mod_av`, `mod_pgsql`, and "
+"`mod_sndfile`, and the vanilla runtime configuration loads them. Install "
+"FFmpeg/libswscale, libpq, and libsndfile development packages for that "
+"default module set, or disable both the build entry and the corresponding "
+"runtime `<load>` when those capabilities are not needed."
+msgstr ""
+"默认构建并不只需要核心依赖：`build/modules.conf.in` 中未注释的条目会启用 `mod_av`、`mod_pgsql` 和 "
+"`mod_sndfile`，vanilla 运行时配置也会加载它们。对于这组默认模块，请安装 FFmpeg/libswscale、libpq 和 "
+"libsndfile 开发包；如果不需要这些能力，则同时禁用构建条目和对应的运行时 `<load>`。"
+
+#: ../../03-tech-stack.md:87 b38c1ac036fc4fecab7f1a713a1251f8
 msgid "Runtime Interaction Model"
 msgstr "运行时交互模型"
 
-#: ../../03-tech-stack.md:82 752578a701cb43c787896bd43977c270
+#: ../../03-tech-stack.md:89 752578a701cb43c787896bd43977c270
 msgid ""
 "**Signaling** (Sofia/Verto) accepts a call and asks the core for a "
 "`switch_core_session_t`."
 msgstr "**信令**（Sofia/Verto）接受呼叫并向核心请求 `switch_core_session_t`。"
 
-#: ../../03-tech-stack.md:83 5ed8b678f7314674a0777a45cae0090a
+#: ../../03-tech-stack.md:90 5ed8b678f7314674a0777a45cae0090a
 msgid ""
 "**Core** runs the channel state machine; **XML dialplan** "
 "(`mod_dialplan_xml`) picks applications."
 msgstr "**核心**运行通道状态机；**XML 拨号计划**（`mod_dialplan_xml`）选择应用。"
 
-#: ../../03-tech-stack.md:84 ae5047ca06b84e0b999e4f15d2c546b7
+#: ../../03-tech-stack.md:91 ae5047ca06b84e0b999e4f15d2c546b7
 msgid ""
 "**Applications** (dptools, conference, …) bridge or play media; **codecs** "
 "and **libSRTP/OpenSSL** handle RTP."
 msgstr ""
 "**应用**（dptools、conference、…）桥接或播放媒体；**编解码器**和 **libSRTP/OpenSSL** 处理 RTP。"
 
-#: ../../03-tech-stack.md:85 2b9961d85d774430ba0c7e1e01d99283
+#: ../../03-tech-stack.md:92 2b9961d85d774430ba0c7e1e01d99283
 msgid ""
 "**Events** go to the in-process bus; **ESL** clients and CDR modules consume"
 " them. **SQLite** holds core scoreboard unless `-nosql`."
 msgstr "**事件**进入进程内总线；**ESL** 客户端和 CDR 模块消费它们。除非 `-nosql`，**SQLite** 保存核心记分板。"
 
-#: ../../03-tech-stack.md:87 fbac4f912ac44ad6aac3d37bfde0970e
+#: ../../03-tech-stack.md:94 fbac4f912ac44ad6aac3d37bfde0970e
 msgid ""
 "Layers do **not** talk over HTTP internally. The process is the unit of "
 "composition; DSOs register interface tables."
 msgstr "各层内部**不**通过 HTTP 通信。进程是组合单元；DSO 注册接口表。"
 
-#: ../../03-tech-stack.md:89 9b776b97d89b44b8a7207d87010e0483
+#: ../../03-tech-stack.md:96 9b776b97d89b44b8a7207d87010e0483
 msgid "Build and Packaging Notes"
 msgstr "构建与打包说明"
 
-#: ../../03-tech-stack.md:91 6de7a5dc25594c25bd6a614406a790cd
+#: ../../03-tech-stack.md:98 6de7a5dc25594c25bd6a614406a790cd
 msgid ""
-"**Local development**: `./bootstrap.sh -j && ./configure --prefix=... && "
-"make && make install` ([Quick Start](01-quick-start.md)). Debug: `./devel-"
-"bootstrap.sh`."
+"**Local development**: `./bootstrap.sh -j && ./configure --prefix=... "
+"--disable-fhs && make && make install` ([Quick Start](01-quick-start.md)). "
+"Debug: `./devel-bootstrap.sh`."
 msgstr ""
-"**本地开发**：`./bootstrap.sh -j && ./configure --prefix=... && make && make "
-"install`（[快速入门](01-quick-start.md)）。调试：`./devel-bootstrap.sh`。"
+"**本地开发**：`./bootstrap.sh -j && ./configure --prefix=... --disable-fhs && "
+"make && make install`（[快速开始](01-quick-start.md)）。调试使用：`./devel-"
+"bootstrap.sh`。"
 
-#: ../../03-tech-stack.md:92 542f70c7a03042c988048f14afc39706
+#: ../../03-tech-stack.md:99 542f70c7a03042c988048f14afc39706
 #, python-brace-format
 msgid ""
 "**CI**: `.github/workflows/ci.yml` (Debian bookworm-amd64 base "
@@ -619,7 +635,7 @@ msgstr ""
 "signalwire/{libks2,signalwire-c2,spandsp}`）、`windows.yml`、`scan-"
 "build.yml`（clang-14）。"
 
-#: ../../03-tech-stack.md:93 b085f22b68f54df4ab95f91a48055355
+#: ../../03-tech-stack.md:100 b085f22b68f54df4ab95f91a48055355
 msgid ""
 "**Production / distro**: Debian packages via FSGET/FSDEB "
 "(`scripts/packaging/`); module `Build-Depends` in `debian/control-modules` "
@@ -632,18 +648,18 @@ msgstr ""
 "打包镜像需要 SignalWire token（`docker/master/Dockerfile`）；源码镜像配方为 "
 "`docker/examples/Debian11/Dockerfile`。"
 
-#: ../../03-tech-stack.md:94 05b5b19d8847418e83ab60741f74050a
+#: ../../03-tech-stack.md:101 05b5b19d8847418e83ab60741f74050a
 msgid ""
 "**Windows**: Visual Studio 2017 solution `Freeswitch.2017.sln`, projects "
 "under `w32/`."
 msgstr ""
 "**Windows**：Visual Studio 2017 解决方案 `Freeswitch.2017.sln`，工程在 `w32/` 下。"
 
-#: ../../03-tech-stack.md:96 143c420b487743a3a078dbc38f896053
+#: ../../03-tech-stack.md:103 143c420b487743a3a078dbc38f896053
 msgid "Docs tooling (not in the switch binary)"
 msgstr "文档工具（不在交换机二进制中）"
 
-#: ../../03-tech-stack.md:98 7737aeef97134699b9ef10e1b6e6daab
+#: ../../03-tech-stack.md:105 7737aeef97134699b9ef10e1b6e6daab
 msgid ""
 "`man/pyproject.toml` / `man/requirements.txt`: Python `^3.10`, Sphinx `>=7`,"
 " myst-parser, sphinx-rtd-theme, sphinx-intl, sphinxcontrib-mermaid. Used "
@@ -653,7 +669,7 @@ msgstr ""
 "`>=7`、myst-parser、sphinx-rtd-theme、sphinx-intl、sphinxcontrib-mermaid。仅用于构建本 "
 "PKB。"
 
-#: ../../03-tech-stack.md:100 02d55d2c488b45ae99c11ed0bdead492
+#: ../../03-tech-stack.md:107 02d55d2c488b45ae99c11ed0bdead492
 msgid "Common Misconceptions"
 msgstr "常见误解"
 
@@ -727,22 +743,22 @@ msgstr ""
 "构建时 `modules.conf` vs 运行时 "
 "`autoload_configs/modules.conf.xml`（[架构](02-architecture.md)）"
 
-#: ../../03-tech-stack.md:112 d8a91d8382c84ca0b673428b5264891c
+#: ../../03-tech-stack.md:119 d8a91d8382c84ca0b673428b5264891c
 msgid "Related Documentation"
 msgstr "相关文档"
 
-#: ../../03-tech-stack.md:114 97ecfa0e76494161ac7c9c623caa362d
+#: ../../03-tech-stack.md:121 97ecfa0e76494161ac7c9c623caa362d
 msgid "[Architecture](02-architecture.md)"
 msgstr "[架构](02-architecture.md)"
 
-#: ../../03-tech-stack.md:115 889014f905014f78a64a58b2cfce7a7a
+#: ../../03-tech-stack.md:122 889014f905014f78a64a58b2cfce7a7a
 msgid "[Repository Map](04-repo-map.md)"
 msgstr "[仓库地图](04-repo-map.md)"
 
-#: ../../03-tech-stack.md:116 1c7047f3146d42078fee38d1d000feaa
+#: ../../03-tech-stack.md:123 1c7047f3146d42078fee38d1d000feaa
 msgid "[Quick Start](01-quick-start.md)"
 msgstr "[快速入门](01-quick-start.md)"
 
-#: ../../03-tech-stack.md:117 2c90fd374b8c4834ba5037fbbae298bf
+#: ../../03-tech-stack.md:124 2c90fd374b8c4834ba5037fbbae298bf
 msgid "[Build](08-build.md)"
 msgstr "[构建](08-build.md)"

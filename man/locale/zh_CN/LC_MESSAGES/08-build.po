@@ -1,17 +1,17 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2026, Zoom Video Communications
 # This file is distributed under the same license as the FreeSWITCH package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+# Walter Fan <walter.fan@ustc.etu>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: FreeSWITCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 23:38+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_CN <LL@li.org>\n"
+"POT-Creation-Date: 2026-08-30 22:59+0800\n"
+"PO-Revision-Date: 2026-08-30 23:13+0800\n"
+"Last-Translator: Walter Fan <walter.fan@ustc.etu>\n"
+"Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -27,10 +27,13 @@ msgstr "08. 构建、发布与文档发布"
 msgid ""
 "Local Autotools/Windows builds, GitHub Actions, Debian/Docker packaging, "
 "version fields, and PKB HTML. First-run commands live in [Quick "
-"Start](01-quick-start.md); this page is the pipeline map."
+"Start](01-quick-start.md); this page is the pipeline map. macOS Homebrew "
+"packages and flags are documented here against "
+"`.github/workflows/macos.yml`."
 msgstr ""
-"本地 Autotools/Windows 构建、GitHub Actions、Debian/Docker 打包、版本字段，以及 PKB "
-"HTML。首次运行命令见 [快速开始](01-quick-start.md)；本页是流水线地图。"
+"本地 Autotools/Windows 构建、GitHub Actions、Debian/Docker 打包、版本字段以及 PKB "
+"HTML。首次运行命令见[快速开始](01-quick-start.md)；本页是流水线地图。macOS Homebrew 软件包和参数根据 "
+"`.github/workflows/macos.yml` 记录。"
 
 #: ../../08-build.md:7 1c5c852231524f9485c94fd06d107377
 msgid "Scope"
@@ -41,29 +44,33 @@ msgid ""
 "Unix source build (`bootstrap.sh` → `configure` → `make` → `make install`)"
 msgstr "Unix 源码构建（`bootstrap.sh` → `configure` → `make` → `make install`）"
 
-#: ../../08-build.md:10 8780c751b29449d1a3dc41c86cbf2fe4
+#: ../../08-build.md:10 1f444303852b45d8912c3c6ce629135e
+msgid "macOS Homebrew deps (Xcode CLT + SignalWire tap) matching `macos.yml`"
+msgstr "与 `macos.yml` 一致的 macOS Homebrew 依赖（Xcode CLT + SignalWire tap）"
+
+#: ../../08-build.md:11 8780c751b29449d1a3dc41c86cbf2fe4
 msgid "Per-module rebuild, install layout, sounds"
 msgstr "按模块重建、安装布局、语音包"
 
-#: ../../08-build.md:11 b1e2d6bd420a4b529e78d186c4db5c4c
+#: ../../08-build.md:12 b1e2d6bd420a4b529e78d186c4db5c4c
 msgid ""
 "GitHub Actions (unit tests, scan-build, Debian matrix, macOS, Windows, "
 "tarball)"
 msgstr "GitHub Actions（单元测试、scan-build、Debian 矩阵、macOS、Windows、tarball）"
 
-#: ../../08-build.md:12 13bc2c995f2a47b583f553b5e71536fd
+#: ../../08-build.md:13 13bc2c995f2a47b583f553b5e71536fd
 msgid "Packaged install (FSGET) and `.deb` build (FSDEB)"
 msgstr "打包安装（FSGET）与 `.deb` 构建（FSDEB）"
 
-#: ../../08-build.md:13 e44f5da8de74478b9c5991638f18f040
+#: ../../08-build.md:14 e44f5da8de74478b9c5991638f18f040
 msgid "Version strings and release branches"
 msgstr "版本字符串与发布分支"
 
-#: ../../08-build.md:14 6cfa775c27f9490aa5840cc440bc2fc0
+#: ../../08-build.md:15 6cfa775c27f9490aa5840cc440bc2fc0
 msgid "PKB Sphinx bilingual build / AgentBox publish"
 msgstr "PKB Sphinx 双语构建 / AgentBox 发布"
 
-#: ../../08-build.md:16 bb5dc60d770a49c4a0e01cfb803f0c6e
+#: ../../08-build.md:17 bb5dc60d770a49c4a0e01cfb803f0c6e
 msgid ""
 "Upstream operator docs: [FreeSWITCH Users "
 "Manual](https://developer.signalwire.com/freeswitch/) ([Ch 2 Getting "
@@ -81,69 +88,207 @@ msgstr ""
 "Explained](https://developer.signalwire.com/freeswitch/FreeSWITCH-"
 "Explained/)。"
 
-#: ../../08-build.md:18 38b812bdd1714f2b8ae2967585ab7d5d
+#: ../../08-build.md:19 38b812bdd1714f2b8ae2967585ab7d5d
 msgid "Local Build Paths"
 msgstr "本地构建路径"
 
-#: ../../08-build.md:20 fbfca322328d48d8af371a0f6336bb99
+#: ../../08-build.md:21 fbfca322328d48d8af371a0f6336bb99
 msgid "Development (Unix / macOS)"
 msgstr "开发（Unix / macOS）"
 
-#: ../../08-build.md:22 555760e6219c4386a2c189af505b7c7b
+#: ../../08-build.md:23 555760e6219c4386a2c189af505b7c7b
 msgid ""
 "Prerequisites: Autotools floors in `scripts/ci/build-requirements.sh` "
 "(autoconf `>= 2.59`, automake `>= 1.7`, libtool `>= 1.5.14`) plus Sofia-SIP,"
-" SpanDSP, libks, signalwire-c as in [Tech Stack](03-tech-stack.md)."
+" SpanDSP, libks, signalwire-c as in [Tech Stack](03-tech-stack.md). On "
+"macOS, install those from Homebrew first — see [macOS (Homebrew)](#macos-"
+"homebrew)."
 msgstr ""
-"前置条件：`scripts/ci/build-requirements.sh` 中的 Autotools 下限（autoconf `>= "
-"2.59`、automake `>= 1.7`、libtool `>= 1.5.14`），再加上 [技术栈](03-tech-stack.md) 中的 "
-"Sofia-SIP、SpanDSP、libks、signalwire-c。"
+"前置条件：`scripts/ci/build-requirements.sh` 中规定的 Autotools 最低版本（autoconf `>= "
+"2.59`、automake `>= 1.7`、libtool `>= 1.5.14`），以及[技术栈](03-tech-stack.md)中的 "
+"Sofia-SIP、SpanDSP、libks、signalwire-c。在 macOS 上请先通过 Homebrew "
+"安装这些依赖——参见[macOS（Homebrew）](#macos-homebrew)。"
 
-#: ../../08-build.md:32 9a3ef522190d47789faa3be945e037be
+#: ../../08-build.md:33 9a3ef522190d47789faa3be945e037be
 msgid ""
 "Debug CFLAGS (`-ggdb3 -O0`): `./devel-bootstrap.sh` then the same "
 "`configure`/`make`."
 msgstr ""
 "调试 CFLAGS（`-ggdb3 -O0`）：先 `./devel-bootstrap.sh`，再同样的 `configure`/`make`。"
 
-#: ../../08-build.md:34 8a65bab0eafc4c51a8de9df5e017bec4
+#: ../../08-build.md:35 8a65bab0eafc4c51a8de9df5e017bec4
 msgid "Rebuild one module after `modules.conf` is already in place:"
 msgstr "`modules.conf` 已就位后重建单个模块："
 
-#: ../../08-build.md:41 75020c2595ff4de6af3409f04e573f59
+#: ../../08-build.md:42 75020c2595ff4de6af3409f04e573f59
 msgid "(Top-level `Makefile.am` dispatches `mod_*` into `src/mod`.)"
 msgstr "（顶层 `Makefile.am` 把 `mod_*` 分发到 `src/mod`。）"
 
-#: ../../08-build.md:43 cca99b5f972649f6b8af469d7bca03f6
+#: ../../08-build.md:44 cca99b5f972649f6b8af469d7bca03f6
 msgid "ASAN unit-test configure used by CI:"
 msgstr "CI 使用的 ASAN 单元测试 configure："
 
-#: ../../08-build.md:51 6fd7b57d91404537aa541a4e97e33362
+#: ../../08-build.md:52 6fd7b57d91404537aa541a4e97e33362
 msgid "(`ci.sh` also builds Sofia-SIP when `-c sofia-sip`.)"
 msgstr "（`ci.sh` 在 `-c sofia-sip` 时也会构建 Sofia-SIP。）"
 
-#: ../../08-build.md:53 245506ade24c48a3a93ab76354cc36dc
+#: ../../08-build.md:54 d633daa7e1014edbba133ae63ca894a6
+msgid "macOS (Homebrew)"
+msgstr "macOS（Homebrew）"
+
+#: ../../08-build.md:56 c37f5a21a6bc4d8bb9718cdb5192979b
+msgid ""
+"Sofia-SIP, libks, SpanDSP, and signalwire-c are **not** in this git tree. "
+"Install them from Homebrew first, then use the same Autotools path as Unix. "
+"Package list and tap names below match `.github/workflows/macos.yml`."
+msgstr ""
+"Sofia-SIP、libks、SpanDSP 和 signalwire-c **不在**此 git 树中。请先通过 Homebrew "
+"安装它们，然后使用与 Unix 相同的 Autotools 路径。下面的软件包列表和 tap 名称与 "
+"`.github/workflows/macos.yml` 一致。"
+
+#: ../../08-build.md:58 d9e8e156ae464f13ad1e35bc9a2d7dbe
+msgid "Toolchain"
+msgstr "工具链"
+
+#: ../../08-build.md:65 555760e6219c4386a2c189af505b7c7b
+msgid ""
+"GNU autotools floors are in `scripts/ci/build-requirements.sh` (autoconf `>="
+" 2.59`, automake `>= 1.7`, libtool `>= 1.5.14`). On macOS use Homebrew "
+"`libtool` (`glibtool`); Apple’s stock tools are too old."
+msgstr ""
+"GNU autotools 最低版本位于 `scripts/ci/build-requirements.sh`（autoconf `>= "
+"2.59`、automake `>= 1.7`、libtool `>= 1.5.14`）。在 macOS 上使用 Homebrew 的 "
+"`libtool`（`glibtool`）；Apple 自带工具版本太旧。"
+
+#: ../../08-build.md:67 090168a08cdd410e85971599b4f40c71
+msgid "Homebrew packages"
+msgstr "Homebrew 软件包"
+
+#: ../../08-build.md:102 59cd20ebeb2d47e5b3e1e3549e30e9fb
+msgid ""
+"CI also runs `brew install --adopt` for the SignalWire formulas (overwrite a"
+" conflicting cellar install). The runner-only `brew uninstall cmake` step is"
+" **not** needed on a developer Mac."
+msgstr ""
+"CI 还会对 SignalWire formulas 运行 `brew install --adopt`（覆盖冲突的 cellar 安装）。仅针对 "
+"runner 的 `brew uninstall cmake` 步骤在开发者 Mac 上**不需要**。"
+
+#: ../../08-build.md:104 2999310d53b6412ca1cfe2b0e979c63c
+msgid ""
+"On Apple Silicon, Homebrew lives under `/opt/homebrew`. `ffmpeg@7` and "
+"`libpq@18` are keg-only; CI force-links them so `pkg-config` / `configure` "
+"see them. If you skip the force-link, add those prefixes to "
+"`PKG_CONFIG_PATH` (and often `PATH` / `LDFLAGS`) before `./configure`."
+msgstr ""
+"在 Apple Silicon 上，Homebrew 位于 `/opt/homebrew`。`ffmpeg@7` 和 `libpq@18` 是 keg-"
+"only 软件包；CI 会强制链接它们，使 `pkg-config` / `configure` 能够找到。如果跳过强制链接，请在 "
+"`./configure` 前将这些前缀加入 `PKG_CONFIG_PATH`（通常还要加入 `PATH` / `LDFLAGS`）。"
+
+#: ../../08-build.md:106 8780c751b29449d1a3dc41c86cbf2fe4
+msgid "Configure, build, install"
+msgstr "配置、构建、安装"
+
+#: ../../08-build.md:108 12a9cb81737647a8a958c0734091ef11
+msgid ""
+"Use a home prefix so you do not need root. The command below uses "
+"`--disable-fhs` so the installed `bin/`, `conf/`, `mod/`, `db/`, `log/`, and"
+" `run/` directories stay below `$HOME/fs`. Default without `--prefix` is "
+"`/usr/local/freeswitch` (`configure.ac`). macOS CI uses `--prefix=…/OUT` "
+"plus `--enable-shared --enable-static` and therefore follows its FHS-style "
+"output paths."
+msgstr ""
+"使用家目录前缀即可无需 root。下面的命令使用 `--disable-fhs`，因此安装后的 "
+"`bin/`、`conf/`、`mod/`、`db/`、`log/` 和 `run/` 目录都位于 `$HOME/fs` 下。不带 `--prefix`"
+" 时默认前缀为 `/usr/local/freeswitch`（`configure.ac`）。macOS CI 使用 `--prefix=…/OUT`"
+" 加上 `--enable-shared --enable-static`，因此遵循 FHS 风格的输出路径。"
+
+#: ../../08-build.md:123 50c6e8cf19bc43f8b9c2badbc244d99b
+msgid ""
+"`bootstrap.sh` copies `build/modules.conf.in` → `modules.conf` if missing, "
+"then runs Autotools. `-j` parallelizes bundled library bootstraps."
+msgstr ""
+"如果 `modules.conf` 不存在，`bootstrap.sh` 会复制 `build/modules.conf.in` → "
+"`modules.conf`，然后运行 Autotools。`-j` 会并行执行捆绑库的 bootstrap。"
+
+#: ../../08-build.md:124 f98a8b80232d490d8d57a9bdfd2a66b5
+msgid ""
+"Edit **`modules.conf`** (build list: `src/mod/...` lines) **after** "
+"bootstrap and **before** `./configure` / `make`. Runtime load is a separate "
+"file: `modules.conf.xml`. A compiled module can still be unloaded."
+msgstr ""
+"请在 bootstrap **之后**、`./configure` / `make` **之前**编辑 "
+"**`modules.conf`**（构建列表：`src/mod/...` "
+"行）。运行时加载使用另一个文件：`modules.conf.xml`。已编译的模块仍可能处于未加载状态。"
+
+#: ../../08-build.md:125 de630f658aac436293a54221ac1202e6
+msgid ""
+"`make install` installs vanilla sample config when `$prefix/conf` does not "
+"exist (`samples-conf`)."
+msgstr ""
+"当 `$prefix/conf` 不存在时，`make install` 会安装 vanilla 示例配置（`samples-conf`）。"
+
+#: ../../08-build.md:126 7f4979d820a6415e8a93f36a85846cc7
+msgid ""
+"Sounds / music-on-hold are **not** in git. If you need playback or the echo "
+"test: `make cd-sounds-install cd-moh-install` (see [Quick Start](01-quick-"
+"start.md))."
+msgstr ""
+"声音和保持音乐**不在** git 中。如果需要播放或回声测试，请运行 `make cd-sounds-install cd-moh-"
+"install`（参见[快速开始](01-quick-start.md)）。"
+
+#: ../../08-build.md:127 9a3ef522190d47789faa3be945e037be
+msgid ""
+"Debug CFLAGS (`-ggdb3 -O0`): `./devel-bootstrap.sh` instead of "
+"`./bootstrap.sh`."
+msgstr ""
+"调试 CFLAGS（`-ggdb3 -O0`）：使用 `./devel-bootstrap.sh`，不要使用 `./bootstrap.sh`。"
+
+#: ../../08-build.md:129 245506ade24c48a3a93ab76354cc36dc
+msgid "Run (prefix install)"
+msgstr "运行（前缀安装）"
+
+#: ../../08-build.md:136 5ffb3aa17e66496fa9196d25617b1ba2
+msgid ""
+"A working process prints a line starting with `UP`. Stop with "
+"`\"$HOME/fs/bin/freeswitch\" -stop`. Vanilla is a **demo PBX**, not "
+"production: SIP users `1000`–`1019` share password `1234`; the `fs_cli` "
+"client targets `127.0.0.1:8021` by default, while vanilla ESL listens on "
+"wildcard `::`:8021 with password `ClueCon`. Start with `-nonat` unless you "
+"want UPnP NAT helpers. First-call steps: [Quick Start](01-quick-start.md)."
+msgstr ""
+"正常运行的进程会输出以 `UP` 开头的一行。使用 `\"$HOME/fs/bin/freeswitch\" -stop` 停止。Vanilla "
+"是**演示 PBX**，不是生产配置：SIP 用户 `1000`–`1019` 共用密码 `1234`；`fs_cli` 客户端默认连接 "
+"`127.0.0.1:8021`，而 vanilla ESL 在通配 `::`:8021 上监听，密码为 `ClueCon`。除非需要 UPnP NAT"
+" 辅助，否则请使用 `-nonat` 启动。首次呼叫步骤见[快速开始](01-quick-start.md)。"
+
+#: ../../08-build.md:138 245506ade24c48a3a93ab76354cc36dc
 msgid "Production / prefix install"
 msgstr "生产 / 前缀安装"
 
-#: ../../08-build.md:55 14115be99b1549d0be436db07048ad7d
+#: ../../08-build.md:140 d93dad3defba4369a4a1de316bce3914
 #, python-brace-format
 msgid ""
 "Same `configure && make && make install`. Default prefix is "
-"`/usr/local/freeswitch` (`AC_PREFIX_DEFAULT` in `configure.ac`). FHS layout "
-"(`--enable-fhs` when prefix is set) puts modules under "
-"`${libdir}/freeswitch/mod`."
+"`/usr/local/freeswitch` (`AC_PREFIX_DEFAULT` in `configure.ac`). With an "
+"explicit custom prefix, `configure` enables FHS layout unless `--disable-"
+"fhs` is supplied; modules then go under `${libdir}/freeswitch/mod` and "
+"configuration under `${sysconfdir}/freeswitch`. Use [Quick Start](01-quick-"
+"start.md#source-build-developer-path) for the single-prefix developer "
+"layout."
 msgstr ""
-"同样是 `configure && make && make install`。默认前缀是 "
-"`/usr/local/freeswitch`（`configure.ac` 中的 `AC_PREFIX_DEFAULT`）。FHS "
-"布局（设置了前缀时用 `--enable-fhs`）把模块放到 `${libdir}/freeswitch/mod`。"
+"同样是 `configure && make && make install`。默认前缀为 "
+"`/usr/local/freeswitch`（`configure.ac` 中的 "
+"`AC_PREFIX_DEFAULT`）。显式指定自定义前缀时，除非提供 `--disable-fhs`，否则 `configure` 会启用 FHS "
+"布局；模块位于 `${libdir}/freeswitch/mod`，配置位于 "
+"`${sysconfdir}/freeswitch`。单前缀开发者布局请参见[快速开始](01-quick-start.md#source-build-"
+"developer-path)。"
 
-#: ../../08-build.md:57 94d7e133c3c6413d941c42c17160a157
+#: ../../08-build.md:142 94d7e133c3c6413d941c42c17160a157
 msgid ""
 "Debian systemd unit (`debian/freeswitch-systemd.freeswitch.service`) starts:"
 msgstr "Debian systemd 单元（`debian/freeswitch-systemd.freeswitch.service`）启动："
 
-#: ../../08-build.md:63 e382fbf460ad4dc3a471aa520180f324
+#: ../../08-build.md:148 e382fbf460ad4dc3a471aa520180f324
 msgid ""
 "Sounds are **not** in this git tree. `make sounds` / `make sounds-install` "
 "downloads Callie 8 kHz packages (`Makefile.am`, default `en-us-"
@@ -153,11 +298,11 @@ msgstr ""
 "包（`Makefile.am`，默认 `en-us-callie-8000`）。规格文件在仓库根目录：`freeswitch-"
 "sounds-*.spec`。"
 
-#: ../../08-build.md:65 c33a3e173c8045a9ab9a0bfcf092dd2a
+#: ../../08-build.md:150 c33a3e173c8045a9ab9a0bfcf092dd2a
 msgid "Windows"
 msgstr "Windows"
 
-#: ../../08-build.md:71 177d80766023420e8ce837e876cec176
+#: ../../08-build.md:156 177d80766023420e8ce837e876cec176
 msgid ""
 "Helper: `msbuild.cmd` (locates VS via `vswhere.exe`). Projects under `w32/`."
 " CI uploads `x64\\*.msi` on master / v1.10 / v1.11 (or PR titles containing "
@@ -166,7 +311,7 @@ msgstr ""
 "辅助脚本：`msbuild.cmd`（通过 `vswhere.exe` 定位 VS）。工程在 `w32/`。CI 在 master / v1.10 / "
 "v1.11 上上传 `x64\\*.msi`（或 PR 标题含 `:upload-artifacts`）。"
 
-#: ../../08-build.md:73 ac4f749fe9dd4bf8895fe74d2a374809
+#: ../../08-build.md:158 ac4f749fe9dd4bf8895fe74d2a374809
 msgid "Expected outputs (Unix prefix)"
 msgstr "预期产出（Unix 前缀）"
 
@@ -185,8 +330,9 @@ msgstr "`$prefix/bin/`"
 #: ../../08-build.md 8b54ce2c98c7475a872aa27b21b12931
 msgid ""
 "`freeswitch`, `fs_cli`, `fs_encode`, `fs_tts`, `fs_ivrd` (`bin_PROGRAMS` in "
-"`Makefile.am`)"
+"`Makefile.am`) for a `--disable-fhs` install"
 msgstr ""
+"`--disable-fhs` 安装中的 "
 "`freeswitch`、`fs_cli`、`fs_encode`、`fs_tts`、`fs_ivrd`（`Makefile.am` 中的 "
 "`bin_PROGRAMS`）"
 
@@ -194,25 +340,31 @@ msgstr ""
 msgid "`$prefix/mod/`"
 msgstr "`$prefix/mod/`"
 
-#: ../../08-build.md f3d5256a84c644c4b412e2747a653feb
-msgid "Loadable `.so` / `.dylib` / `.dll`"
-msgstr "可加载的 `.so` / `.dylib` / `.dll`"
+#: ../../08-build.md 9cfb7b462b1c492db9fadd151f1436f4
+msgid "Loadable `.so` / `.dylib` / `.dll` for a `--disable-fhs` install"
+msgstr "`--disable-fhs` 安装中的可加载 `.so` / `.dylib` / `.dll`"
 
 #: ../../08-build.md d8c7146a0da24a7fbd3c15462637765f
 msgid "`$prefix/conf/`"
 msgstr "`$prefix/conf/`"
 
 #: ../../08-build.md 1634fc6ded3543f297695a09e27e3898
-msgid "Vanilla samples if the dir did not exist (`samples-conf`)"
-msgstr "若目录原先不存在则安装 vanilla 样例（`samples-conf`）"
+msgid ""
+"Vanilla samples if the dir did not exist (`samples-conf`) for a `--disable-"
+"fhs` install"
+msgstr "`--disable-fhs` 安装中目录不存在时的 vanilla 示例（`samples-conf`）"
 
 #: ../../08-build.md d26c6a15bec34cd2960a1cbff4046620
 msgid "`$prefix/db/`, `log/`, `run/`, `scripts/`, `htdocs/`"
 msgstr "`$prefix/db/`, `log/`, `run/`, `scripts/`, `htdocs/`"
 
-#: ../../08-build.md 4dc02fc833ea4f74a687e3400a0c88c9
-msgid "Runtime dirs (`install-data-local`)"
-msgstr "运行时目录（`install-data-local`）"
+#: ../../08-build.md 8abd59cbda0a4dac8018706bbd89f567
+msgid ""
+"Runtime dirs (`install-data-local`) for a `--disable-fhs` install; FHS "
+"installs use their configured `var/`, `share/`, `etc/`, and `lib/` locations"
+msgstr ""
+"`--disable-fhs` 安装中的运行时目录（`install-data-local`）；FHS 安装使用其配置的 "
+"`var/`、`share/`、`etc/` 和 `lib/` 路径"
 
 #: ../../08-build.md a30f0ff46cf946a8a6c6636cfb3b1337
 msgid "`src/include/switch_version.h`"
@@ -222,11 +374,11 @@ msgstr "`src/include/switch_version.h`"
 msgid "Generated from `switch_version.h.template`"
 msgstr "由 `switch_version.h.template` 生成"
 
-#: ../../08-build.md:83 cac363b4db0349a7b96edb49470a797d
+#: ../../08-build.md:168 cac363b4db0349a7b96edb49470a797d
 msgid "CI/CD Pipelines"
 msgstr "CI/CD 流水线"
 
-#: ../../08-build.md:85 02531a1d32fc4915830dd3df95775129
+#: ../../08-build.md:170 02531a1d32fc4915830dd3df95775129
 msgid ""
 "All under `.github/workflows/`. Linux jobs use `signalwire/freeswitch-"
 "public-ci-base:bookworm-amd64` unless noted."
@@ -368,7 +520,7 @@ msgstr ""
 msgid "Logs on failure"
 msgstr "失败时的日志"
 
-#: ../../08-build.md:96 0393285fc4eb48d5b9ffc3bfb32f3c80
+#: ../../08-build.md:181 0393285fc4eb48d5b9ffc3bfb32f3c80
 msgid ""
 "`build.yml` issues a temporary repo token (`repo-auth-client`) before the "
 "public Debian Docker matrix "
@@ -378,19 +530,19 @@ msgstr ""
 "矩阵（`.github/docker/debian/<codename>/<arch>/public.<release>.Dockerfile`）之前签发临时仓库"
 " token（`repo-auth-client`）。"
 
-#: ../../08-build.md:98 55a3e555fcb247e1ba4e5fb1ddc157c0
+#: ../../08-build.md:183 55a3e555fcb247e1ba4e5fb1ddc157c0
 msgid "Release Process"
 msgstr "发布流程"
 
-#: ../../08-build.md:100 581527ddb6d24b19ae87fd7bc0c94c07
+#: ../../08-build.md:185 581527ddb6d24b19ae87fd7bc0c94c07
 msgid "Version fields that **must stay together** (`configure.ac` comment):"
 msgstr "必须**一起保持**的版本字段（`configure.ac` 注释）："
 
-#: ../../08-build.md:102 41b51ba0476845e69cbf63fc42a7818f
+#: ../../08-build.md:187 41b51ba0476845e69cbf63fc42a7818f
 msgid "`AC_INIT([freeswitch], [1.11.3-dev], …)`"
 msgstr "`AC_INIT([freeswitch], [1.11.3-dev], …)`"
 
-#: ../../08-build.md:103 fb763c0b0d4d4664b7a8bfc30fbe7040
+#: ../../08-build.md:188 fb763c0b0d4d4664b7a8bfc30fbe7040
 msgid ""
 "`SWITCH_VERSION_MAJOR` / `MINOR` / `MICRO` (and optional `REVISION` / "
 "`REVISION_HUMAN` for a tagged release)"
@@ -398,7 +550,7 @@ msgstr ""
 "`SWITCH_VERSION_MAJOR` / `MINOR` / `MICRO`（打标签发布时还可选 `REVISION` / "
 "`REVISION_HUMAN`）"
 
-#: ../../08-build.md:104 02cf8cc7ebd8495c8926685e416b78b4
+#: ../../08-build.md:189 02cf8cc7ebd8495c8926685e416b78b4
 msgid ""
 "`build/next-release.txt` (currently `1.11.3-dev`) — `src_tarball.sh` reads "
 "this and writes `.version`"
@@ -406,11 +558,11 @@ msgstr ""
 "`build/next-release.txt`（当前为 `1.11.3-dev`）——`src_tarball.sh` 读取它并写入 "
 "`.version`"
 
-#: ../../08-build.md:106 6101596f96264dd28dd8ac37d736921f
+#: ../../08-build.md:191 6101596f96264dd28dd8ac37d736921f
 msgid "Then:"
 msgstr "然后："
 
-#: ../../08-build.md:108 cb22d2f727414f338b6cee095c657120
+#: ../../08-build.md:193 cb22d2f727414f338b6cee095c657120
 msgid ""
 "Land changes via GitHub PR (`docs/SubmittingPatches`, `README.md`). Topic "
 "branches; `./scripts/setup-git.sh` for author identity."
@@ -418,11 +570,11 @@ msgstr ""
 "通过 GitHub PR 合入改动（`docs/SubmittingPatches`、`README.md`）。使用主题分支；用 "
 "`./scripts/setup-git.sh` 设置作者身份。"
 
-#: ../../08-build.md:109 cee20d3a9a764b0bad308f6a83456ecf
+#: ../../08-build.md:194 cee20d3a9a764b0bad308f6a83456ecf
 msgid "CI green on `ci.yml` + platform builds you care about."
 msgstr "`ci.yml` 以及你关心的平台构建保持 CI 绿灯。"
 
-#: ../../08-build.md:110 1effb79b3fa746638fb5ad1ecf600ca4
+#: ../../08-build.md:195 1effb79b3fa746638fb5ad1ecf600ca4
 msgid ""
 "For a packaged line: merge/tag on `v1.10` or `v1.11` so `build.yml` treats "
 "`release=release`. `master` publishes **unstable**."
@@ -430,7 +582,7 @@ msgstr ""
 "面向打包产品线：在 `v1.10` 或 `v1.11` 上合并/打标签，使 `build.yml` 把 "
 "`release=release`。`master` 发布的是 **unstable**。"
 
-#: ../../08-build.md:111 e95b9818f4ad485a8b459c8c1600d1af
+#: ../../08-build.md:196 e95b9818f4ad485a8b459c8c1600d1af
 msgid ""
 "Source archives: `tarball.yml` or `./scripts/ci/src_tarball.sh` (needs a "
 "**git** tree; FSDEB same constraint — `scripts/packaging/build/README.md`)."
@@ -438,7 +590,7 @@ msgstr ""
 "源码归档：`tarball.yml` 或 `./scripts/ci/src_tarball.sh`（需要 **git** 树；FSDEB "
 "同样限制——`scripts/packaging/build/README.md`）。"
 
-#: ../../08-build.md:112 1cc51b209318474b8527a000f05f10c2
+#: ../../08-build.md:197 1cc51b209318474b8527a000f05f10c2
 msgid ""
 "Debian packages from git: FSDEB   `curl -sSL https://freeswitch.org/fsdeb | "
 "bash -s -- -b BUILD_NUMBER -o OUT_DIR -w /path/to/freeswitch`"
@@ -446,13 +598,13 @@ msgstr ""
 "从 git 构建 Debian 包：FSDEB   `curl -sSL https://freeswitch.org/fsdeb | bash -s "
 "-- -b BUILD_NUMBER -o OUT_DIR -w /path/to/freeswitch`"
 
-#: ../../08-build.md:114 9b4ba92b2ebf4b728f9677345e068b23
+#: ../../08-build.md:199 9b4ba92b2ebf4b728f9677345e068b23
 msgid ""
 "Operator install from SignalWire repo: FSGET (`scripts/packaging/README.md`)"
 " — requires a PAT."
 msgstr "从 SignalWire 仓库做运维安装：FSGET（`scripts/packaging/README.md`）——需要 PAT。"
 
-#: ../../08-build.md:115 39bd512e86e24125ad6178cd1ed108f3
+#: ../../08-build.md:200 39bd512e86e24125ad6178cd1ed108f3
 msgid ""
 "Verify: `freeswitch -version` / `fs_cli -x version`; package lists under "
 "`freeswitch.signalwire.com` (workflow `REPO_DOMAIN`)."
@@ -460,7 +612,7 @@ msgstr ""
 "验证：`freeswitch -version` / `fs_cli -x version`；软件包列表在 "
 "`freeswitch.signalwire.com`（工作流 `REPO_DOMAIN`）。"
 
-#: ../../08-build.md:117 f634c9d8358b45ac89a3007e34da5c5f
+#: ../../08-build.md:202 f634c9d8358b45ac89a3007e34da5c5f
 msgid ""
 "Human product release notes: [Confluence Release "
 "Notes](https://freeswitch.org/confluence/display/FREESWITCH/Release+Notes). "
@@ -471,26 +623,29 @@ msgstr ""
 "Notes](https://freeswitch.org/confluence/display/FREESWITCH/Release+Notes)。机械"
 " git 草稿：`cd man && make changelog-draft`（写入 `_generated/`；在本仓库历史上会很慢）。"
 
-#: ../../08-build.md:119 0c973eac0eb24d2c82bcb78c9ebcf338
+#: ../../08-build.md:204 0c973eac0eb24d2c82bcb78c9ebcf338
 msgid "Documentation Build and Publish"
 msgstr "文档构建与发布"
 
-#: ../../08-build.md:121 50b6082525ad4196b01bc07c44d6940b
+#: ../../08-build.md:206 50b6082525ad4196b01bc07c44d6940b
 msgid "PKB lives in `man/` (not `docs/man` Unix pages)."
 msgstr "PKB 在 `man/`（不是 `docs/man` Unix 手册页）。"
 
-#: ../../08-build.md:134 cdf7021da8154f918ef3e3252f2e2e06
+#: ../../08-build.md:219 1155fe8789c845deb56d44ca89d7af63
 msgid ""
 "AgentBox (optional): `make publish` runs `agentbox-init` → `html-all` → "
 "`strip-confidential` (default strip `L3+`) → `gen_agentbox_files.py` → `abx "
 "func deploy freeswitch-doc`. Function slug is `freeswitch-doc` "
-"(`agentbox.yaml`)."
+"(`agentbox.yaml`). Run `make pkb-review-status-strict` separately when a "
+"human-approval gate is required; the default publish target remains usable "
+"while pages are marked `pending`."
 msgstr ""
 "AgentBox（可选）：`make publish` 依次运行 `agentbox-init` → `html-all` → `strip-"
 "confidential`（默认剥离 `L3+`）→ `gen_agentbox_files.py` → `abx func deploy "
-"freeswitch-doc`。函数 slug 是 `freeswitch-doc`（`agentbox.yaml`）。"
+"freeswitch-doc`。函数 slug 是 `freeswitch-doc`（`agentbox.yaml`）。需要人工审批门禁时，请单独运行 "
+"`make pkb-review-status-strict`；页面标记为 `pending` 时，默认发布目标仍可用。"
 
-#: ../../08-build.md:136 8821be45f59f4aa9b8e001a4e0a188b0
+#: ../../08-build.md:226 8821be45f59f4aa9b8e001a4e0a188b0
 msgid "Common Failures"
 msgstr "常见失败"
 
@@ -515,8 +670,11 @@ msgid "Tool older than `scripts/ci/build-requirements.sh`"
 msgstr "工具版本低于 `scripts/ci/build-requirements.sh`"
 
 #: ../../08-build.md e475fccb7e9847e088461cebb70b3b6a
-msgid "Install GNU autotools; macOS Homebrew `autoconf automake libtool`"
-msgstr "安装 GNU autotools；macOS Homebrew `autoconf automake libtool`"
+msgid ""
+"Install GNU autotools; macOS Homebrew `autoconf automake libtool` "
+"(`glibtool`)"
+msgstr ""
+"安装 GNU autotools；macOS Homebrew 使用 `autoconf automake libtool`（`glibtool`）"
 
 #: ../../08-build.md 3652a6e6df8e4b2880b00c633371f6fe
 msgid "Link/configure missing Sofia, KS, SpanDSP, signalwire"
@@ -526,9 +684,32 @@ msgstr "链接/configure 缺少 Sofia、KS、SpanDSP、signalwire"
 msgid "Out-of-tree deps"
 msgstr "树外依赖"
 
-#: ../../08-build.md af333037d4ed46039eab5aaba4ce961e
-msgid "Follow `docker/examples/Debian11/Dockerfile` or `ci.sh -c sofia-sip`"
-msgstr "按 `docker/examples/Debian11/Dockerfile` 或 `ci.sh -c sofia-sip`"
+#: ../../08-build.md 95aeb13a95b44f45ab41146c98cfafa3
+#, python-brace-format
+msgid ""
+"Linux: `docker/examples/Debian11/Dockerfile` or `ci.sh -c sofia-sip`. macOS:"
+" Homebrew `sofia-sip` plus `signalwire/homebrew-"
+"signalwire/{libks2,signalwire-c2,spandsp}` (see [macOS (Homebrew)](#macos-"
+"homebrew))"
+msgstr ""
+"Linux：`docker/examples/Debian11/Dockerfile` 或 `ci.sh -c sofia-"
+"sip`。macOS：Homebrew `sofia-sip` 加上 `signalwire/homebrew-"
+"signalwire/{libks2,signalwire-c2,spandsp}`（参见[macOS（Homebrew）](#macos-"
+"homebrew)）"
+
+#: ../../08-build.md baa4f3c9e2a84d75878a2a179a5b228b
+msgid "`configure` cannot find ffmpeg / libpq on macOS"
+msgstr "macOS 上 `configure` 找不到 ffmpeg / libpq"
+
+#: ../../08-build.md b7f30cebe8a74823872edcf91515ba58
+msgid "Keg-only `ffmpeg@7` / `libpq@18`"
+msgstr "keg-only 的 `ffmpeg@7` / `libpq@18`"
+
+#: ../../08-build.md 43e26f49b9b44164a59333ad9eeab62e
+msgid ""
+"`brew link --force --overwrite ffmpeg@7 libpq@18`, or set `PKG_CONFIG_PATH`"
+msgstr ""
+"运行 `brew link --force --overwrite ffmpeg@7 libpq@18`，或设置 `PKG_CONFIG_PATH`"
 
 #: ../../08-build.md 1043728473a542418ed7c0bd3d27d548
 msgid "Module not in `mod/` after install"
@@ -645,26 +826,26 @@ msgstr ""
 msgid "Stop that process; `make serve` or `make serve-all`"
 msgstr "先停掉该进程，再运行 `make serve` 或 `make serve-all`"
 
-#: ../../08-build.md:152 a2a9e5cbcf9d49fc823f4911f0754750
+#: ../../08-build.md:243 a2a9e5cbcf9d49fc823f4911f0754750
 msgid "Related Documentation"
 msgstr "相关文档"
 
-#: ../../08-build.md:154 82c76954c96444d19fabd7e547acd123
+#: ../../08-build.md:245 82c76954c96444d19fabd7e547acd123
 msgid "[Quick Start](01-quick-start.md)"
 msgstr "[快速开始](01-quick-start.md)"
 
-#: ../../08-build.md:155 4d8e8b1999f44e14842fed3890a36abe
+#: ../../08-build.md:246 4d8e8b1999f44e14842fed3890a36abe
 msgid "[Tech Stack](03-tech-stack.md)"
 msgstr "[技术栈](03-tech-stack.md)"
 
-#: ../../08-build.md:156 0db548ce59d343c3a418bc7f48a5a9ef
+#: ../../08-build.md:247 0db548ce59d343c3a418bc7f48a5a9ef
 msgid "[Testing](09-testing.md)"
 msgstr "[测试](09-testing.md)"
 
-#: ../../08-build.md:157 52dabc060c4a4f73ab04e27640f22149
+#: ../../08-build.md:248 52dabc060c4a4f73ab04e27640f22149
 msgid "[Runbook](10-runbook.md)"
 msgstr "[运维手册](10-runbook.md)"
 
-#: ../../08-build.md:158 8a1b72ca50cb4f319c90eed09831003f
+#: ../../08-build.md:249 8a1b72ca50cb4f319c90eed09831003f
 msgid "[Documentation Process](12-document.md)"
 msgstr "[文档流程](12-document.md)"

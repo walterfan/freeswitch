@@ -57,14 +57,21 @@ YYYY-MM-DD HH:MM:SS.uuuuuu idleCPU% [LEVEL] file:line message
 
 | Install | Log directory |
 |---------|---------------|
-| Prefix (`./configure --prefix=$HOME/fs`) | `$prefix/log` → `$HOME/fs/log/freeswitch.log` |
+| Prefix (`./configure --prefix=$HOME/fs --disable-fhs`) | `$prefix/log` → `$HOME/fs/log/freeswitch.log` |
 | `--enable-fhs` | `${localstatedir}/log/freeswitch` |
 | `--with-logfiledir=DIR` | `DIR` |
 | Debian package (`debian/freeswitch.postinst`, systemd unit) | `/var/log/freeswitch` |
 
 Vanilla `logfile.conf.xml` leaves `<param name="logfile" value="/var/log/freeswitch.log"/>` **commented**; the computed `log_dir` path is what actually opens.
 
-Rotation: `rollover` 1048576000 bytes, `maximum-rotate` 32, `rotate-on-hup` true. Debian unit `ExecReload=/usr/bin/kill -HUP $MAINPID` (`build/freeswitch.service`); that fires `SWITCH_EVENT_TRAP` `Trapped-Signal=HUP` and `mod_logfile` rotates.
+Rotation: `rollover` 1048576000 bytes, `maximum-rotate` 32, `rotate-on-hup`
+true. The Debian unit
+(`debian/freeswitch-systemd.freeswitch.service`) does not define
+`ExecReload`; use `fs_cli -x "fsctl send_sighup"` or an explicit `kill -HUP`.
+The separate template `build/freeswitch.service` does define
+`ExecReload=/usr/bin/kill -HUP $MAINPID`. Either HUP path fires
+`SWITCH_EVENT_TRAP` with `Trapped-Signal=HUP`, allowing `mod_logfile` to
+rotate.
 
 ### systemd journal vs the log file
 
@@ -93,6 +100,78 @@ sofia profile internal siptrace on
 `fs_cli -l debug` / `-x` one-shots: `libs/esl/fs_cli.c`. Function keys 7/8 default to `/log console` and `/log debug`.
 
 Loaded loggers in vanilla `modules.conf.xml`: `mod_console`, `mod_logfile`. Optional JSON console lines: `console json on` (`switch_log_node_to_json`); off by default.
+
+### Container SIP trace
+
+For the Docker source image, enable SIP tracing on the profile under test, follow the container output, reproduce one registration or call, and disable tracing immediately afterward:
+
+```bash
+docker exec freeswitch \
+  /usr/local/freeswitch/bin/fs_cli \
+  -x "sofia profile internal siptrace on"
+
+docker logs -f --since=10s freeswitch
+
+# After reproducing the issue:
+docker exec freeswitch \
+  /usr/local/freeswitch/bin/fs_cli \
+  -x "sofia profile internal siptrace off"
+```
+
+The file logger normally writes the same runtime log under the image prefix. Follow it directly when the trace is not visible in `docker logs`:
+
+```bash
+docker exec -it freeswitch \
+  tail -F /usr/local/freeswitch/log/freeswitch.log
+```
+
+Use `sofia global siptrace on` only when all SIP profiles are required. It is much noisier. A normal digest-authenticated call commonly contains an initial `407`, an authenticated retry, `100 Trying`, and `200 OK`; the `407` is expected challenge/response behavior, not necessarily a call failure.
+
+Representative redacted trace for a call from Zoiper user `1000` to MoH `9664`:
+
+```text
+recv <bytes> from udp/[<CLIENT_IP>]:<CLIENT_PORT>:
+INVITE sip:9664@<SERVER_IP>;transport=UDP SIP/2.0
+Via: SIP/2.0/UDP <CLIENT_IP>:<CLIENT_PORT>;branch=<BRANCH>;rport
+From: <sip:1000@<SERVER_IP>>;tag=<FROM_TAG>
+To: <sip:9664@<SERVER_IP>>
+Call-ID: <CALL_ID>
+CSeq: 1 INVITE
+Content-Type: application/sdp
+
+v=0
+c=IN IP4 <CLIENT_IP>
+m=audio <CLIENT_RTP_PORT> RTP/AVP <CODECS>
+a=sendrecv
+
+send <bytes> to udp/[<CLIENT_IP>]:<CLIENT_PORT>:
+SIP/2.0 407 Proxy Authentication Required
+Proxy-Authenticate: Digest realm="<SERVER_IP>", nonce="<REDACTED>"
+
+recv <bytes> from udp/[<CLIENT_IP>]:<CLIENT_PORT>:
+INVITE sip:9664@<SERVER_IP>;transport=UDP SIP/2.0
+Proxy-Authorization: Digest username="1000", ... <REDACTED>
+
+[INFO] sofia.c:<LINE> receiving invite from <CLIENT_IP>:<CLIENT_PORT>
+[INFO] mod_dialplan_xml.c:<LINE> Processing 1000 <1000>->9664 in context default
+send <bytes> to udp/[<CLIENT_IP>]:<CLIENT_PORT>:
+SIP/2.0 100 Trying
+
+[NOTICE] mod_dptools.c:<LINE> Channel [sofia/internal/1000@<SERVER_IP>] has been answered
+send <bytes> to udp/[<CLIENT_IP>]:<CLIENT_PORT>:
+SIP/2.0 200 OK
+Content-Type: application/sdp
+
+v=0
+c=IN IP4 <SERVER_ADVERTISED_IP>
+m=audio <SERVER_RTP_PORT> RTP/AVP 9 101
+a=rtpmap:9 G722/8000
+a=rtpmap:101 telephone-event/8000
+
+EXECUTE [depth=0] sofia/internal/1000@<SERVER_IP> playback(local_stream://moh)
+```
+
+Redact `Proxy-Authorization`, digest nonces, call IDs, session UUIDs, phone numbers, and IP addresses before sharing traces. Turn tracing off after capture to avoid log volume and unnecessary credential-related data retention.
 
 ## Metrics
 
@@ -206,8 +285,8 @@ clang **scan-build** in `.github/workflows/` is CI static analysis, not a runtim
 
 ---
 <!-- PKB-metadata
-last_updated: 2026-08-17
-commit: d94936cc10
+last_updated: 2026-08-30
+commit: ea429c9d49
 updated_by: human+ai
 review_status: pending
 review_score: 0

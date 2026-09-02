@@ -71,15 +71,27 @@ Read [Users Manual Part 1](https://developer.signalwire.com/freeswitch/foundatio
 
 ```{toctree}
 :maxdepth: 1
+:caption: AI & Maintenance
+
+ai-guide
+```
+
+```{toctree}
+:maxdepth: 1
+:caption: Decision Records & Change Proposals
+
+adr/index
+changes/index
+```
+
+```{toctree}
+:maxdepth: 1
 :caption: Appendix
 
 appendix-01-faq
 appendix-02-glossary
 diagrams-guide
 CHANGELOG
-ai-guide
-adr/index
-changes/index
 ```
 
 ## PKB page to Users Manual
@@ -112,7 +124,7 @@ Parts 6–10 of the Users Manual (applications, integration, module reference, r
 
 Use a layered reading order:
 
-1. **Round 1**: read `00-overview`, `02-architecture`, and `04-repo-map` (plus Users Manual Ch 1 if the three configuration domains are new)
+1. **Round 1**: read `00-overview`, `04-repo-map`, and `02-architecture` (plus Users Manual Ch 1 if the three configuration domains are new)
 2. **Round 2**: read `05-data-and-api` and `06-workflows`
 3. **Round 3**: read `09-testing`, `10-runbook`, `11-observability`, and `12-document`
 
@@ -179,7 +191,7 @@ See [Conventions](07-conventions.md) for coding standards and [Documentation Pro
 **Version**: {sub-ref}`release`
 **Last Updated**: {sub-ref}`today`
 <!-- PKB-metadata
-last_updated: 2026-08-17
+last_updated: 2026-08-30
 commit: d94936cc10
 updated_by: human+ai
 review_status: pending

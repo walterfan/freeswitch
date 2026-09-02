@@ -10,7 +10,7 @@ Answers below come from [Quick Start](01-quick-start.md), [Architecture](02-arch
 
 `README.md` recommends **packages** for operators. That path is FSGET plus `freeswitch-meta-all` (`scripts/packaging/README.md`). FSGET needs a SignalWire Personal Access Token; without it, `apt` / `docker/master` returns **401**.
 
-This clone is the **source** path: install Sofia-SIP / libks / SpanDSP / signalwire-c first, then `./bootstrap.sh -j && ./configure --prefix="$HOME/fs" && make && make install`. `release` tracks packaged releases; `prerelease` tracks `master`.
+This clone is the **source** path: install Sofia-SIP / libks / SpanDSP / signalwire-c first, then `./bootstrap.sh -j && ./configure --prefix="$HOME/fs" --disable-fhs && make && make install`. `release` tracks packaged releases; `prerelease` tracks `master`.
 
 ### Why are Sofia-SIP, SpanDSP, and libks missing from this git tree?
 
@@ -27,7 +27,10 @@ They are **out-of-tree**. CI clones [sofia-sip](https://github.com/freeswitch/so
 
 ### What is the default prefix, and how do I start FreeSWITCH?
 
-Default prefix without `--prefix` is `/usr/local/freeswitch` (`configure.ac`). A home prefix (`--prefix="$HOME/fs"`) avoids root and matches macOS CI.
+Default prefix without `--prefix` is `/usr/local/freeswitch` (`configure.ac`).
+The PKB developer path uses `--prefix="$HOME/fs" --disable-fhs` so the
+installed files stay below that prefix. A custom prefix without
+`--disable-fhs` uses FHS paths.
 
 ```bash
 "$HOME/fs/bin/freeswitch" -ncwait -nonat
@@ -41,7 +44,7 @@ Default prefix without `--prefix` is `/usr/local/freeswitch` (`configure.ac`). A
 "$HOME/fs/bin/fs_cli" -x status
 ```
 
-Working output starts with `UP` (same check as `docker/base_image/healthcheck.sh`, regex `^UP`). Then `fs_cli -x sofia status` for SIP profiles. If `fs_cli` cannot connect, the switch is not up or ESL is not on loopback 8021 (`mod_event_socket` not loaded).
+Working output starts with `UP` (same check as `docker/base_image/healthcheck.sh`, regex `^UP`). Then `fs_cli -x sofia status` for SIP profiles. If `fs_cli` cannot connect, the switch may be down, `mod_event_socket` may not be loaded, or the client target may not reach the server listener. `fs_cli` defaults to `127.0.0.1:8021`; vanilla listens on `::`:8021, so verify the host's IPv4/IPv6 socket behavior.
 
 First call without a second phone: register as `1000` / password `1234` on port 5060, then dial **`9196`** (echo). See [Quick Start](01-quick-start.md) and [Users Manual Chapter 2](https://developer.signalwire.com/freeswitch/foundations/getting-started).
 
@@ -61,11 +64,18 @@ Change the password and bind/ACL before any non-loopback exposure. Wrong passwor
 
 ### Why does Docker SIP or RTP fail unless I use host networking?
 
-Runtime containers expect **`--network host`** (`docker/README.md`). Typical ports: SIP 5060/5080, TLS 5061/5081, WebSocket 5066/7443, ESL **8021**, RTP UDP 16384–32768 and 64535–65535. Publishing those UDP ranges through a user-defined bridge is the usual failure mode. Packaged images (`docker/master/Dockerfile`) still need a SignalWire `TOKEN` build-arg; a token-free source image is `docker/examples/Debian11/Dockerfile`.
+Runtime containers expect **`--network host`** (`docker/README.md`). Typical
+ports: SIP 5060/5080, TLS 5061/5081, Sofia SIP WebSocket 5066/7443, Verto
+WS/WSS 8081/8082, ESL **8021**, RTP UDP 16384–32768 and 64535–65535.
+Publishing those UDP ranges through a user-defined bridge is the usual failure
+mode. Packaged images (`docker/master/Dockerfile`) still need a SignalWire
+`TOKEN` build-arg. The token-free Debian 11 source-image example
+(`docker/examples/Debian11/Dockerfile`) clones FreeSWITCH and its dependencies
+during the image build; it does not build this checkout.
 
 ### How do I build on Windows vs Unix?
 
-Unix / macOS: Autotools — `./bootstrap.sh -j && ./configure --prefix=... && make && make install`. Windows: `Freeswitch.2017.sln` / `w32/`, typically `msbuild Freeswitch.2017.sln -t:build -verbosity:minimal -property:Configuration=Release -property:Platform=x64` (`msbuild.cmd` locates VS via `vswhere.exe`). CI uploads `x64\*.msi` on `master` / `v1.10` / `v1.11`. Historical `src/CMakeLists.txt` is **not** the Unix CI path.
+Unix / macOS: Autotools — `./bootstrap.sh -j && ./configure --prefix=... --disable-fhs && make && make install`. Windows: `Freeswitch.2017.sln` / `w32/`, typically `msbuild Freeswitch.2017.sln -t:build -verbosity:minimal -property:Configuration=Release -property:Platform=x64` (`msbuild.cmd` locates VS via `vswhere.exe`). CI uploads `x64\*.msi` on `master` / `v1.10` / `v1.11`. Historical `src/CMakeLists.txt` is **not** the Unix CI path.
 
 ### Where are the prompt / sound files?
 
@@ -99,7 +109,7 @@ This workspace is **1.11.3-dev** (`AC_INIT` in `configure.ac`; keep in sync with
 
 ---
 <!-- PKB-metadata
-last_updated: 2026-08-17
+last_updated: 2026-08-30
 commit: d94936cc10
 updated_by: human+ai
 review_status: pending

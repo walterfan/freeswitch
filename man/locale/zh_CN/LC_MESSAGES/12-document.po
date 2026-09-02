@@ -1,17 +1,17 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2026, Zoom Video Communications
 # This file is distributed under the same license as the FreeSWITCH package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+# Walter Fan <walter.fan@ustc.etu>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: FreeSWITCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 23:38+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_CN <LL@li.org>\n"
+"POT-Creation-Date: 2026-08-30 22:59+0800\n"
+"PO-Revision-Date: 2026-08-30 23:13+0800\n"
+"Last-Translator: Walter Fan <walter.fan@ustc.etu>\n"
+"Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -281,11 +281,14 @@ msgstr ""
 "盖上元数据页脚（`last_updated`、`commit`、`updated_by`）。除非人类正在批准，否则保持 `review_status: "
 "pending`。"
 
-#: ../../12-document.md:37 f839edbbd1f24aa3898a042103cd1931
+#: ../../12-document.md:37 da425e1484494fbc90d3f9201265f696
 msgid ""
-"After English wording changes: generate/update gettext catalogs (planned "
-"until the first `intl-update` run), then rebuild HTML."
-msgstr "英文措辞变更后：生成/更新 gettext 目录（在第一次 `intl-update` 之前仍属计划），然后重建 HTML。"
+"After English wording changes: run the explicit catalog refresh (`make "
+"gettext && make intl-update`), fill new `msgstr` values, then rebuild HTML. "
+"Normal HTML builds consume the tracked catalogs and do not rewrite them."
+msgstr ""
+"英文措辞更改后：运行显式目录刷新（`make gettext && make intl-update`），填写新的 `msgstr` 值，然后重新构建 "
+"HTML。普通 HTML 构建会使用已跟踪的目录，不会重写它们。"
 
 #: ../../12-document.md:38 c2b9c66f24894ef6a9e26932f8c31f90
 msgid ""
@@ -594,12 +597,13 @@ msgstr "`translate_po.py`"
 msgid "Optional dictionary fill of `.po` `msgstr`"
 msgstr "可选：用词典批量填写 `.po` 的 `msgstr`"
 
-#: ../../12-document.md d0e5054c952742deba8e7418bb86c0ac
+#: ../../12-document.md 81e94c8fe9af4f66b4ee457c82807d47
 msgid ""
-"`make translate-zh`. This tree used `scripts/i18n_apply_json.py` (polib) for"
-" the first full pass."
+"`make translate-zh`. This tree uses `make compile-intl` to compile catalogs;"
+" `scripts/i18n_apply_json.py` (polib) can apply reviewed JSON translations."
 msgstr ""
-"`make translate-zh`。本仓库第一次全量翻译走的是 `scripts/i18n_apply_json.py`（polib）。"
+"`make translate-zh`。本树使用 `make compile-intl` "
+"编译目录；`scripts/i18n_apply_json.py`（polib）可应用经过审阅的 JSON 翻译。"
 
 #: ../../12-document.md 900ecb4c607844b1ac7986e4e413d1e4
 msgid "`i18n_apply_json.py`"
@@ -699,7 +703,7 @@ msgstr "英文 HTML 与 zh_CN `.po` 目录均已落地。改完目录后请重�
 msgid "AgentBox (optional, **wired, not yet published**):"
 msgstr "AgentBox（可选，**已接线，尚未发布**）："
 
-#: ../../12-document.md:111 2672504b4e3447e8bcac96331e8ae3cd
+#: ../../12-document.md:112 2672504b4e3447e8bcac96331e8ae3cd
 msgid ""
 "Slug is `freeswitch-doc` (`man/agentbox.yaml`). Bypass strip only by running"
 " `agentbox-gen` pieces by hand; that is not the intended path."
@@ -707,27 +711,27 @@ msgstr ""
 "slug 是 `freeswitch-doc`（`man/agentbox.yaml`）。只有手工跑 `agentbox-gen` "
 "各步才会绕过剥离；那不是预定路径。"
 
-#: ../../12-document.md:113 03af2056c92d408797e0cff5458a2bb8
+#: ../../12-document.md:114 03af2056c92d408797e0cff5458a2bb8
 msgid "Suggested Checklist"
 msgstr "建议检查清单"
 
-#: ../../12-document.md:115 a3dcf95dd3094d6bb285af6a4bce8ccb
+#: ../../12-document.md:116 a3dcf95dd3094d6bb285af6a4bce8ccb
 msgid "Update the English source page under `man/` first."
 msgstr "先更新 `man/` 下的英文源页面。"
 
-#: ../../12-document.md:116 0852f104696546f5bd4e655456a755a7
+#: ../../12-document.md:117 0852f104696546f5bd4e655456a755a7
 msgid ""
 "Run the matching Level 1 script(s) so `_generated/` is current (`make pkb-"
 "level1` for the default set)."
 msgstr "跑对应的 Level 1 脚本，让 `_generated/` 保持最新（默认集合用 `make pkb-level1`）。"
 
-#: ../../12-document.md:117 20c4c866b0eb48d0948e7a70e70cd94d
+#: ../../12-document.md:118 20c4c866b0eb48d0948e7a70e70cd94d
 msgid ""
 "Merge facts into the human page. Keep `[NEEDS INPUT: …]` rather than "
 "inventing rationale. Do not paste the whole sidecar over the narrative."
 msgstr "把事实合并进人工页面。保留 `[NEEDS INPUT: …]`，不要编造理由。不要把整份附属产物贴进叙述。"
 
-#: ../../12-document.md:118 2ad54ab5c11b4744be7b220741739fe0
+#: ../../12-document.md:119 2ad54ab5c11b4744be7b220741739fe0
 msgid ""
 "Refresh the `<!-- PKB-metadata -->` footer: `last_updated`, `commit` (`git "
 "rev-parse --short HEAD`), `updated_by`. Leave `review_status: pending` and "
@@ -738,17 +742,17 @@ msgstr ""
 " HEAD`）、`updated_by`。除非人类正在批准，否则保持 `review_status: pending` 和 `review_score:"
 " 0`。永远不要降低 `confidentiality`。"
 
-#: ../../12-document.md:119 7c4d55da7aa24915b490c4e7d22ce634
+#: ../../12-document.md:120 7c4d55da7aa24915b490c4e7d22ce634
 msgid ""
 "After English wording changes, refresh zh_CN catalogs (once they exist) and "
 "re-check `make pkb-check-i18n`."
 msgstr "英文措辞变更后，刷新 zh_CN 目录（一旦它们存在）并再跑 `make pkb-check-i18n`。"
 
-#: ../../12-document.md:120 ce645bed751e43f0ab627e2983c69aee
+#: ../../12-document.md:121 ce645bed751e43f0ab627e2983c69aee
 msgid "Rebuild: `make html-en` or `make html-all`."
 msgstr "重建：`make html-en` 或 `make html-all`。"
 
-#: ../../12-document.md:121 30d5dff5a3dd4ed1a8042919bea12f07
+#: ../../12-document.md:122 30d5dff5a3dd4ed1a8042919bea12f07
 msgid ""
 "Verify toctree links, Mermaid, and the language switcher. For a public drop:"
 " `make strip-confidential` then AgentBox gen/deploy."
@@ -756,7 +760,7 @@ msgstr ""
 "核对 toctree 链接、Mermaid 和语言切换器。对外发布：`make strip-confidential`，再做 AgentBox "
 "生成/部署。"
 
-#: ../../12-document.md:123 fee1df2df1ae4b8f94bb4aad591d53db
+#: ../../12-document.md:124 fee1df2df1ae4b8f94bb4aad591d53db
 msgid "Common Mistakes"
 msgstr "常见错误"
 
@@ -873,6 +877,19 @@ msgid ""
 "`make gettext && make intl-update`, fill empty `msgstr`, then `html-zh`"
 msgstr "`make gettext && make intl-update`，填空 `msgstr`，再 `html-zh`"
 
+#: ../../12-document.md 5841bab4d17c4be8a09fde0358ec0f55
+msgid "Assume `html-all` refreshes catalogs"
+msgstr "假设 `html-all` 会刷新目录"
+
+#: ../../12-document.md 704dabf6b4e74557bb6c8a61a157d817
+msgid "A normal build changes no tracked PO source"
+msgstr "普通构建不会修改已跟踪的 PO 源文件"
+
+#: ../../12-document.md 5b070ddb66ba420c94a9e443bd89d4d9
+msgid ""
+"Run `make gettext` and `make intl-update` explicitly before translating"
+msgstr "翻译前显式运行 `make gettext` 和 `make intl-update`"
+
 #: ../../12-document.md a8f4660a98ac42b59cd4e624b4523114
 msgid "Feed the whole FreeSWITCH tree to an LLM to “refresh docs”"
 msgstr "把整棵 FreeSWITCH 树喂给 LLM 来“刷新文档”"
@@ -885,77 +902,45 @@ msgstr "烧 token，页面浅"
 msgid "Staleness report → one page + diff + one artifact"
 msgstr "过期报告 → 一页 + diff + 一份产物"
 
-#: ../../12-document.md:137 c5acf67b71c44fd8b00c9505baf01c15
+#: ../../12-document.md:139 c5acf67b71c44fd8b00c9505baf01c15
 msgid "Related Documentation"
 msgstr "相关文档"
 
-#: ../../12-document.md:139 778218b4c96045e390b53c0d3ec1cf86
+#: ../../12-document.md:141 778218b4c96045e390b53c0d3ec1cf86
 msgid ""
 "[Build, Release, and Publish](08-build.md) — Autotools/CI plus the short PKB"
 " HTML command block"
 msgstr "[构建、发布与上线](08-build.md) — Autotools/CI 以及简短的 PKB HTML 命令块"
 
-#: ../../12-document.md:140 b4c74eb44a174e6e8a3fe23a9c6e2276
+#: ../../12-document.md:142 b4c74eb44a174e6e8a3fe23a9c6e2276
 msgid "[Tech Stack](03-tech-stack.md) — product vs PKB Sphinx deps"
 msgstr "[技术栈](03-tech-stack.md) — 产品依赖 vs PKB Sphinx 依赖"
 
-#: ../../12-document.md:141 235ea01f5c004b7e9261a19efd12f96f
+#: ../../12-document.md:143 235ea01f5c004b7e9261a19efd12f96f
 msgid "[Repository Map](04-repo-map.md)"
 msgstr "[仓库地图](04-repo-map.md)"
 
-#: ../../12-document.md:142 8cfd7782e05242aaa6ed8c91b429104c
+#: ../../12-document.md:144 8cfd7782e05242aaa6ed8c91b429104c
 msgid "[Testing](09-testing.md)"
 msgstr "[测试](09-testing.md)"
 
-#: ../../12-document.md:143 ca9b97a65e004e998cdc815d2a0e96dd
+#: ../../12-document.md:145 ca9b97a65e004e998cdc815d2a0e96dd
 msgid "[AI Guide](ai-guide.md)"
 msgstr "[AI 指南](ai-guide.md)"
 
-#: ../../12-document.md:144 2599484fcba84629a25acbd0813a25aa
+#: ../../12-document.md:146 2599484fcba84629a25acbd0813a25aa
 msgid "[Documentation Changelog](CHANGELOG.md)"
 msgstr "[文档变更日志](CHANGELOG.md)"
 
-#: ../../12-document.md:145 bea0328f6ee4419dbf8153e0c66d57db
+#: ../../12-document.md:147 bea0328f6ee4419dbf8153e0c66d57db
 msgid "[ADR index](adr/index.md)"
 msgstr "[ADR 索引](adr/index.md)"
 
-#: ../../12-document.md:146 eac1212cc9a54e389adb053d891e1113
+#: ../../12-document.md:148 eac1212cc9a54e389adb053d891e1113
 msgid "[Change proposals](changes/index.md)"
 msgstr "[变更提案](changes/index.md)"
 
-#: ../../12-document.md:147 2ed5fd998798435c87bb4aeb2b86d165
+#: ../../12-document.md:149 2ed5fd998798435c87bb4aeb2b86d165
 msgid ""
 "[FreeSWITCH Users Manual](https://developer.signalwire.com/freeswitch/)"
 msgstr "[FreeSWITCH 用户手册](https://developer.signalwire.com/freeswitch/)"
-
-#~ msgid ""
-#~ "**Scaffold only.** Directory currently holds `.gitkeep`. No `.pot` / `.po` /"
-#~ " `.mo` catalogs yet. Planned: `make gettext` then `make intl-update`, then "
-#~ "human (or dictionary) fill of `msgstr`."
-#~ msgstr ""
-#~ "**目前只是脚手架。** 目录里现在只有 `.gitkeep`。尚无 `.pot` / `.po` / `.mo` 目录。计划：先 `make "
-#~ "gettext` 再 `make intl-update`，然后由人（或词典）填写 `msgstr`。"
-
-#~ msgid ""
-#~ "`make pkb-check-i18n`. Will report missing `.po` files until catalogs are "
-#~ "generated."
-#~ msgstr "`make pkb-check-i18n`。在目录生成之前会报告缺少 `.po` 文件。"
-
-#~ msgid ""
-#~ "`make translate-zh`. `TRANSLATIONS` dict is empty (examples only) until "
-#~ "catalogs exist."
-#~ msgstr "`make translate-zh`。在目录存在之前，`TRANSLATIONS` 字典是空的（只有示例）。"
-
-#~ msgid ""
-#~ "English HTML is implemented. Chinese catalogs and a first `html-zh` build "
-#~ "are **planned** (locale dir exists; catalogs do not)."
-#~ msgstr "英文 HTML 已落地。中文目录和第一次 `html-zh` 构建仍是 **计划中**（locale 目录在，目录文件还不在）。"
-
-#~ msgid "Expect zh_CN HTML before catalogs exist"
-#~ msgstr "目录还不存在就指望 zh_CN HTML"
-
-#~ msgid "Empty/untranslated Chinese build"
-#~ msgstr "空的/未翻译的中文构建"
-
-#~ msgid "FreeSWITCH Explained, Confluence, `docs/man/`"
-#~ msgstr "FreeSWITCH Explained、Confluence、`docs/man/`"

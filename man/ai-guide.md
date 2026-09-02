@@ -8,10 +8,10 @@ This guide explains how AI assistants should consume and use the Project Knowled
 
 1. Start with [Project Overview](00-overview.md) for purpose, scope, and users. If the three configuration domains (directory / dialplan / configuration) are new, also read [Users Manual Chapter 1](https://developer.signalwire.com/freeswitch/foundations/introduction).
 2. Read [Repository Map](04-repo-map.md) to locate entry points and important directories.
-3. Read [Architecture](02-architecture.md) and [Workflows](06-workflows.md) for cross-cutting behavior.
-4. Check [Data and API](05-data-and-api.md) before changing schemas, contracts, or shared models.
-5. Use [Testing](09-testing.md), [Runbook](10-runbook.md), and [Observability](11-observability.md) before validating or debugging changes.
-6. Use [Build](08-build.md) when the change affects CI, packaging, release, or docs publishing.
+3. Read [Architecture](02-architecture.md) for cross-cutting behavior, then [Tech Stack](03-tech-stack.md) for build and dependency boundaries.
+4. Check [Data and API](05-data-and-api.md) and [Workflows](06-workflows.md) before changing contracts or runtime behavior.
+5. Use [Conventions](07-conventions.md), [Build](08-build.md), and [Testing](09-testing.md) before implementing or validating changes.
+6. Use [Runbook](10-runbook.md) and [Observability](11-observability.md) when debugging or operating the switch.
 7. Use [Documentation Process](12-document.md) when refreshing the PKB itself.
 
 ## The Three-Round Learning Process
@@ -21,8 +21,8 @@ This guide explains how AI assistants should consume and use the Project Knowled
 Read:
 
 - [Project Overview](00-overview.md)
-- [Architecture](02-architecture.md)
 - [Repository Map](04-repo-map.md)
+- [Architecture](02-architecture.md)
 
 Expected output:
 
@@ -34,8 +34,8 @@ Expected output:
 
 Read:
 
-- [Workflows](06-workflows.md)
 - [Data and API](05-data-and-api.md)
+- [Workflows](06-workflows.md)
 - relevant code files referenced by those docs
 
 Expected output:
@@ -48,6 +48,7 @@ Expected output:
 
 Read:
 
+- [Documentation Process](12-document.md) when the change itself updates this PKB
 - [Testing](09-testing.md)
 - [Runbook](10-runbook.md)
 - [Observability](11-observability.md)
@@ -162,7 +163,7 @@ When the PKB is unclear or stale:
 
 **Remember**: the goal is not to memorize everything. The goal is to know where trustworthy information lives, what still needs human input, and how to keep context small enough for accurate AI work.
 <!-- PKB-metadata
-last_updated: 2026-08-17
+last_updated: 2026-08-30
 commit: d94936cc10
 updated_by: human+ai
 review_status: pending

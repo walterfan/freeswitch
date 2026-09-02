@@ -41,7 +41,7 @@ Channel variables use `${name}` at **call time**. Preprocessor variables use `$$
 
 FreeSWITCH is one softswitch process that terminates signaling and media, executes a dialplan, and emits events. Callers are SIP phones, trunks, and WebRTC browsers. Operators edit XML and use `fs_cli`. Application code either embeds (Lua/Python/V8 modules) or sits **outside** the process on the Event Socket (ESL). SignalWire is an optional cloud peer via `mod_signalwire`.
 
-```{mermaid}
+```mermaid
 C4Context
     title C4 Context — FreeSWITCH
     Person(operator, "Operator / SRE", "XML, CLI, logs")
@@ -73,10 +73,10 @@ Deployable runtime pieces. Modules are **not** listed here; they load into the `
 | `freeswitch` process | Sessions, state machine, media, module host, XML registry, event bus | C, APR, POSIX threads / Windows service | XML on disk, core SQLite (or ODBC/pgsql), RTP ports, loaded DSOs |
 | XML config tree | Dialplan, directory, SIP profiles, module autoload | Preprocessed XML (`X-PRE-PROCESS` / `#include`) | Flattened to `freeswitch.xml.fsxml` at start (`conf/vanilla/freeswitch.xml`) |
 | Core database | Internal scoreboard / recovery / some module data | SQLite by default (`sqlite3_initialize` in `switch_core_init`); optional ODBC/pgsql | `db/` under prefix |
-| ESL client (`fs_cli` or custom) | Out-of-process API + event subscribe | TCP to `mod_event_socket` | Loopback 8021 by default |
+| ESL client (`fs_cli` or custom) | Out-of-process API + event subscribe | TCP to `mod_event_socket` | `fs_cli` targets `127.0.0.1:8021` by default; vanilla server config listens on `::` |
 | SIP / WebRTC peers | Signaling and media | Sofia-SIP, Verto | UDP/TCP 5060/5080, WSS, RTP ranges |
 
-```{mermaid}
+```mermaid
 flowchart LR
     subgraph host["Host"]
       xml["XML confdir"]
@@ -94,13 +94,19 @@ flowchart LR
 
 UML nearest match: deployment / component diagram.
 
-Default install prefix is `/usr/local/freeswitch` (`configure.ac`). One process per host is the unit of deployment; extra hosts are operator-owned HA, not an in-tree orchestrator. `switchname` in `conf/vanilla/autoload_configs/switch.conf.xml` only overrides hostname for DB/CURL identity in clustered configs.
+Default install prefix is `/usr/local/freeswitch` (`configure.ac`). The
+developer commands in [Quick Start](01-quick-start.md) add `--disable-fhs`, so
+their paths stay below the prefix; a custom prefix without that flag uses FHS
+paths. One process per host is the unit of deployment; extra hosts are
+operator-owned HA, not an in-tree orchestrator. `switchname` in
+`conf/vanilla/autoload_configs/switch.conf.xml` only overrides hostname for
+DB/CURL identity in clustered configs.
 
 ## Component View
 
 ### `freeswitch` process
 
-```{mermaid}
+```mermaid
 flowchart TB
     main["switch.c main"] --> init["switch_core_init_and_modload"]
     init --> xml["XML registry switch_xml.c"]
@@ -141,7 +147,7 @@ flowchart TB
 
 Default inbound path after create: `CS_NEW` → `CS_INIT` → `CS_ROUTING` (dialplan hunt) → `CS_EXECUTE` (apps) → `CS_EXCHANGE_MEDIA` or hangup path `CS_HANGUP` → `CS_REPORTING` → `CS_DESTROY`.
 
-```{mermaid}
+```mermaid
 stateDiagram-v2
     [*] --> CS_NEW
     CS_NEW --> CS_INIT
@@ -184,7 +190,12 @@ Media mode on a Sofia profile ([Chapter 17](https://developer.signalwire.com/fre
 #### Event engine and ESL
 
 - **Bus**: APR FIFO + backend thread (`src/include/switch_event.h`). Bind callbacks or consume from `mod_event_socket`.
-- **ESL**: `mod_event_socket` listens (default `127.0.0.1:8021`, password `ClueCon`). `fs_cli` is built from `libs/esl/fs_cli.c`. Auth flag `LFLAG_AUTHED` in `mod_event_socket.c`. Slow consumers must queue locally — the core warns against blocking the delivery thread.
+- **ESL**: the vanilla `mod_event_socket` configuration listens on wildcard
+  IPv6 `::`:8021 with password `ClueCon`; the module sample binds
+  `127.0.0.1`. `fs_cli` is built from `libs/esl/fs_cli.c` and targets
+  `127.0.0.1:8021` by default. Auth flag `LFLAG_AUTHED` is in
+  `mod_event_socket.c`. Slow consumers must queue locally — the core warns
+  against blocking the delivery thread.
 
 #### Logging
 
@@ -205,7 +216,7 @@ Only types on the hot path. Full headers are the API; this is the map.
 | XML | `switch_xml_open_root`, preprocessor in `conf/vanilla/freeswitch.xml` | Config is data, not code |
 | Originate / bridge | `switch_ivr_originate`, `src/switch_ivr_bridge.c` | Outbound legs and B2BUA |
 
-```{mermaid}
+```mermaid
 classDiagram
     class switch_core_session_t {
         +pool
@@ -251,7 +262,7 @@ UML nearest match: class diagram + state machine (channel states above).
 
 ### Inbound SIP call (vanilla)
 
-```{mermaid}
+```mermaid
 sequenceDiagram
     participant UA as SIP UA
     participant Sofia as mod_sofia
@@ -291,7 +302,7 @@ Client connects to 8021, authenticates, then `api` / `bgapi` / `event` / `sendms
 
 ## Cross-Cutting Concerns
 
-- **Authentication and authorization**: SIP digest + ACL lists (`conf/vanilla/autoload_configs/acl.conf.xml`, Sofia `apply-inbound-acl`). ESL password in `event_socket.conf.xml` (default `ClueCon`, loopback only). Directory users are **not** OS users.
+- **Authentication and authorization**: SIP digest + ACL lists (`conf/vanilla/autoload_configs/acl.conf.xml`, Sofia `apply-inbound-acl`). ESL password in `event_socket.conf.xml` (default `ClueCon`); vanilla binds to wildcard `::` with its inbound ACL commented out, while the module sample is loopback-only. Directory users are **not** OS users.
 - **Error handling**: `switch_status_t` and hangup `switch_call_cause_t` on the channel. Endpoints return `SWITCH_STATUS_FALSE` from a state handler to skip the core’s standard handler (`sofia_on_init` comment).
 - **Logging and tracing**: `switch_log_printf` with session UUID via `SWITCH_CHANNEL_SESSION_LOG`. Sofia `siptrace` is a profile/CLI switch, not distributed tracing. No OpenTelemetry in this tree.
 - **Caching**: compiled XML root is memory-mapped (`freeswitch.xml.fsxml`); `reloadxml` re-parses. Directory/ACL can be rebuilt from XML. RTP jitter buffer is per-session, not a shared cache.
@@ -315,7 +326,7 @@ Client connects to 8021, authenticates, then `api` / `bgapi` / `event` / `sendms
 
 ---
 <!-- PKB-metadata
-last_updated: 2026-08-17
+last_updated: 2026-08-30
 commit: d94936cc10
 updated_by: human+ai
 review_status: pending

@@ -41,6 +41,7 @@ def main() -> int:
     for entry in po.untranslated_entries():
         if entry.msgid in mapping and mapping[entry.msgid]:
             entry.msgstr = mapping[entry.msgid]
+            entry.flags = [flag for flag in entry.flags if flag != "fuzzy"]
             filled += 1
         else:
             missing += 1

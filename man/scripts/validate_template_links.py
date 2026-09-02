@@ -172,8 +172,10 @@ def print_report(issues: List[LinkIssue]) -> None:
 def main() -> None:
     script_dir = os.path.dirname(os.path.abspath(__file__))
     skill_root = os.path.dirname(script_dir)
-    default_template_dir = os.path.join(skill_root, "templates", "docs")
-    default_index_file = os.path.join(skill_root, "templates", "sphinx", "index.md")
+    # This copy is maintained inside a generated PKB, so its defaults should
+    # validate the current PKB rather than the skill repository that created it.
+    default_template_dir = skill_root
+    default_index_file = os.path.join(skill_root, "index.md")
 
     parser = argparse.ArgumentParser(description="Validate PKB template links against the canonical page set")
     parser.add_argument("--template-dir", default=default_template_dir, help="Directory containing template markdown files")
@@ -206,7 +208,7 @@ def main() -> None:
         ]
         needs_input = [
             "decide whether any intentional legacy cross-links should remain as plain text instead of markdown links",
-            "if the standard PKB numbering changes, update templates/sphinx/index.md before changing template links",
+            "if the standard PKB numbering changes, update the in-tree index.md before changing PKB links",
         ]
         artifact = (
             render_json_artifact(

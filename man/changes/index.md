@@ -1,6 +1,9 @@
 # Change Proposals
 
-This directory contains change proposals following the OpenSpec workflow.
+This directory contains PKB-local change proposals following the OpenSpec
+workflow. Repository-level proposals under `openspec/changes/` are a separate
+source tree and are not included in this Sphinx site; link or summarize them
+here when they need to be discoverable to PKB readers.
 
 ## What is a Change Proposal?
 
@@ -34,15 +37,15 @@ Use the `/PKB-change` command:
 
 ## Active Changes
 
-(Each change is a subdirectory with `proposal.md`, `design.md`, `tasks.md`. Copy `_template/` to create a new change.)
+(Each change is a subdirectory with `proposal.md`, `design.md`, `tasks.md`.
+Copy `_template/` to create a new PKB-local change.)
 
 ```{toctree}
 :maxdepth: 1
 :hidden:
+:glob:
 
-_template/proposal
-_template/design
-_template/tasks
+*/*
 ```
 
 ## Change Status
@@ -83,7 +86,7 @@ _template/tasks
 
 ---
 <!-- PKB-metadata
-last_updated: 2026-08-17
+last_updated: 2026-08-30
 commit: d94936cc10
 updated_by: human+ai
 review_status: pending

@@ -26,13 +26,16 @@ Use the `/PKB-adr` command:
 
 ## ADR List
 
-There are no numbered records yet (`adr/0001-*.md`). Create one with `/PKB-adr "title"`, then add the new file to the toctree below (or restore a `:glob:` entry `0*`).
+There are no numbered records yet (`adr/0001-*.md`). Create one with
+`/PKB-adr "title"`; numbered records are discovered automatically by the
+toctree below.
 
 ```{toctree}
 :maxdepth: 1
 :caption: ADR documents
+:glob:
 
-template
+*
 ```
 
 ## Index by Status
@@ -56,7 +59,7 @@ template
 
 ---
 <!-- PKB-metadata
-last_updated: 2026-08-17
+last_updated: 2026-08-30
 commit: d94936cc10
 updated_by: human+ai
 review_status: pending

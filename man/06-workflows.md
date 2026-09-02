@@ -8,12 +8,122 @@ These flows use vanilla XML (`conf/vanilla/`). Other profiles (`conf/sbc`, `conf
 
 ## Workflow Index
 
-1. [Inbound SIP call](#inbound-sip-call)
-2. [SIP registration and directory lookup](#sip-registration-and-directory-lookup)
-3. [ESL originate and event control](#esl-originate-and-event-control)
-4. [XML reload](#xml-reload)
+1. [Server startup](#server-startup)
+2. [Inbound SIP call](#inbound-sip-call)
+3. [SIP registration and directory lookup](#sip-registration-and-directory-lookup)
+4. [ESL originate and event control](#esl-originate-and-event-control)
+5. [XML reload](#xml-reload)
 
 Vanilla 1000 calling 1001 (config files, not C): REGISTER on `sip_profiles/internal.xml` → directory `directory/default/1000.xml` (`user_context=default`) → INVITE `1001` → `dialplan/default.xml` `Local_Extension` → `bridge` `user/${dialed_extension}@${domain_name}`. Internal profile `context` is `public`; that value applies only to **unauthenticated** inbound. Late codec negotiation: `inbound-late-negotiation=true` on the internal profile.
+
+---
+
+## Server Startup
+
+### Trigger and Goal
+
+- **Trigger**: execute `freeswitch` with command-line options. The common local command is `freeswitch -ncwait -nonat`; `-ncwait` backgrounds the process and waits for the child to report readiness, while `-nonat` disables automatic NAT detection.
+- **Goal**: establish process and runtime state, create the configured directories and PID lock, initialize the core services, load XML configuration and modules, announce `SWITCH_EVENT_STARTUP`, then remain in the console or background runtime loop until shutdown.
+
+### Main Flow
+
+```mermaid
+sequenceDiagram
+    participant CLI as freeswitch process
+    participant Core as switch_core
+    participant XML as switch_xml
+    participant Mods as loadable modules
+    participant DB as core SQL
+    participant Bus as Event engine
+    participant Runtime as Runtime loop
+
+    CLI->>CLI: Parse options and flags
+    CLI->>CLI: Initialize APR, directories, and PID lock
+    alt -nc / -ncwait
+        CLI->>CLI: daemonize (fork, setsid, redirect stdio)
+    else -c
+        CLI->>CLI: stay in foreground console
+    end
+    CLI->>Core: switch_core_init_and_modload(flags, console, err)
+    Core->>Core: switch_core_init
+    Core->>Core: SQLite, APR pool, sessions, events, logging
+    Core->>XML: switch_xml_init
+    XML-->>Core: parsed root configuration
+    Core->>Core: switch.conf, state machine, media, scheduler, RTP
+    Core->>Mods: switch_loadable_module_init
+    Mods->>Mods: core, pre-load, common, post-load modules
+    Mods->>DB: switch_core_sqldb_init
+    DB-->>Mods: core scoreboard ready
+    Mods-->>Core: modules loaded and runtime threads started
+    Core->>Bus: SWITCH_EVENT_STARTUP (System Ready)
+    Core->>CLI: clear SCF_NO_NEW_SESSIONS
+    CLI->>Runtime: switch_core_runtime_loop(nc)
+    Runtime-->>CLI: run until shutdown
+```
+
+### Key Steps
+
+1. **Parse process options.** `main()` starts with core flags for SQL scoreboard, automatic NAT detection / port mapping, clock calibration, and realtime clock. Options such as `-nosql`, `-nonat`, `-nonatmap`, `-nc`, `-ncwait`, `-c`, `-conf`, `-log`, `-run`, and `-mod` modify those flags or global directories. `FREESWITCH_OPTS` is appended to the command-line arguments before parsing.
+2. **Initialize the process runtime.** APR is initialized before the core. `switch_core_set_globals()` resolves the base, configuration, module, log, run, database, and related directories. The process creates or locks `${run_dir}/freeswitch.pid`; a second process using the same run directory exits instead of starting a duplicate server.
+3. **Choose foreground or background mode.** `-c` passes `console=true` and enters the interactive console loop. `-nc` backgrounds without waiting. `-ncwait` backgrounds and uses a pipe so the parent waits until initialization succeeds or fails. `-nonat` removes `SCF_USE_AUTO_NAT`; it does not disable SIP or RTP.
+4. **Apply process controls.** Signal handlers are installed for shutdown, optional priority is selected (`-rp`, `-lp`, or `-np`), resource limits are set, and `-u` / `-g` can drop to the requested user and group before core initialization.
+5. **Initialize the core.** `switch_core_init()` resets runtime state, initializes SQLite, APR-backed memory pools, core session structures, global events, MIME types, console, event engine, and channel globals. It creates the configured directories and sets global variables such as `conf_dir`, `log_dir`, `run_dir`, and `mod_dir`.
+6. **Load the root configuration.** `switch_xml_init()` parses the configured `freeswitch.xml` and its preprocessor includes. Unless `SCF_MINIMAL` is set, `switch_core_init()` then loads `switch.conf`, initializes the state machine and media layer, starts the scheduler task thread, performs late NAT initialization, initializes RTP, and schedules heartbeat / IP-check tasks.
+7. **Load modules in dependency order.** `switch_loadable_module_init()` first prepares the module registries and loads core modules. It then reads `pre_load_modules.conf.xml`, starts the core SQL scoreboard, releases module-load events held until SQL is ready, reads `modules.conf.xml` and `post_load_modules.conf.xml`, and finally starts module runtime threads. A `critical="true"` module failure aborts startup.
+8. **Publish readiness.** `switch_core_init_and_modload()` logs `Bringing up environment.` and `Loading Modules.`, fires `SWITCH_EVENT_STARTUP` with `Event-Info: System Ready`, prints the banner and startup summary, executes the optional `api_on_startup` command, and clears `SCF_NO_NEW_SESSIONS`. With systemd support it also sends `READY=1`.
+9. **Enter the runtime loop.** `switch_core_runtime_loop(nc)` waits on `runtime.running` in background mode or reads console input in foreground mode. `-ncwait` reports readiness to its parent only after the initialization function returns successfully.
+10. **Shutdown and cleanup.** SIGTERM / console shutdown leaves the runtime loop, calls `switch_core_destroy()`, marks the runtime as shutting down, rejects new sessions, hangs up existing sessions, shuts down modules and event / XML / RTP services, closes the PID file, removes it, and optionally re-execs when the result is `SWITCH_STATUS_RESTART`.
+
+### Startup Output and Checks
+
+Typical console output includes:
+
+```text
+Bringing up environment.
+Loading Modules.
+FreeSWITCH Started
+```
+
+For a background install, readiness should be checked through ESL after the process starts:
+
+```bash
+"$HOME/fs/bin/freeswitch" -ncwait -nonat
+"$HOME/fs/bin/fs_cli" -x status
+```
+
+`fs_cli -x status` should print a line beginning with `UP`. `-ncwait` only means the parent waits for the child initialization handshake; it does not replace an application-level health check.
+
+### Error and Edge Cases
+
+| Case | Where handled | Expected outcome |
+|------|---------------|------------------|
+| Existing or locked PID file | `main` / `switch_file_lock` | Startup stops; the old PID content is preserved in the failure path |
+| Invalid command-line option | `main` | Error text and non-zero exit |
+| Missing XML root or malformed configuration | `switch_xml_init` / `switch_xml_open_root` | Initialization fails unless `SCF_MINIMAL` permits missing configuration |
+| Core SQL unavailable | `switch_core_sqldb_init` | Module loading is interrupted and startup fails |
+| Critical module cannot load | `switch_loadable_module_init` | Logs a critical error and calls `abort()` |
+| Non-critical module cannot load | `switch_loadable_module_init` | Logs the module error and continues loading other modules |
+| `-ncwait` child initialization failure | `daemonize` pipe handshake | Parent reports `Error starting system!` and exits after terminating the child |
+| SIGTERM | `handle_SIGTERM` / `handle_SIGILL` | Requests elegant or immediate core shutdown, depending on `-elegant-term` |
+| Restart requested by a module / API | `switch_core_destroy` → `main` | PID file is removed and the process re-execs, with a fork/system fallback |
+
+### Data and Contracts Involved
+
+- Global directory structure: `SWITCH_GLOBAL_dirs` and `${run_dir}/freeswitch.pid`.
+- Runtime flags: `SCF_USE_SQL`, `SCF_USE_AUTO_NAT`, `SCF_USE_NAT_MAPPING`, `SCF_NO_NEW_SESSIONS`, and `SCF_SHUTTING_DOWN`.
+- XML configuration layers: `freeswitch.xml`, `switch.conf`, `pre_load_modules.conf.xml`, `modules.conf.xml`, `post_load_modules.conf.xml`.
+- Startup event: `SWITCH_EVENT_STARTUP` with `Event-Info: System Ready`.
+- Readiness state: `runtime.running` and the `-ncwait` parent/child pipe handshake.
+
+### Code References
+
+- `src/switch.c` — `main`, option parsing, daemonization, PID file, signal handling, runtime loop
+- `src/switch_core.c` — `switch_core_init`, `switch_core_init_and_modload`, `switch_core_runtime_loop`, `switch_core_destroy`
+- `src/switch_loadable_module.c` — `switch_loadable_module_init`, preload/common/postload module ordering, runtime threads
+- `src/switch_xml.c` — XML root initialization and reload primitives
+- `src/switch_core_sqldb.c` — core SQL scoreboard initialization and shutdown
+- `conf/vanilla/freeswitch.xml` — default configuration root and included sections
+- `conf/vanilla/autoload_configs/modules.conf.xml` — runtime module load list
 
 ---
 
@@ -26,7 +136,7 @@ Vanilla 1000 calling 1001 (config files, not C): REGISTER on `sip_profiles/inter
 
 ### Main Flow
 
-```{mermaid}
+```mermaid
 sequenceDiagram
     participant UA as SIP UA
     participant Sofia as mod_sofia
@@ -127,7 +237,7 @@ Vanilla directory: domain `$${domain}` in `conf/vanilla/directory/default.xml`, 
 
 ### Main Flow
 
-```{mermaid}
+```mermaid
 sequenceDiagram
     participant UA as SIP UA
     participant Sofia as sofia_reg
@@ -207,11 +317,14 @@ sequenceDiagram
 - **Trigger**: TCP client (`fs_cli` or custom `libs/esl`) connects to `mod_event_socket`. Vanilla listen: port **8021**, password **`ClueCon`**, `listen-ip` **`::`** in `conf/vanilla/autoload_configs/event_socket.conf.xml`. `fs_cli` itself defaults to **`127.0.0.1:8021`** / `ClueCon` (`libs/esl/fs_cli.c`).
 - **Goal**: authenticate, then run console APIs (`api` / `bgapi`, including `originate`), subscribe to events, and/or drive a live UUID with `sendmsg` (`call-command: execute|hangup|…`). Outbound mode: dialplan app `socket` connects **from** FreeSWITCH to a controller.
 
-Do not bind ESL beyond loopback in production without changing `ClueCon` — vanilla `listen-ip` is `::` (all interfaces). **[NEEDS INPUT: site ESL bind and password]**.
+For production, bind ESL to loopback or a trusted management network, enable
+an inbound ACL, and replace `ClueCon`; the vanilla `listen-ip` is `::`
+(wildcard IPv6, with IPv4 behavior dependent on the host socket settings).
+**[NEEDS INPUT: site ESL bind and password]**.
 
 ### Main Flow
 
-```{mermaid}
+```mermaid
 sequenceDiagram
     participant CLI as fs_cli or ESL app
     participant Sock as mod_event_socket
@@ -225,7 +338,7 @@ sequenceDiagram
     CLI->>Sock: auth ClueCon
     Sock-->>CLI: +OK accepted
     CLI->>Sock: event plain ALL
-    CLI->>Sock: api originate sofia/internal/1000@domain andecho XML default
+    CLI->>Sock: api originate sofia/internal/1000@domain &echo()
     Sock->>API: originate_function
     API->>IVR: switch_ivr_originate
     IVR->>Sofia: sofia_outgoing_channel TFLAG_OUTBOUND
@@ -297,7 +410,7 @@ sequenceDiagram
 
 ### Main Flow
 
-```{mermaid}
+```mermaid
 sequenceDiagram
     participant Op as fs_cli / ESL
     participant Cmd as mod_commands
@@ -330,7 +443,7 @@ sequenceDiagram
 2. **Commit or keep old.** Parse error: `switch_xml_error()` copied to `err`, new tree discarded, previous root stays. Success: `switch_xml_set_root(new_main)`, `err` = `"Success"`.
 3. **Notify.** If a root is returned, `SWITCH_EVENT_RELOADXML` is fired (`switch_xml_open_root`). Modules that `switch_event_bind(..., SWITCH_EVENT_RELOADXML, ...)` refresh themselves (examples in-tree: `mod_voicemail` does not bind this id for its main config in the same way; `mod_enum`, `mod_cidlookup`, `mod_loopback`, `mod_avmd`, `mod_tts_commandline` do).
 4. **What picks up immediately.** Next `dialplan_hunt()` / `switch_xml_locate_user()` reads the new root. Vanilla file users without `cacheable` are re-read from XML.
-5. **What does not auto-apply.** `mod_sofia` does **not** bind `SWITCH_EVENT_RELOADXML`. SIP profile parameters, gateways, and codecs need `sofia profile <name> rescan` (that API itself calls `switch_xml_reload` then `config_sofia(SOFIA_CONFIG_RESCAN)`). ACL lists: `reloadacl` reloads XML **and** `switch_load_network_lists(SWITCH_TRUE)`. Loaded DSOs: `reload <module>` is separate from XML.
+5. **What does not auto-apply.** `mod_sofia` does **not** bind `SWITCH_EVENT_RELOADXML`. `sofia profile <name> rescan` reloads supported profile data and reparses gateways, domains, and aliases, but it does not rebind transport sockets. Changes to `sip-ip`, `sip-port`, TLS, `ws-binding`, or `wss-binding` require a profile restart or process restart. ACL lists: `reloadacl` reloads XML **and** `switch_load_network_lists(SWITCH_TRUE)`. Loaded DSOs: `reload <module>` is separate from XML.
 
 `mod_xml_curl` (when enabled) may replace `__switch_xml_open_root` via `switch_xml_set_open_root_function()` — then “reload” is whatever that hook does (HTTP fetch). **[NEEDS INPUT: whether this deploy uses `mod_xml_curl` for live XML]**.
 
@@ -371,8 +484,8 @@ sequenceDiagram
 
 ---
 <!-- PKB-metadata
-last_updated: 2026-08-17
-commit: d94936cc10
+last_updated: 2026-08-31
+commit: ea429c9d49
 updated_by: human+ai
 review_status: pending
 review_score: 0

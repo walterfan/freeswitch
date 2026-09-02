@@ -5,7 +5,7 @@ description = "Poetry-managed Sphinx dependencies for the FreeSWITCH Project Kno
 authors = [
     {name = "Walter Fan", email = "walterfan@ustc.etu"}
 ]
-requires-python = "^3.10"
+requires-python = ">=3.10,<4.0"
 dependencies = [
     "sphinx (>=7.0.0)",
     "myst-parser (>=2.0.0)",

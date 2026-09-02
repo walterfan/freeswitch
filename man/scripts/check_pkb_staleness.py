@@ -7,7 +7,7 @@ potentially stale documentation. Git commit time is preferred when available,
 with filesystem mtime as a fallback.
 
 Usage:
-    python check_pkb_staleness.py --repo-root . --doc-dir doc
+    python check_pkb_staleness.py --repo-root . --doc-dir man
     python check_pkb_staleness.py --json
     python check_pkb_staleness.py --config .pkb-source-doc-map.json
 
@@ -28,7 +28,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from glob import glob
-from typing import Dict, Iterable, List, Optional
+from typing import Dict, Iterable, List, Optional, Tuple
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -95,11 +95,23 @@ DEFAULT_SOURCE_DOC_MAP = [
     {"pattern": "prometheus/**", "docs": ["11-observability"]},
 ]
 
+IGNORED_SOURCE_PARTS = {
+    ".git",
+    "_build",
+    "_generated",
+    "__pycache__",
+    "node_modules",
+    "target",
+    "dist",
+}
+
 DEFAULT_CONFIG_CANDIDATES = [
     ".pkb-source-doc-map.json",
     "doc/pkb-source-doc-map.json",
     "man/pkb-source-doc-map.json",
 ]
+
+_DIRTY_PATHS_CACHE: Dict[str, set[str]] = {}
 
 
 @dataclass
@@ -129,6 +141,23 @@ def git_last_modified(path: str, repo_root: str) -> Optional[datetime]:
     return None
 
 
+def git_pattern_last_modified(pattern: str, repo_root: str) -> Optional[datetime]:
+    """Get the latest commit time for a Git pathspec."""
+    try:
+        result = subprocess.run(
+            ["git", "log", "-1", "--format=%aI", "--", pattern],
+            capture_output=True,
+            text=True,
+            cwd=repo_root,
+            timeout=10,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            return datetime.fromisoformat(result.stdout.strip())
+    except (subprocess.TimeoutExpired, FileNotFoundError, ValueError):
+        pass
+    return None
+
+
 def fs_last_modified(path: str) -> Optional[datetime]:
     """Get filesystem mtime."""
     try:
@@ -137,13 +166,86 @@ def fs_last_modified(path: str) -> Optional[datetime]:
         return None
 
 
+def worktree_is_dirty(repo_root: str, path: str) -> bool:
+    """Return whether a path has uncommitted or untracked changes."""
+    if repo_root not in _DIRTY_PATHS_CACHE:
+        try:
+            result = subprocess.run(
+                ["git", "status", "--porcelain", "--untracked-files=all"],
+                capture_output=True,
+                text=True,
+                cwd=repo_root,
+                timeout=30,
+            )
+            dirty_paths = set()
+            if result.returncode == 0:
+                for line in result.stdout.splitlines():
+                    if len(line) < 4:
+                        continue
+                    dirty_path = line[3:]
+                    if " -> " in dirty_path:
+                        dirty_path = dirty_path.rsplit(" -> ", 1)[-1]
+                    dirty_paths.add(os.path.normpath(dirty_path))
+            _DIRTY_PATHS_CACHE[repo_root] = dirty_paths
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            _DIRTY_PATHS_CACHE[repo_root] = set()
+
+    rel_path = os.path.normpath(os.path.relpath(path, repo_root))
+    return rel_path in _DIRTY_PATHS_CACHE[repo_root]
+
+
+def last_modified(path: str, repo_root: str, use_git: bool) -> Optional[datetime]:
+    """Use working-tree time for dirty files, otherwise commit time."""
+    filesystem_time = fs_last_modified(path)
+    if not use_git:
+        return filesystem_time
+
+    if worktree_is_dirty(repo_root, path):
+        return filesystem_time or git_last_modified(os.path.relpath(path, repo_root), repo_root)
+
+    return git_last_modified(os.path.relpath(path, repo_root), repo_root) or filesystem_time
+
+
+def latest_source_modified(
+    pattern: str,
+    source_files: List[str],
+    repo_root: str,
+    use_git: bool,
+) -> Tuple[Optional[datetime], str]:
+    """Find the newest source time without one Git process per source file."""
+    candidates = [
+        (fs_last_modified(os.path.join(repo_root, rel_path)), rel_path)
+        for rel_path in source_files
+        if worktree_is_dirty(repo_root, os.path.join(repo_root, rel_path))
+    ]
+    candidates = [(mtime, rel_path) for mtime, rel_path in candidates if mtime is not None]
+    if not use_git:
+        candidates = [
+            (fs_last_modified(os.path.join(repo_root, rel_path)), rel_path)
+            for rel_path in source_files
+        ]
+        candidates = [(mtime, rel_path) for mtime, rel_path in candidates if mtime is not None]
+        return max(candidates, key=lambda item: item[0], default=(None, pattern))
+
+    git_time = git_pattern_last_modified(pattern, repo_root)
+    if git_time is not None:
+        candidates.append((git_time, pattern))
+    return max(candidates, key=lambda item: item[0], default=(None, pattern))
+
+
 def find_files_by_glob(pattern: str, repo_root: str) -> List[str]:
     """Expand glob pattern relative to repo root."""
     full_pattern = os.path.join(repo_root, pattern)
     matches = glob(full_pattern, recursive=True)
-    return sorted(
-        os.path.relpath(match, repo_root) for match in matches if os.path.isfile(match)
-    )
+    files = []
+    for match in matches:
+        if not os.path.isfile(match):
+            continue
+        relative = os.path.relpath(match, repo_root)
+        if any(part in IGNORED_SOURCE_PARTS for part in relative.split(os.sep)):
+            continue
+        files.append(relative)
+    return sorted(files)
 
 
 def detect_level(days_behind: int) -> str:
@@ -195,9 +297,7 @@ def collect_doc_mtimes(repo_root: str, doc_dir: str, use_git: bool) -> Dict[str,
             continue
         rel_path = os.path.relpath(os.path.join(doc_path, name), repo_root)
         abs_path = os.path.join(doc_path, name)
-        mtime = git_last_modified(rel_path, repo_root) if use_git else None
-        if mtime is None:
-            mtime = fs_last_modified(abs_path)
+        mtime = last_modified(abs_path, repo_root, use_git)
         if mtime is not None:
             doc_mtimes[name[:-3]] = mtime
     return doc_mtimes
@@ -205,7 +305,7 @@ def collect_doc_mtimes(repo_root: str, doc_dir: str, use_git: bool) -> Dict[str,
 
 def detect_staleness(
     repo_root: str,
-    doc_dir: str = "doc",
+    doc_dir: str = "man",
     use_git: bool = True,
     config_path: Optional[str] = None,
 ) -> List[StaleEntry]:
@@ -226,29 +326,30 @@ def detect_staleness(
         if not affected_docs:
             continue
 
-        for src_file in find_files_by_glob(rule["pattern"], repo_root):
-            src_path = os.path.join(repo_root, src_file)
-            src_mtime = git_last_modified(src_file, repo_root) if use_git else None
-            if src_mtime is None:
-                src_mtime = fs_last_modified(src_path)
-            if src_mtime is None:
-                continue
+        source_files = find_files_by_glob(rule["pattern"], repo_root)
+        if not source_files:
+            continue
+        src_mtime, src_file = latest_source_modified(
+            rule["pattern"], source_files, repo_root, use_git
+        )
+        if src_mtime is None:
+            continue
 
-            for doc_page in affected_docs:
-                doc_mtime = doc_mtimes.get(doc_page)
-                if doc_mtime is None or src_mtime <= doc_mtime:
-                    continue
-                days_behind = max(0, (src_mtime - doc_mtime).days)
-                results.append(
-                    StaleEntry(
-                        doc_page=doc_page,
-                        source_file=src_file,
-                        source_mtime=src_mtime,
-                        doc_mtime=doc_mtime,
-                        days_behind=days_behind,
-                        level=detect_level(days_behind),
-                    )
+        for doc_page in affected_docs:
+            doc_mtime = doc_mtimes.get(doc_page)
+            if doc_mtime is None or src_mtime <= doc_mtime:
+                continue
+            days_behind = max(0, (src_mtime - doc_mtime).days)
+            results.append(
+                StaleEntry(
+                    doc_page=doc_page,
+                    source_file=src_file,
+                    source_mtime=src_mtime,
+                    doc_mtime=doc_mtime,
+                    days_behind=days_behind,
+                    level=detect_level(days_behind),
                 )
+            )
 
     deduped: Dict[tuple, StaleEntry] = {}
     for entry in results:
@@ -327,7 +428,7 @@ def print_report(entries: List[StaleEntry], as_json: bool = False) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="PKB Staleness Checker")
     parser.add_argument("--repo-root", default=".", help="Repository root path")
-    parser.add_argument("--doc-dir", default="doc", help="Doc directory relative to repo root")
+    parser.add_argument("--doc-dir", default="man", help="Doc directory relative to repo root")
     parser.add_argument("--config", help="Optional JSON mapping file for source-to-doc rules")
     parser.add_argument("--no-git", action="store_true", help="Use filesystem mtime instead of git time")
     parser.add_argument("--json", action="store_true", help="Output JSON format")

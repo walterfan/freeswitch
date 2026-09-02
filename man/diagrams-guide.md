@@ -7,7 +7,7 @@ Mermaid is the primary diagramming tool for PKB documentation. This page covers 
 ## Flowcharts
 
 ````markdown
-```{mermaid}
+```mermaid
 flowchart TD
     Start([Start]) --> Input[/User Input/]
     Input --> Process[Process Data]
@@ -22,7 +22,7 @@ flowchart TD
 ## Sequence Diagrams
 
 ````markdown
-```{mermaid}
+```mermaid
 sequenceDiagram
     participant Client
     participant API
@@ -45,7 +45,7 @@ sequenceDiagram
 ## C4 Context Diagram
 
 ````markdown
-```{mermaid}
+```mermaid
 flowchart TD
     user["User"] --> system["System Under Documentation"]
     system --> external["External Dependency"]
@@ -56,7 +56,7 @@ flowchart TD
 ## State Diagrams
 
 ````markdown
-```{mermaid}
+```mermaid
 stateDiagram-v2
     [*] --> Draft
     Draft --> Submitted: submit()

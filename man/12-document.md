@@ -34,7 +34,7 @@ Keep a bilingual, AI-readable map of **this git tree** so humans and assistants 
 3. A human decides which English PKB pages need a refresh this PR / sprint (do not regenerate everything).
 4. Run Level 1 scripts first (`make pkb-level1`). Merge facts from `_generated/` into the affected human pages. Use a targeted LLM pass only for Level 2 synthesis (diff + those pages + the sidecar artifacts — not the whole tree).
 5. Stamp the metadata footer (`last_updated`, `commit`, `updated_by`). Leave `review_status: pending` unless a human is approving.
-6. After English wording changes: generate/update gettext catalogs (planned until the first `intl-update` run), then rebuild HTML.
+6. After English wording changes: run the explicit catalog refresh (`make gettext && make intl-update`), fill new `msgstr` values, then rebuild HTML. Normal HTML builds consume the tracked catalogs and do not rewrite them.
 7. A human reviews (`make pkb-review-status`) before any AgentBox publish.
 
 ## Cost-Aware Update Strategy
@@ -67,7 +67,7 @@ Scripts write sidecar files under `man/_generated/` with an `<!-- Auto-generated
 | `strip_confidential.py` | Drop `L3+` pages from `_build/site/` | 1 | `make strip-confidential` (default `CONF_MIN_LEVEL=L3`). Runs between HTML build and AgentBox packaging. |
 | `gen_agentbox_files.py` | Encode site → `functions/freeswitch-doc/files.ts` | 1 | Used by `make agentbox-gen` / `make publish`. |
 | `render_landing.py` | Bilingual `_build/site/index.html` | 1 | `make build-landing` (also part of `html-all`). |
-| `translate_po.py` | Optional dictionary fill of `.po` `msgstr` | 1 | `make translate-zh`. This tree used `scripts/i18n_apply_json.py` (polib) for the first full pass. |
+| `translate_po.py` | Optional dictionary fill of `.po` `msgstr` | 1 | `make translate-zh`. This tree uses `make compile-intl` to compile catalogs; `scripts/i18n_apply_json.py` (polib) can apply reviewed JSON translations. |
 | `i18n_apply_json.py` | Apply `msgid`→`msgstr` JSON onto a `.po` via polib | 1 | Preferred over editing `.po` by hand or `sed`. |
 | `i18n_identity_and_dump.py` | Copy code/URL msgids; dump remaining English as JSON | 1 | Input for a translation pass. |
 | `validate_template_links.py` | Stale numbering / broken relative links | 1 | Skill-side checker copied in-tree. |
@@ -94,10 +94,10 @@ make serve-watch            # English autobuild only; 中文 → /zh/ will 404
 
 make gettext                # _build/gettext/ .pot
 make intl-update            # locale/zh_CN/LC_MESSAGES/*.po
-make pkb-check-i18n         # or: poetry run python scripts/check_translation_sync.py --repo-root .. --doc-dir .
+make pkb-check-i18n         # or: poetry run python scripts/check_translation_sync.py --repo-root .. --doc-dir man
 # fill any new empty msgstr (polib / scripts/i18n_apply_json.py), then:
-make html-zh                # _build/site/zh/
-make html-all               # en + zh + landing
+make html-zh                # _build/site/zh/; consumes tracked catalogs
+make html-all               # en + zh + landing; does not refresh .po files
 make serve-all              # http://127.0.0.1:8000/
 ```
 
@@ -105,6 +105,7 @@ AgentBox (optional, **wired, not yet published**):
 
 ```bash
 make pkb-review-status      # confirm pending vs approved, L1–L5
+make pkb-review-status-strict # optional human-approval gate
 make publish                # agentbox-init → html-all → strip-confidential (L3+) → gen_agentbox_files.py → abx func deploy freeswitch-doc
 ```
 
@@ -132,6 +133,7 @@ Slug is `freeswitch-doc` (`man/agentbox.yaml`). Bypass strip only by running `ag
 | AI sets `review_status: approved` | False sign-off | Only a human may approve; AI keeps `pending` |
 | Publish without `strip-confidential` | `L3+` pages could ship (none today; still the gate) | Use `make publish`, not a raw `abx` after `html-all` |
 | Skip `intl-update` after English edits | Chinese pages show stale or English body text | `make gettext && make intl-update`, fill empty `msgstr`, then `html-zh` |
+| Assume `html-all` refreshes catalogs | A normal build changes no tracked PO source | Run `make gettext` and `make intl-update` explicitly before translating |
 | Feed the whole FreeSWITCH tree to an LLM to “refresh docs” | Token burn, shallow pages | Staleness report → one page + diff + one artifact |
 
 ## Related Documentation
@@ -148,7 +150,7 @@ Slug is `freeswitch-doc` (`man/agentbox.yaml`). Bypass strip only by running `ag
 
 ---
 <!-- PKB-metadata
-last_updated: 2026-08-17
+last_updated: 2026-08-30
 commit: d94936cc10
 updated_by: human+ai
 review_status: pending

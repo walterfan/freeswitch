@@ -14,7 +14,7 @@
 set -euo pipefail
 
 REPO_ROOT="${1:-.}"
-DOC_DIR="${2:-doc}"
+DOC_DIR="${2:-man}"
 REPO_ROOT="$(cd "$REPO_ROOT" && pwd)"
 if [[ "$DOC_DIR" = /* ]]; then
   DOC_PATH="$DOC_DIR"
@@ -39,6 +39,7 @@ TECH_STACK_ARTIFACT="$GENERATED_DIR/03-tech-stack.generated.md"
 INDEX_ARTIFACT="$GENERATED_DIR/index.generated.md"
 STALENESS_ARTIFACT="$GENERATED_DIR/pkb-staleness-report.generated.md"
 TRANSLATION_ARTIFACT="$GENERATED_DIR/translation-sync-report.generated.md"
+CHECK_STATUS=0
 
 artifact_lines=""
 append_artifact() {
@@ -85,7 +86,15 @@ fi
 echo ""
 if [[ -f "$STALENESS_SCRIPT" ]]; then
   echo "[4/5] Generating staleness report artifact..."
-  python3 "$STALENESS_SCRIPT" --repo-root "$REPO_ROOT" --doc-dir "$DOC_PATH" --output-file "$STALENESS_ARTIFACT" || true
+  if python3 "$STALENESS_SCRIPT" --repo-root "$REPO_ROOT" --doc-dir "$DOC_PATH" --output-file "$STALENESS_ARTIFACT"; then
+    :
+  else
+    status=$?
+    if (( status > CHECK_STATUS )); then
+      CHECK_STATUS="$status"
+    fi
+    echo "NOTICE: staleness check reported exit status $status; see $STALENESS_ARTIFACT."
+  fi
   artifact_lines="$(append_artifact "$artifact_lines" "- \`$STALENESS_ARTIFACT\`")"
 else
   echo "[4/5] check_pkb_staleness.py not found, skipping"
@@ -94,7 +103,15 @@ fi
 echo ""
 if [[ -f "$TRANSLATION_SYNC_SCRIPT" && -d "$DOC_PATH/locale/zh_CN/LC_MESSAGES" ]]; then
   echo "[5/5] Generating zh_CN translation sync report artifact..."
-  python3 "$TRANSLATION_SYNC_SCRIPT" --repo-root "$REPO_ROOT" --doc-dir "$DOC_PATH" --output-file "$TRANSLATION_ARTIFACT" || true
+  if python3 "$TRANSLATION_SYNC_SCRIPT" --repo-root "$REPO_ROOT" --doc-dir "$DOC_PATH" --output-file "$TRANSLATION_ARTIFACT"; then
+    :
+  else
+    status=$?
+    if (( status > CHECK_STATUS )); then
+      CHECK_STATUS="$status"
+    fi
+    echo "NOTICE: translation sync reported exit status $status; see $TRANSLATION_ARTIFACT."
+  fi
   artifact_lines="$(append_artifact "$artifact_lines" "- \`$TRANSLATION_ARTIFACT\`")"
 else
   echo "[5/5] check_translation_sync.py not found or zh_CN catalogs missing, skipping"
@@ -119,3 +136,7 @@ write_markdown_artifact "$SUMMARY_FILE" "$SCRIPT_NAME" "Level 1 Refresh Summary"
 echo ""
 echo "=== Level-1 update complete ==="
 echo "Summary artifact: $SUMMARY_FILE"
+if (( CHECK_STATUS != 0 )); then
+  echo "Level-1 checks found issues; generated reports are available above." >&2
+  exit "$CHECK_STATUS"
+fi

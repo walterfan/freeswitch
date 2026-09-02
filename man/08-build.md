@@ -2,11 +2,12 @@
 
 <!-- maintained-by: human+ai -->
 
-Local Autotools/Windows builds, GitHub Actions, Debian/Docker packaging, version fields, and PKB HTML. First-run commands live in [Quick Start](01-quick-start.md); this page is the pipeline map.
+Local Autotools/Windows builds, GitHub Actions, Debian/Docker packaging, version fields, and PKB HTML. First-run commands live in [Quick Start](01-quick-start.md); this page is the pipeline map. macOS Homebrew packages and flags are documented here against `.github/workflows/macos.yml`.
 
 ## Scope
 
 - Unix source build (`bootstrap.sh` → `configure` → `make` → `make install`)
+- macOS Homebrew deps (Xcode CLT + SignalWire tap) matching `macos.yml`
 - Per-module rebuild, install layout, sounds
 - GitHub Actions (unit tests, scan-build, Debian matrix, macOS, Windows, tarball)
 - Packaged install (FSGET) and `.deb` build (FSDEB)
@@ -19,12 +20,12 @@ Upstream operator docs: [FreeSWITCH Users Manual](https://developer.signalwire.c
 
 ### Development (Unix / macOS)
 
-Prerequisites: Autotools floors in `scripts/ci/build-requirements.sh` (autoconf `>= 2.59`, automake `>= 1.7`, libtool `>= 1.5.14`) plus Sofia-SIP, SpanDSP, libks, signalwire-c as in [Tech Stack](03-tech-stack.md).
+Prerequisites: Autotools floors in `scripts/ci/build-requirements.sh` (autoconf `>= 2.59`, automake `>= 1.7`, libtool `>= 1.5.14`) plus Sofia-SIP, SpanDSP, libks, signalwire-c as in [Tech Stack](03-tech-stack.md). On macOS, install those from Homebrew first — see [macOS (Homebrew)](#macos-homebrew).
 
 ```bash
 ./bootstrap.sh -j          # copies build/modules.conf.in → modules.conf if missing
 # edit modules.conf to enable/disable src/mod/... trees, then:
-./configure --prefix="$HOME/fs"
+./configure --prefix="$HOME/fs" --disable-fhs
 make -j"$(nproc 2>/dev/null || sysctl -n hw.ncpu)"
 make install
 ```
@@ -50,9 +51,93 @@ ASAN unit-test configure used by CI:
 
 (`ci.sh` also builds Sofia-SIP when `-c sofia-sip`.)
 
+### macOS (Homebrew)
+
+Sofia-SIP, libks, SpanDSP, and signalwire-c are **not** in this git tree. Install them from Homebrew first, then use the same Autotools path as Unix. Package list and tap names below match `.github/workflows/macos.yml`.
+
+#### Toolchain
+
+```bash
+xcode-select --install   # if you do not already have Clang
+brew --version           # Homebrew is required
+```
+
+GNU autotools floors are in `scripts/ci/build-requirements.sh` (autoconf `>= 2.59`, automake `>= 1.7`, libtool `>= 1.5.14`). On macOS use Homebrew `libtool` (`glibtool`); Apple’s stock tools are too old.
+
+#### Homebrew packages
+
+```bash
+brew update
+brew install \
+  autoconf \
+  automake \
+  curl \
+  ffmpeg@7 \
+  gnu-sed \
+  jpeg \
+  ldns \
+  libpq@18 \
+  libsndfile \
+  libtool \
+  lua \
+  opus \
+  ossp-uuid \
+  pcre2 \
+  pkgconf \
+  sofia-sip \
+  speex \
+  speexdsp \
+  sqlite \
+  yasm
+
+brew tap signalwire/homebrew-signalwire
+brew install \
+  signalwire/homebrew-signalwire/libks2 \
+  signalwire/homebrew-signalwire/signalwire-c2 \
+  signalwire/homebrew-signalwire/spandsp
+
+brew link --force --overwrite ffmpeg@7 libpq@18
+```
+
+CI also runs `brew install --adopt` for the SignalWire formulas (overwrite a conflicting cellar install). The runner-only `brew uninstall cmake` step is **not** needed on a developer Mac.
+
+On Apple Silicon, Homebrew lives under `/opt/homebrew`. `ffmpeg@7` and `libpq@18` are keg-only; CI force-links them so `pkg-config` / `configure` see them. If you skip the force-link, add those prefixes to `PKG_CONFIG_PATH` (and often `PATH` / `LDFLAGS`) before `./configure`.
+
+#### Configure, build, install
+
+Use a home prefix so you do not need root. The command below uses
+`--disable-fhs` so the installed `bin/`, `conf/`, `mod/`, `db/`, `log/`, and
+`run/` directories stay below `$HOME/fs`. Default without `--prefix` is
+`/usr/local/freeswitch` (`configure.ac`). macOS CI uses `--prefix=…/OUT` plus
+`--enable-shared --enable-static` and therefore follows its FHS-style output
+paths.
+
+```bash
+./bootstrap.sh -j
+# optional: edit modules.conf here to enable/disable src/mod/... lines
+./configure --prefix="$HOME/fs" --disable-fhs
+make -j"$(sysctl -n hw.ncpu)"
+make install
+```
+
+- `bootstrap.sh` copies `build/modules.conf.in` → `modules.conf` if missing, then runs Autotools. `-j` parallelizes bundled library bootstraps.
+- Edit **`modules.conf`** (build list: `src/mod/...` lines) **after** bootstrap and **before** `./configure` / `make`. Runtime load is a separate file: `modules.conf.xml`. A compiled module can still be unloaded.
+- `make install` installs vanilla sample config when `$prefix/conf` does not exist (`samples-conf`).
+- Sounds / music-on-hold are **not** in git. If you need playback or the echo test: `make cd-sounds-install cd-moh-install` (see [Quick Start](01-quick-start.md)).
+- Debug CFLAGS (`-ggdb3 -O0`): `./devel-bootstrap.sh` instead of `./bootstrap.sh`.
+
+#### Run (prefix install)
+
+```bash
+"$HOME/fs/bin/freeswitch" -ncwait -nonat
+"$HOME/fs/bin/fs_cli" -x status
+```
+
+A working process prints a line starting with `UP`. Stop with `"$HOME/fs/bin/freeswitch" -stop`. Vanilla is a **demo PBX**, not production: SIP users `1000`–`1019` share password `1234`; the `fs_cli` client targets `127.0.0.1:8021` by default, while vanilla ESL listens on wildcard `::`:8021 with password `ClueCon`. Start with `-nonat` unless you want UPnP NAT helpers. First-call steps: [Quick Start](01-quick-start.md).
+
 ### Production / prefix install
 
-Same `configure && make && make install`. Default prefix is `/usr/local/freeswitch` (`AC_PREFIX_DEFAULT` in `configure.ac`). FHS layout (`--enable-fhs` when prefix is set) puts modules under `${libdir}/freeswitch/mod`.
+Same `configure && make && make install`. Default prefix is `/usr/local/freeswitch` (`AC_PREFIX_DEFAULT` in `configure.ac`). With an explicit custom prefix, `configure` enables FHS layout unless `--disable-fhs` is supplied; modules then go under `${libdir}/freeswitch/mod` and configuration under `${sysconfdir}/freeswitch`. Use [Quick Start](01-quick-start.md#source-build-developer-path) for the single-prefix developer layout.
 
 Debian systemd unit (`debian/freeswitch-systemd.freeswitch.service`) starts:
 
@@ -74,10 +159,10 @@ Helper: `msbuild.cmd` (locates VS via `vswhere.exe`). Projects under `w32/`. CI 
 
 | Path | Content |
 |------|---------|
-| `$prefix/bin/` | `freeswitch`, `fs_cli`, `fs_encode`, `fs_tts`, `fs_ivrd` (`bin_PROGRAMS` in `Makefile.am`) |
-| `$prefix/mod/` | Loadable `.so` / `.dylib` / `.dll` |
-| `$prefix/conf/` | Vanilla samples if the dir did not exist (`samples-conf`) |
-| `$prefix/db/`, `log/`, `run/`, `scripts/`, `htdocs/` | Runtime dirs (`install-data-local`) |
+| `$prefix/bin/` | `freeswitch`, `fs_cli`, `fs_encode`, `fs_tts`, `fs_ivrd` (`bin_PROGRAMS` in `Makefile.am`) for a `--disable-fhs` install |
+| `$prefix/mod/` | Loadable `.so` / `.dylib` / `.dll` for a `--disable-fhs` install |
+| `$prefix/conf/` | Vanilla samples if the dir did not exist (`samples-conf`) for a `--disable-fhs` install |
+| `$prefix/db/`, `log/`, `run/`, `scripts/`, `htdocs/` | Runtime dirs (`install-data-local`) for a `--disable-fhs` install; FHS installs use their configured `var/`, `share/`, `etc/`, and `lib/` locations |
 | `src/include/switch_version.h` | Generated from `switch_version.h.template` |
 
 ## CI/CD Pipelines
@@ -126,19 +211,25 @@ poetry install
 make html-en          # _build/site/en/
 make gettext
 make intl-update      # locale/zh_CN/LC_MESSAGES/
-make html-all         # en + zh + landing
+make html-all         # en + zh + landing; consumes tracked catalogs
 make serve            # http://127.0.0.1:8000/en/ and /zh/ (needs both trees)
 # make serve-watch    # English live reload only; do not click 中文 there
 ```
 
-AgentBox (optional): `make publish` runs `agentbox-init` → `html-all` → `strip-confidential` (default strip `L3+`) → `gen_agentbox_files.py` → `abx func deploy freeswitch-doc`. Function slug is `freeswitch-doc` (`agentbox.yaml`).
+AgentBox (optional): `make publish` runs `agentbox-init` → `html-all` →
+`strip-confidential` (default strip `L3+`) → `gen_agentbox_files.py` →
+`abx func deploy freeswitch-doc`. Function slug is `freeswitch-doc`
+(`agentbox.yaml`). Run `make pkb-review-status-strict` separately when a
+human-approval gate is required; the default publish target remains usable
+while pages are marked `pending`.
 
 ## Common Failures
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| `bootstrap.sh` dies on autoconf/libtool | Tool older than `scripts/ci/build-requirements.sh` | Install GNU autotools; macOS Homebrew `autoconf automake libtool` |
-| Link/configure missing Sofia, KS, SpanDSP, signalwire | Out-of-tree deps | Follow `docker/examples/Debian11/Dockerfile` or `ci.sh -c sofia-sip` |
+| `bootstrap.sh` dies on autoconf/libtool | Tool older than `scripts/ci/build-requirements.sh` | Install GNU autotools; macOS Homebrew `autoconf automake libtool` (`glibtool`) |
+| Link/configure missing Sofia, KS, SpanDSP, signalwire | Out-of-tree deps | Linux: `docker/examples/Debian11/Dockerfile` or `ci.sh -c sofia-sip`. macOS: Homebrew `sofia-sip` plus `signalwire/homebrew-signalwire/{libks2,signalwire-c2,spandsp}` (see [macOS (Homebrew)](#macos-homebrew)) |
+| `configure` cannot find ffmpeg / libpq on macOS | Keg-only `ffmpeg@7` / `libpq@18` | `brew link --force --overwrite ffmpeg@7 libpq@18`, or set `PKG_CONFIG_PATH` |
 | Module not in `mod/` after install | Commented in `modules.conf` **or** not in runtime `modules.conf.xml` | Uncomment, `make mod_*`, and load XML |
 | `make dist` / FSDEB from a tarball | Scripts require git | Clone the repo (`scripts/packaging/build/README.md`) |
 | FSGET / `docker/master` apt 401 | No SignalWire PAT | PAT or source build |
@@ -159,8 +250,8 @@ AgentBox (optional): `make publish` runs `agentbox-init` → `html-all` → `str
 
 ---
 <!-- PKB-metadata
-last_updated: 2026-08-17
-commit: d94936cc10
+last_updated: 2026-08-25
+commit: ea429c9d49
 updated_by: human+ai
 review_status: pending
 review_score: 0

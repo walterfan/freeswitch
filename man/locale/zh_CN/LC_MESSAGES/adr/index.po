@@ -1,17 +1,17 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2026, Zoom Video Communications
 # This file is distributed under the same license as the FreeSWITCH package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+# Walter Fan <walter.fan@ustc.etu>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: FreeSWITCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 23:26+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_CN <LL@li.org>\n"
+"POT-Creation-Date: 2026-08-30 22:59+0800\n"
+"PO-Revision-Date: 2026-08-30 23:13+0800\n"
+"Last-Translator: Walter Fan <walter.fan@ustc.etu>\n"
+"Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: ../../adr/index.md:31
+#: ../../adr/index.md:33
 msgid "ADR documents"
 msgstr "ADR 文档"
 
@@ -88,37 +88,37 @@ msgstr "ADR 列表"
 #: ../../adr/index.md:29 111291a2cc784491a7ec9fba708c4c98
 msgid ""
 "There are no numbered records yet (`adr/0001-*.md`). Create one with `/PKB-"
-"adr \"title\"`, then add the new file to the toctree below (or restore a "
-"`:glob:` entry `0*`)."
+"adr \"title\"`; numbered records are discovered automatically by the toctree"
+" below."
 msgstr ""
-"目前还没有编号记录（`adr/0001-*.md`）。用 `/PKB-adr \"title\"` 创建后，把新文件加入下面的 toctree（或恢复 "
-"`:glob:` 条目 `0*`）。"
+"目前还没有编号记录（`adr/0001-*.md`）。用 `/PKB-adr \"title\"` 创建后，编号记录会由下面的 toctree "
+"自动发现。"
 
-#: ../../adr/index.md:38 9b16accc10744fa9a86132eb0a703d21
+#: ../../adr/index.md:42 9b16accc10744fa9a86132eb0a703d21
 msgid "Index by Status"
 msgstr "按状态索引"
 
-#: ../../adr/index.md:40 459f069c5e384efc8960766cc5fecb7c
+#: ../../adr/index.md:44 459f069c5e384efc8960766cc5fecb7c
 msgid "Accepted"
 msgstr "已接受"
 
-#: ../../adr/index.md:44 a318781bb59041a39ed45d68d496245f
+#: ../../adr/index.md:48 a318781bb59041a39ed45d68d496245f
 msgid "Proposed"
 msgstr "已提议"
 
-#: ../../adr/index.md:48 9ccdb0381f904a6c9cae0547038ea80a
+#: ../../adr/index.md:52 9ccdb0381f904a6c9cae0547038ea80a
 msgid "Deprecated"
 msgstr "已废弃"
 
-#: ../../adr/index.md:52 ce143aa0db66461b973aea29429c8a1b
+#: ../../adr/index.md:56 ce143aa0db66461b973aea29429c8a1b
 msgid "References"
 msgstr "参考资料"
 
-#: ../../adr/index.md:54 f1b8712a633e4b51839943a34a86b50a
+#: ../../adr/index.md:58 f1b8712a633e4b51839943a34a86b50a
 msgid "[ADR GitHub Organization](https://adr.github.io/)"
 msgstr "[ADR GitHub 组织](https://adr.github.io/)"
 
-#: ../../adr/index.md:55 bd67e6c270e34925be385d2835c9bb6a
+#: ../../adr/index.md:59 bd67e6c270e34925be385d2835c9bb6a
 msgid ""
 "[Documenting Architecture "
 "Decisions](https://cognitect.com/blog/2011/11/15/documenting-architecture-"

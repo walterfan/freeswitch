@@ -1,17 +1,17 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) 2026, Zoom Video Communications
 # This file is distributed under the same license as the FreeSWITCH package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+# Walter Fan <walter.fan@ustc.etu>, 2026.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: FreeSWITCH\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-17 23:38+0800\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: zh_CN <LL@li.org>\n"
+"POT-Creation-Date: 2026-08-30 22:59+0800\n"
+"PO-Revision-Date: 2026-08-30 23:13+0800\n"
+"Last-Translator: Walter Fan <walter.fan@ustc.etu>\n"
+"Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -188,12 +188,16 @@ msgstr "配置根目录"
 msgid "Directory that contains `freeswitch.xml`"
 msgstr "包含 `freeswitch.xml` 的目录"
 
-#: ../../appendix-02-glossary.md a8e3c038146c428a9d012c64675d5e3b
+#: ../../appendix-02-glossary.md bbb9ee853ae84ee0bcd4273ce509a29d
 msgid ""
-"Source default: `/usr/local/freeswitch/conf`. Debian: `/etc/freeswitch`. "
-"Users Manual paths are relative to this root."
+"Source default: `/usr/local/freeswitch/conf`; the documented `--disable-fhs`"
+" developer prefix uses `$prefix/conf`; a custom FHS prefix uses "
+"`$prefix/etc/freeswitch`. Debian: `/etc/freeswitch`. Users Manual paths are "
+"relative to this root."
 msgstr ""
-"源码默认：`/usr/local/freeswitch/conf`。Debian：`/etc/freeswitch`。用户手册路径相对此根。"
+"源码默认：`/usr/local/freeswitch/conf`；文档所述 `--disable-fhs` 开发者前缀使用 "
+"`$prefix/conf`；自定义 FHS 前缀使用 "
+"`$prefix/etc/freeswitch`。Debian：`/etc/freeswitch`。用户手册路径相对于此根目录。"
 
 #: ../../appendix-02-glossary.md b173f79eca694abab610870f201029d6
 msgid "dialplan"
@@ -422,14 +426,17 @@ msgstr "安装前缀"
 msgid "Autotools install root"
 msgstr "Autotools 安装根"
 
-#: ../../appendix-02-glossary.md e26850857d074383bf4b4870907abffc
+#: ../../appendix-02-glossary.md 6ae67367cc094c98a2d9de3718dbdce2
 msgid ""
 "Default `/usr/local/freeswitch` (`AC_PREFIX_DEFAULT` in `configure.ac`). "
-"Layout: `bin/`, `mod/`, `conf/`, `log/`, `db/`, `scripts/`, `htdocs/`, "
-"`sounds/`."
+"With `--disable-fhs`, layout is `bin/`, `mod/`, `conf/`, `log/`, `db/`, "
+"`scripts/`, `htdocs/`, `sounds/`; a custom prefix without that flag uses FHS"
+" `etc/`, `lib/`, `var/`, and `share/` locations."
 msgstr ""
-"默认 `/usr/local/freeswitch`（`configure.ac` 里的 "
-"`AC_PREFIX_DEFAULT`）。布局：`bin/`、`mod/`、`conf/`、`log/`、`db/`、`scripts/`、`htdocs/`、`sounds/`。"
+"默认前缀为 `/usr/local/freeswitch`（`configure.ac` 中的 `AC_PREFIX_DEFAULT`）。使用 "
+"`--disable-fhs` 时，布局为 "
+"`bin/`、`mod/`、`conf/`、`log/`、`db/`、`scripts/`、`htdocs/`、`sounds/`；未指定该选项的自定义前缀使用"
+" FHS 的 `etc/`、`lib/`、`var/` 和 `share/` 路径。"
 
 #: ../../appendix-02-glossary.md fa5f0264272843cea4ff1f7ffe611761
 msgid "RTP"
@@ -603,9 +610,3 @@ msgstr "[常见问题](appendix-01-faq.md)"
 #: ../../appendix-02-glossary.md:51 e1ef78395bb64126a5222a9d7cf71aa2
 msgid "[Users Manual](https://developer.signalwire.com/freeswitch/)"
 msgstr "[用户手册](https://developer.signalwire.com/freeswitch/)"
-
-#~ msgid ""
-#~ "`conf/vanilla/autoload_configs/modules.conf.xml`. Loader: "
-#~ "`src/switch_loadable_module.c`."
-#~ msgstr ""
-#~ "`conf/vanilla/autoload_configs/modules.conf.xml`。加载器：`src/switch_loadable_module.c`。"

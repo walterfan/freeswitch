@@ -37,7 +37,11 @@ Directory / dialplan / SIP-profile parameter tables: [Users Manual Ch 6](https:/
 
 ## Storage and Persistence Rules
 
-- **Primary storage**: SQLite core DB under prefix `db/` (initialized in `switch_core_init`). Optional ODBC / `mod_pgsql` / `mod_mariadb`. Disable scoreboard with `freeswitch -nosql`.
+- **Primary storage**: SQLite core DB under the configured `db_dir` (the
+  documented `--disable-fhs` developer prefix uses `$prefix/db`; custom FHS
+  prefixes use `$prefix/var/lib/freeswitch/db`). Initialized in
+  `switch_core_init`. Optional ODBC / `mod_pgsql` / `mod_mariadb`. Disable
+  scoreboard with `freeswitch -nosql`.
 - **Schema source**: SQL strings in C, not migrations. Core: `src/switch_core_sqldb.c` (`create_channels_sql`, `create_calls_sql`, `create_interfaces_sql`, `create_tasks_sql`, `create_nat_sql`, `create_registrations_sql`, `recovery_sql`, aliases/complete). Sofia: `src/mod/endpoints/mod_sofia/sofia_glue.c` (`sip_registrations`, `sip_presence`, `sip_dialogs`, `sip_subscriptions`, `sip_authentication`, shared-appearance tables).
 - **Core `channels` columns** (scoreboard): `uuid`, `direction`, `created` / `created_epoch`, `name`, `state`, `cid_name` / `cid_num`, `ip_addr`, `dest`, `application` / `application_data`, `dialplan`, `context`, codecs/rates, `secure`, `hostname`, presence, `accountcode`, `callstate`, callee fields, `call_uuid`, initial-* copies.
 - **Consistency**: one session thread owns a channel. SQL is a **projection** for `show channels` / recovery, not the source of truth. `hostname` / `switchname` isolate rows in multi-host configs.
@@ -48,10 +52,11 @@ Directory / dialplan / SIP-profile parameter tables: [Users Manual Ch 6](https:/
 
 | Interface | Path or endpoint | Input | Output | Notes |
 |-----------|------------------|-------|--------|-------|
-| ESL (Event Socket) | TCP `127.0.0.1:8021` | Line-oriented commands after `auth` | `+OK` / `-ERR`, then events | Default password `ClueCon`. `mod_event_socket.c` `parse_command()` |
+| ESL (Event Socket) | Vanilla server `::`:8021; `fs_cli` client default `127.0.0.1:8021` | Line-oriented commands after `auth` | `+OK` / `-ERR`, then events | Default password `ClueCon`; change bind, ACL, and password before network exposure. `mod_event_socket.c` `parse_command()` |
 | Console / `fs_cli` | Same ESL, or local console | API string (`status`, `sofia status`, `uuid_kill …`) | Text | `fs_cli -x '<api>'`; Docker health: `status` matches `^UP` |
 | SIP | UDP/TCP 5060/5080 (TLS 5061/5081) | RFC 3261 + SDP | SIP + RTP | `mod_sofia`; not re-specified here |
-| Verto JSON-RPC 2.0 | WS/WSS (vanilla 8081/8082, 5066/7443 in Docker docs) | `{"jsonrpc":"2.0","method":"…","params":{}}` | JSON-RPC result/error | Methods registered in `mod_verto.c` |
+| Verto JSON-RPC 2.0 | WS/WSS (vanilla `8081`/`8082`) | `{"jsonrpc":"2.0","method":"…","params":{}}` | JSON-RPC result/error | Methods registered in `mod_verto.c` |
+| Sofia SIP over WebSocket | WS/WSS (vanilla `5066`/`7443`) | SIP over WebSocket | SIP responses and media negotiation | `ws-binding` / `wss-binding` in Sofia profiles; distinct from Verto |
 | XML-RPC / HTTP | Default port **8080** | HTTP basic auth | XML-RPC | `mod_xml_rpc` **not** in vanilla autoload. Demo auth `freeswitch` / `works` in `xml_rpc.conf.xml` |
 | Dynamic XML | HTTP(S) from `mod_xml_curl` | Request params (`action`, section, …) | XML fragments | Replaces file sections when enabled |
 | HTTAPI | `mod_httapi` | HTTP to app server | XML instructions | Dialplan-driven HTTP IVR |
@@ -169,7 +174,7 @@ Session-to-session messages (not the event bus): `switch_core_session_message_ty
 
 ---
 <!-- PKB-metadata
-last_updated: 2026-08-17
+last_updated: 2026-08-30
 commit: d94936cc10
 updated_by: human+ai
 review_status: pending
