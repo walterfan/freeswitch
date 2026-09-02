@@ -1,0 +1,193 @@
+tutorial/site/web/media_devices.mjs
+  s_f2f07c4f6558b3::t_4c19b2827ca84b 1-81
+tutorial/deploy/freeswitch-wss-openssl.cnf
+  s_f2f07c4f6558b3::t_9f6ba8d7dc424c 1-16
+tutorial/site/web/vendor/markdown-it/markdown-it-15.0.1.esm.min.mjs
+  s_f2f07c4f6558b3::t_ade0338c2325f7 1-3005
+tutorial/labs/day-08/.gitkeep
+  s_f2f07c4f6558b3::t_bcdb70eb457462 1
+openspec/changes/add-30-day-freeswitch-tutorial/specs/freeswitch-tutorial/module-development/spec.md
+  s_f2f07c4f6558b3::t_db3c6d29be5def 1-53
+tutorial/content/zh-CN/days/day-02.md
+  s_f2f07c4f6558b3::t_180244c18a8a2c 1-119
+docker/examples/Debian11/freeswitch-compose.sh
+  s_c81830218413c1::t_58679388c9c741 1-75
+tutorial/site/src/redaction.cpp
+  s_f2f07c4f6558b3::t_86339b3af4dfc7 1-61
+tutorial/labs/day-24/.gitkeep
+  s_f2f07c4f6558b3::t_ea0c6233f545e2 1
+tutorial/labs/day-01/.gitkeep
+  s_f2f07c4f6558b3::t_78556eadc1576f 1
+tutorial/scripts/__init__.py
+  s_f2f07c4f6558b3::t_8abda13a915872 1
+tutorial/labs/README.md
+  s_f2f07c4f6558b3::t_912fb6884e8753 1-4
+tutorial/labs/day-07/.gitkeep
+  s_f2f07c4f6558b3::t_9b8c6717992a85 1
+tutorial/site/src/health.cpp
+  s_f2f07c4f6558b3::t_97c1cb0357b788 1-55
+tutorial/labs/day-18/.gitkeep
+  s_f2f07c4f6558b3::t_db623500605434 1
+tutorial/labs/day-26/.gitkeep
+  s_f2f07c4f6558b3::t_64b988f7fab40f 1
+tutorial/labs/day-16/.gitkeep
+  s_f2f07c4f6558b3::t_732819ad35f4b3 1
+tutorial/content/zh-CN/days/day-01.md
+  s_f2f07c4f6558b3::t_ef467779152a19 1-107
+tutorial/site/THIRD_PARTY_NOTICES.md
+  s_f2f07c4f6558b3::t_8505cc9a79ae3e 1-25
+tutorial/labs/day-15/.gitkeep
+  s_f2f07c4f6558b3::t_d5e009b6a55bbe 1
+tutorial/site/web/markdown.mjs
+  s_f2f07c4f6558b3::t_087d2890fb0388 1-16
+tutorial/labs/day-06/.gitkeep
+  s_f2f07c4f6558b3::t_2df2b1e5b666f2 1
+tutorial/labs/day-28/.gitkeep
+  s_f2f07c4f6558b3::t_8ae91c291038b1 1
+tutorial/labs/day-02/README.md
+  s_f2f07c4f6558b3::t_5aa9d7d3a9506e 1-13
+tutorial/labs/day-13/.gitkeep
+  s_f2f07c4f6558b3::t_f155f179b030ff 1
+tutorial/site/src/.gitkeep
+  s_f2f07c4f6558b3::t_33b296d8e5b9b9 1
+tutorial/site/include/logging.h
+  s_f2f07c4f6558b3::t_888891eb92bb13 1-18
+tutorial/labs/day-10/.gitkeep
+  s_f2f07c4f6558b3::t_458e33ce30ca0a 1
+tutorial/site/web/sip_state.mjs
+  s_f2f07c4f6558b3::t_37cf30eb2a6a0f 1-50
+tutorial/site/src/check_registry.cpp
+  s_f2f07c4f6558b3::t_6507d7fbfe2807 1-45
+tutorial/site/include/health.h
+  s_f2f07c4f6558b3::t_18525c33d10504 1-33
+tutorial/site/web/live_evidence.mjs
+  s_f2f07c4f6558b3::t_275801d4e92293 1-159
+tutorial/site/web/vendor/markdown-it/LICENSE.md
+  s_f2f07c4f6558b3::t_8403ac54133c1a 1-22
+openspec/changes/add-30-day-freeswitch-tutorial/.openspec.yaml
+  s_f2f07c4f6558b3::t_78687e57f44b4d 1-2
+tutorial/site/conanfile.py
+  s_f2f07c4f6558b3::t_62da7dabc3fe87 1-21
+tutorial/site/config/.gitkeep
+  s_f2f07c4f6558b3::t_70e7f609d94c8e 1
+tutorial/deploy/localhost-openssl.cnf
+  s_f2f07c4f6558b3::t_b33785edb4a2a7 1-19
+tutorial/labs/day-17/.gitkeep
+  s_f2f07c4f6558b3::t_042e08e696468e 1
+tutorial/labs/day-19/.gitkeep
+  s_f2f07c4f6558b3::t_52b153893c6e44 1
+openspec/changes/add-30-day-freeswitch-tutorial/specs/freeswitch-tutorial/observability/spec.md
+  s_f2f07c4f6558b3::t_901fe9a7b5eb09 1-58
+openspec/changes/add-30-day-freeswitch-tutorial/specs/freeswitch-tutorial/web-app/spec.md
+  s_f2f07c4f6558b3::t_763f54562aa5e1 1-64
+tutorial/labs/day-14/.gitkeep
+  s_f2f07c4f6558b3::t_cbd6878aa9f1b1 1
+tutorial/labs/day-11/.gitkeep
+  s_f2f07c4f6558b3::t_0f247686999ab5 1
+tutorial/site/include/.gitkeep
+  s_f2f07c4f6558b3::t_db03568f13b274 1
+tutorial/labs/day-12/.gitkeep
+  s_f2f07c4f6558b3::t_c16f668ed93576 1
+tutorial/labs/day-27/.gitkeep
+  s_f2f07c4f6558b3::t_3f065968a76b62 1
+tutorial/deploy/generate-local-cert.sh
+  s_f2f07c4f6558b3::t_c5ed53473ed08f 1-32
+tutorial/labs/day-09/.gitkeep
+  s_f2f07c4f6558b3::t_4ae3d9d5d15dd5 1
+tutorial/labs/day-03/.gitkeep
+  s_f2f07c4f6558b3::t_ab76cdfdbb4851 1
+tutorial/deploy/lab-ca-openssl.cnf
+  s_f2f07c4f6558b3::t_bb3334779a9d35 1-14
+openspec/changes/add-30-day-freeswitch-tutorial/specs/freeswitch-tutorial/curriculum/spec.md
+  s_f2f07c4f6558b3::t_e7175651b6a936 1-60
+tutorial/content/zh-CN/days/_template.md
+  s_f2f07c4f6558b3::t_ada56e9dc1a210 1-38
+tutorial/labs/day-20/.gitkeep
+  s_f2f07c4f6558b3::t_550acfe7bb504b 1
+tutorial/labs/day-05/.gitkeep
+  s_f2f07c4f6558b3::t_062845ead43207 1
+tutorial/site/include/check_registry.h
+  s_f2f07c4f6558b3::t_3900391bcdff8d 1-37
+tutorial/tests/test_content_validator.py
+  s_f2f07c4f6558b3::t_98472669196737 1-150
+tutorial/scripts/validate_content.py
+  s_f2f07c4f6558b3::t_546da4a2ae7c8c 1-298
+tutorial/site/build.sh
+  s_f2f07c4f6558b3::t_a7054ea07460e0 1-19
+tutorial/site/web/progress.mjs
+  s_f2f07c4f6558b3::t_847b83c474b85a 1-20
+tutorial/site/web/vendor/sip.js/LICENSE.md
+  s_f2f07c4f6558b3::t_843414d5ce57a0 1-21
+tutorial/labs/day-25/.gitkeep
+  s_f2f07c4f6558b3::t_7ca1c37a8f34c3 1
+tutorial/labs/day-21/.gitkeep
+  s_f2f07c4f6558b3::t_c088588ebb7cb2 1
+tutorial/site/src/logging.cpp
+  s_f2f07c4f6558b3::t_f4d26bcb6b9cd5 1-42
+tutorial/site/web/preflight.mjs
+  s_f2f07c4f6558b3::t_7dd7b43b3b997f 1-23
+tutorial/labs/day-30/.gitkeep
+  s_f2f07c4f6558b3::t_c8226f693d2239 1
+tutorial/content/zh-CN/days/day-04.md
+  s_f2f07c4f6558b3::t_ac32580d474249 1-116
+openspec/changes/add-30-day-freeswitch-tutorial/proposal.md
+  s_f2f07c4f6558b3::t_284b5964429b8d 1-34
+tutorial/site/web/vendor/markdown-it/manifest.json
+  s_f2f07c4f6558b3::t_42962ee3e24e7b 1-11
+tutorial/site/web/vendor/sip.js/manifest.json
+  s_f2f07c4f6558b3::t_fb1cc378eca82f 1-10
+tutorial/site/web/.gitkeep
+  s_f2f07c4f6558b3::t_ccaad15d84c1ca 1
+tutorial/content/zh-CN/days/day-03.md
+  s_f2f07c4f6558b3::t_5eaa3df7785694 1-119
+openspec/changes/add-30-day-freeswitch-tutorial/design.md
+  s_f2f07c4f6558b3::t_9200b8865cf8b2 1-207
+tutorial/labs/day-29/.gitkeep
+  s_f2f07c4f6558b3::t_ee1b44dd39adfe 1
+tutorial/labs/day-04/.gitkeep
+  s_f2f07c4f6558b3::t_b05a70e9080531 1
+tutorial/labs/day-22/.gitkeep
+  s_f2f07c4f6558b3::t_00ef76aa03cc36 1
+tutorial/labs/day-01/README.md
+  s_f2f07c4f6558b3::t_22f439722b3125 1-14
+tutorial/site/web/checks.mjs
+  s_f2f07c4f6558b3::t_97982115cdc45c 1-9
+tutorial/labs/day-02/.gitkeep
+  s_f2f07c4f6558b3::t_beebe084cb57ce 1
+tutorial/content/zh-CN/syllabus.md
+  s_f2f07c4f6558b3::t_dbb9d1cb3da99f 1-46
+tutorial/site/conan.lock
+  s_f2f07c4f6558b3::t_2190a0da12705a 1-12
+tutorial/deploy/generate-freeswitch-wss-cert.sh
+  s_f2f07c4f6558b3::t_b9b909cb2bdc83 1-38
+docker/examples/Debian11/compose.yaml
+  s_c81830218413c1::t_fbfbfc2ba1ef52 1-21
+tutorial/site/include/redaction.h
+  s_f2f07c4f6558b3::t_40797531486937 1-11
+tutorial/labs/day-23/.gitkeep
+  s_f2f07c4f6558b3::t_7e7e7d963cd08d 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "d7b5a87be8d6bd3d835c7171e9fcccc6c34da84d",
+  "prompts": {},
+  "sessions": {
+    "s_c81830218413c1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a041de-53ba-7663-a231-0d9e5b7d5be1",
+        "model": "unknown"
+      },
+      "human_author": "Walter Fan <walter.fan@zoom.us>"
+    },
+    "s_f2f07c4f6558b3": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0489c-ae23-7150-8d22-8fcd5a42e2a9",
+        "model": "unknown"
+      },
+      "human_author": "Walter Fan <walter.fan@zoom.us>"
+    }
+  }
+}
