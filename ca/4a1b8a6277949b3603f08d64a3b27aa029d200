@@ -1,0 +1,43 @@
+tests/unit/switch_dialplan_xml.c
+  s_08ffcec9e21e81::t_e5d84db6fd836a 207-209
+  s_08ffcec9e21e81::t_f6651285848112 230-232
+  s_08ffcec9e21e81::t_da8af086b62b6f 229,233
+  s_08ffcec9e21e81::t_9ac344c2987787 184-186
+  s_08ffcec9e21e81::t_83108938fdd9fe 3
+  s_08ffcec9e21e81::t_301d71d29b8ce3 17,25
+  s_08ffcec9e21e81::t_abacef439b503c 18-24,26,28-30,83-84,86-95,107-112,150-153,155,174-177,179-182,188-205,211-228,234-247
+  s_08ffcec9e21e81::t_a3a786b6150dd4 51-52,57-58,60-61
+  s_08ffcec9e21e81::t_d4a2ddabb7af0a 1-2,4-12,40-50,53-56,59,62-82,85,113-120,127-134,141,144-146,154,156,158,165,168-170,178,248,250-253
+  s_08ffcec9e21e81::t_412941a25ae839 27
+  s_08ffcec9e21e81::t_ad23637f1233f5 13-16,31-39,96-106,140,142-143,147-149,157,164,166-167,171-173,249
+  s_08ffcec9e21e81::t_54ce5a9b9d5bfb 135,139
+  s_08ffcec9e21e81::t_88b8d249f1fdcc 160-162
+  s_08ffcec9e21e81::t_3b33aaffc92aa8 183,187
+  s_08ffcec9e21e81::t_0c0cb988681175 136-138
+  s_08ffcec9e21e81::t_ccbb7785a257c9 159,163
+  s_08ffcec9e21e81::t_1ec68b95b92210 121-126
+  s_08ffcec9e21e81::t_735ec0cfebefe5 206,210
+src/mod/dialplans/mod_dialplan_xml/mod_dialplan_xml.c
+  s_08ffcec9e21e81::t_ef3a167c268ffd 355-362
+tests/unit/.gitignore
+  s_08ffcec9e21e81::t_2a9182a25eab87 44
+tests/unit/Makefile.am
+  s_08ffcec9e21e81::t_f82d90f3a50366 13
+  s_08ffcec9e21e81::t_7ceed63fd994c2 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "ca4a1b8a6277949b3603f08d64a3b27aa029d200",
+  "prompts": {},
+  "sessions": {
+    "s_08ffcec9e21e81": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "863878d7-b2ed-41c4-a225-23f6d37d5f6b",
+        "model": "auto-smart"
+      },
+      "human_author": "Walter Fan <walter.fan@zoom.us>"
+    }
+  }
+}
