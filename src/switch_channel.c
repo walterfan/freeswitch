@@ -3067,6 +3067,7 @@ SWITCH_DECLARE(int) switch_channel_add_state_handler(switch_channel_t *channel, 
 	return index;
 }
 
+/* wfnote-sip-flow-1-7-2-2: get state change handlers -> switch_state_handler_table_t */
 SWITCH_DECLARE(const switch_state_handler_table_t *) switch_channel_get_state_handler(switch_channel_t *channel, int index)
 {
 	const switch_state_handler_table_t *h = NULL;

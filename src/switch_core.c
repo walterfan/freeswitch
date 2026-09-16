@@ -331,6 +331,7 @@ SWITCH_DECLARE(int) switch_core_add_state_handler(const switch_state_handler_tab
 	return index;
 }
 
+/* wfnote-sip-flow-1-7-2-3: get core state handlers */
 SWITCH_DECLARE(const switch_state_handler_table_t *) switch_core_get_state_handler(int index)
 {
 

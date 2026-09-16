@@ -151,11 +151,61 @@ typedef struct private_object private_object_t;
 #include <sofia-sip/msg.h>
 #include <sofia-sip/uniqueid.h>
 
+
+/* wfnote-sip-data-1-0 sip structure inventory list
+
+| 名称 | 类型 | 可见性 | 模块 | 责任 |
+| :--- | :--- | :--- | :--- | :--- |
+| `sofia_dispatch_event_t` | struct | Public | mod_sofia | **核心事件调度容器，用于在 Sofia-SIP 异步回调与 FS 线程之间传递 SIP 事件。** |
+| `sofia_profile_t` | struct | Public | mod_sofia | SIP 配置文件，管理域名、端口、内存池、网关列表及全局 SIP 状态。 |
+| `sofia_gateway_t` | struct | Public | mod_sofia | SIP 注册网关，负责处理对外部服务器的注册、心跳（Ping）和状态维护。 |
+| `sofia_gateway_subscription_t` | struct | Public | mod_sofia | 网关订阅，管理特定的 SIP 订阅请求（如 MWI 消息等待指示）。 |
+| `private_object_t` | struct | Public | mod_sofia | 会话私有数据，存储单个 SIP 呼叫的所有状态（Call-ID, 媒体参数, 传输方式）。 |
+| `sofia_private_t` | struct | Public | mod_sofia | 基础私有信息，通常用于标识 UUID、网关名称等基础元数据。 |
+| `mod_sofia_globals` | struct | Public | mod_sofia | 模块全局变量，持有所有 profile 的哈希表、全局队列和线程池。 |
+| `sip_alias_node_t` | struct | Internal | mod_sofia | SIP 别名链表节点，用于将不同 URL 映射到同一个 NUA 实例。 |
+| `sofia_config_t` | enum | Public | mod_sofia | 配置操作类型（加载、重新扫描、重启）。 |
+| `PFLAGS` | enum | Public | mod_sofia | Profile 标志位，定义 SIP 行为（如是否强制 TLS, 是否开启 NAT 等）。 |
+| `TFLAGS` | enum | Public | mod_sofia | 传输/呼叫标志位，记录当前会话的状态（如是否处于 Hold, 是否已发送 100 Trying）。 |
+| `reg_state_t` | enum | Public | mod_sofia | 注册状态机状态（Trying, Registered, Failed 等）。 |
+| `sofia_transport_t` | enum | Public | mod_sofia | 传输协议类型（UDP, TCP, TLS, SCTP, WS, WSS）。 |
+| `sofia_destination_t` | struct | Public | mod_sofia | 定义 SIP 路由目的地（To, Contact, Route 字段）。 |
+| `sofia_nat_parse_t` | struct | Public | mod_sofia | NAT 解析结果，存储网络 IP 和端口。 |
+
+*/
+
 typedef enum {
 	SOFIA_CONFIG_LOAD = 0,
 	SOFIA_CONFIG_RESCAN,
 	SOFIA_CONFIG_RESPAWN
 } sofia_config_t;
+
+/* wfnote-sip-data-1-1:  Define a data structure to carry the event from Sofia-SIP to FreeSWITCH
+
+角色: 事件传输对象 (Data Transfer Object / Event Envelope)。
+责任:
+	将 Sofia-SIP 库产生的异步回调数据“快照”化。
+	在 Sofia-SIP 的内部线程与 FreeSWITCH 的业务处理线程之间充当桥梁。
+	携带处理该事件所需的全部上下文（Profile, Handle, Session）。
+关键字段:
+	nua_saved_event_t event[1]: 继承/包含 Sofia-SIP 的保存事件结构，用于存储原始事件类型。
+	nua_handle_t *nh: Sofia-SIP 的句柄，用于识别是对哪个特定对话（Dialog）的操作。
+	nua_event_data_t const *data: 指向事件具体数据的指针。
+	sofia_profile_t *profile: 指向所属的 Profile，决定了使用哪个域名的配置。
+	switch_core_session_t *session: 关联的 FS 会话。如果事件触发了新呼叫，此处可能在初始阶段为空。
+	struct sofia_dispatch_event_s *next: 链表指针，用于在消息队列中排队。
+生命周期:
+	创建: 在 sofia_event_callback 中被动态分配。
+	入队: 通过 sofia_queue_message 放入 mod_sofia_globals.msg_queue。
+	执行: 由 sofia_process_dispatch_event 弹出并分发到具体的处理函数（如 sofia_handle_sip_i_invite）。
+	销毁: 处理完成后被释放。
+协作对象:
+	上游: nua_t (Sofia-SIP 核心) $\rightarrow$ 触发回调 $\rightarrow$ 生成此结构。
+下游: sofia_process_dispatch_event $\rightarrow$ 解析此结构 $\rightarrow$ 调用业务逻辑。
+测试点:
+	验证在高并发 SIP 消息下，队列是否溢出 (SOFIA_QUEUE_SIZE)。
+	验证 session 在事件分发过程中是否被提前释放导致野指针。
+*/
 
 typedef struct sofia_dispatch_event_s {
 	nua_saved_event_t event[1];
@@ -170,6 +220,8 @@ typedef struct sofia_dispatch_event_s {
 	switch_core_session_t *init_session;
 	struct sofia_dispatch_event_s *next;
 } sofia_dispatch_event_t;
+
+
 
 struct sofia_private {
 	char uuid_str[SWITCH_UUID_FORMATTED_LENGTH + 1];

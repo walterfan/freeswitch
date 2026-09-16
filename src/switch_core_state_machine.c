@@ -422,6 +422,8 @@ void switch_core_state_machine_init(switch_memory_pool_t *pool)
 	return;
 }
 
+/* wfnote-sip-flow-1-7-2-1: execute the session state change handlers PreExec --> DriverExec --> PostExec */
+
 #define STATE_MACRO(__STATE, __STATE_STR)						do {	\
 		midstate = state;												\
 		switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_DEBUG, "(%s) State %s\n", switch_channel_get_name(session->channel), __STATE_STR); \
@@ -524,7 +526,7 @@ static void check_presence(switch_core_session_t *session)
 }
 
 
-
+/* wfnote-sip-flow-1-7: run the session */
 SWITCH_DECLARE(void) switch_core_session_run(switch_core_session_t *session)
 {
 	switch_channel_state_t state = CS_NEW, midstate = CS_DESTROY, endstate;
@@ -560,6 +562,7 @@ SWITCH_DECLARE(void) switch_core_session_run(switch_core_session_t *session)
 
 	switch_mutex_lock(session->mutex);
 
+	/* wfnote-sip-flow-1-7-1: run the session state machine untile destroyed */
 	while ((state = switch_channel_get_state(session->channel)) != CS_DESTROY) {
 
 		if (switch_channel_test_flag(session->channel, CF_BLOCK_STATE)) {
@@ -594,7 +597,7 @@ SWITCH_DECLARE(void) switch_core_session_run(switch_core_session_t *session)
 					}
 				}
 			}
-
+			/* wfnote-sip-flow-1-7-2: state machine CS_NEW --> CS_INIT --> CS_ROUTING --> CS_EXECUTE --> CS_HANGUP --> CS_REPORTING --> CS_DESTROY */
 			switch (state) {
 			case CS_NEW:		/* Just created, Waiting for first instructions */
 				switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_DEBUG, "(%s) State NEW\n", switch_channel_get_name(session->channel));
@@ -675,6 +678,8 @@ SWITCH_DECLARE(void) switch_core_session_run(switch_core_session_t *session)
 		}
 
 		endstate = switch_channel_get_state(session->channel);
+
+		/* wfnote-sip-flow-1-7-3: for end state this time, do related actions, switch_ivr_parse_all_events, check channel flags  */
 
 		if (endstate == switch_channel_get_running_state(session->channel)) {
 			if (endstate == CS_NEW) {

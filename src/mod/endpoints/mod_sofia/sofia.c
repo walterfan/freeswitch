@@ -2387,7 +2387,7 @@ static void set_call_id(private_object_t *tech_pvt, sip_t const *sip)
 	}
 }
 
-
+/* wfnote-sip-flow-1-3: sofia_event_callback with nua_event_t , sofia_private_t, sip_t and tagt_t */
 void sofia_event_callback(nua_event_t event,
 						  int status,
 						  char const *phrase,
@@ -2492,6 +2492,8 @@ void sofia_event_callback(nua_event_t event,
 	profile->queued_events++;
 	switch_mutex_unlock(profile->flag_mutex);
 
+	/* wfnote-sip-flow-1-3-1: allocate and initialize the event data structure sofia_dispatch_event_t */
+
 	de = su_alloc(nua_handle_get_home(nh), sizeof(*de));
 	memset(de, 0, sizeof(*de));
 	nua_save_event(nua, de->event);
@@ -2517,7 +2519,7 @@ void sofia_event_callback(nua_event_t event,
 
 		if (sip->sip_call_id && sip->sip_call_id->i_id) {
 			char *uuid = NULL, *tmp;
-
+			/* wfnote-sip-flow-1-3-2: search for existing sessions `profile->chat_hash` by call ID */
 			switch_mutex_lock(profile->flag_mutex);
 			if ((tmp = (char *) switch_core_hash_find(profile->chat_hash, sip->sip_call_id->i_id))) {
 				uuid = strdup(tmp);
@@ -2564,6 +2566,8 @@ void sofia_event_callback(nua_event_t event,
 			goto end;
 		}
 
+		/* wfnote-sip-flow-1-3-3: create a new session for the incoming call switch_core_session_request_uuid */
+
 		if (sofia_test_pflag(profile, PFLAG_CALLID_AS_UUID)) {
 			session = switch_core_session_request_uuid(sofia_endpoint_interface, SWITCH_CALL_DIRECTION_INBOUND, SOF_NONE, NULL, sip->sip_call_id->i_id);
 		} else {
@@ -2602,7 +2606,7 @@ void sofia_event_callback(nua_event_t event,
 			goto end;
 		}
 
-
+		/* wfnote-sip-flow-1-5: launch the session thread */
 		if (switch_core_session_thread_launch(session) != SWITCH_STATUS_SUCCESS) {
 			char *uuid;
 
@@ -3127,7 +3131,7 @@ switch_thread_t *launch_sofia_worker_thread(sofia_profile_t *profile)
 
 	return thread;
 }
-
+/* wfnote-sip-flow-1-2: it is main thread for Sofia profile */
 void *SWITCH_THREAD_FUNC sofia_profile_thread_run(switch_thread_t *thread, void *obj)
 {
 	sofia_profile_t *profile = (sofia_profile_t *) obj;
@@ -3223,7 +3227,7 @@ void *SWITCH_THREAD_FUNC sofia_profile_thread_run(switch_thread_t *thread, void 
 
 	SSL_CTX_free(ssl_ctx);
 #endif
-
+	/* wfnote-sip-flow-1-2-1: start an event loop to do nua_create with sofia_event_callback */
 	do {
 		profile->nua = nua_create(profile->s_root,	/* Event loop */
 								  sofia_event_callback,	/* Callback for processing events */
@@ -3617,7 +3621,7 @@ void sofia_profile_destroy(sofia_profile_t *profile)
 		sofia_set_pflag(profile, PFLAG_DESTROY);
 	}
 }
-
+/* wfnote-sip-flow-1-1:  Launch a new thread for the Sofia profile */
 void launch_sofia_profile_thread(sofia_profile_t *profile)
 {
 	//switch_thread_t *thread;

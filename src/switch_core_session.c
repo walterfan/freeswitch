@@ -1718,6 +1718,7 @@ SWITCH_DECLARE(switch_bool_t) switch_core_session_in_thread(switch_core_session_
 	return switch_thread_equal(switch_thread_self(), session->thread_id) ? SWITCH_TRUE : SWITCH_FALSE;
 }
 
+/* wfnote-sip-flow-1-6: session thread function */
 static void *SWITCH_THREAD_FUNC switch_core_session_thread(switch_thread_t *thread, void *obj)
 {
 	switch_core_session_t *session = obj;
@@ -1728,7 +1729,9 @@ static void *SWITCH_THREAD_FUNC switch_core_session_thread(switch_thread_t *thre
 	session->thread = thread;
 	session->thread_id = switch_thread_self();
 
+	/* wfnote-sip-flow-1-6-1: run the session */
 	switch_core_session_run(session);
+	/* wfnote-sip-flow-1-6-2: clean up the session */
 	switch_core_media_bug_remove_all(session);
 
 	if (session->soft_lock) {
@@ -1955,7 +1958,7 @@ SWITCH_DECLARE(switch_status_t) switch_core_session_thread_launch(switch_core_se
 		goto end;
 	}
 
-
+	/* wfnote-sip-flow-1-5-1: start thread by switch_core_session_thread_pool_launch in thread pool */
 	if (switch_test_flag((&runtime), SCF_SESSION_THREAD_POOL)) {
 		return switch_core_session_thread_pool_launch(session);
 	}
@@ -1974,6 +1977,8 @@ SWITCH_DECLARE(switch_status_t) switch_core_session_thread_launch(switch_core_se
 		switch_threadattr_detach_set(thd_attr, 1);
 		switch_threadattr_stacksize_set(thd_attr, SWITCH_THREAD_STACKSIZE);
 
+
+		/* wfnote-sip-flow-1-5-2: create/start thread to launch switch_core_session_thread  */
 		if (switch_thread_create(&thread, thd_attr, switch_core_session_thread, session, session->pool) == SWITCH_STATUS_SUCCESS) {
 			switch_set_flag(session, SSF_THREAD_STARTED);
 			status = SWITCH_STATUS_SUCCESS;
@@ -2372,7 +2377,25 @@ SWITCH_DECLARE(switch_core_session_t *) switch_core_session_request_xml(switch_e
 }
 
 
+/* wfnote-sip-flow-1-4: request a new session with a specific UUID
 
+**目的**：在系统中申请并初始化一个完整的会话对象。
+
+- **参数**：
+    - `endpoint_interface`: 指向端点接口（如 SIP, mod_cas），决定 IO 行为。
+    - `direction`: 呼入 (INBOUND) 或 呼出 (OUTBOUND)。
+    - `originate_flags`: 启动标志（如是否忽略限制）。
+    - `pool`: 用于会话内存管理的内存池。
+    - `use_uuid`: 如果提供，则使用自定义 UUID，否则随机生成。
+- **核心流程**：
+    1. 检查系统状态（是否准备好接收/发起调用）。
+    2. **限流检查**：检查 `session_limit` 和 `sps` (每秒新建数)。
+    3. **内存分配**：创建 `switch_core_session_t` 及其关联的 `switch_channel_t`。
+    4. **资源初始化**：初始化大量互斥锁 (`mutex`)、读写锁 (`rwlock`)、条件变量 (`cond`) 和 5 个不同的队列（消息、信号、事件、私有事件、优先级私有事件）。
+    5. **注册**：将会话插入到全局 `session_manager.session_table` 哈希表中。
+- **风险点**：该函数持有 `runtime.session_hash_mutex` 锁，在高并发创建会话时可能成为瓶颈。
+
+*/
 SWITCH_DECLARE(switch_core_session_t *) switch_core_session_request_uuid(switch_endpoint_interface_t
 																		 *endpoint_interface,
 																		 switch_call_direction_t direction,
@@ -2445,15 +2468,18 @@ SWITCH_DECLARE(switch_core_session_t *) switch_core_session_request_uuid(switch_
 		switch_core_new_memory_pool(&usepool);
 	}
 
+	/* wfnote-sip-flow-1-4-1: allocate session object */
 	session = switch_core_alloc(usepool, sizeof(*session));
 	session->pool = usepool;
 
 	switch_core_memory_pool_set_data(session->pool, "__session", session);
 
+	/* wfnote-sip-flow-1-4-2: allocate channel object */
 	if (switch_channel_alloc(&session->channel, direction, session->pool) != SWITCH_STATUS_SUCCESS) {
 		abort();
 	}
 
+	/* wfnote-sip-flow-1-4-3: init channel object */
 	switch_channel_init(session->channel, session, CS_NEW, 0);
 
 	if (direction == SWITCH_CALL_DIRECTION_OUTBOUND) {
@@ -2502,6 +2528,7 @@ SWITCH_DECLARE(switch_core_session_t *) switch_core_session_request_uuid(switch_
 	switch_queue_create(&session->private_event_queue, SWITCH_EVENT_QUEUE_LEN, session->pool);
 	switch_queue_create(&session->private_event_queue_pri, SWITCH_EVENT_QUEUE_LEN, session->pool);
 
+	/* wfnote-sip-flow-1-4-4: insert session to session table after initialization */
 	switch_core_hash_insert(session_manager.session_table, session->uuid_str, session);
 	session->id = session_manager.session_id++;
 	session_manager.session_count++;
