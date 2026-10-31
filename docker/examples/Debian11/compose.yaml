@@ -1,0 +1,21 @@
+services:
+  freeswitch:
+    image: freeswitch:local
+    build:
+      context: ../../..
+      dockerfile: docker/examples/Debian11/Dockerfile
+    network_mode: host
+    command:
+      - /usr/local/freeswitch/bin/freeswitch
+      - -nf
+      - -nonat
+    restart: unless-stopped
+    stop_grace_period: 30s
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - /usr/local/freeswitch/bin/fs_cli -x status | grep -q '^UP'
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
