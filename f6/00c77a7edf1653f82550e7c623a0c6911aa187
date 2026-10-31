@@ -1,0 +1,20 @@
+docker/examples/Debian11/Dockerfile
+  s_ee0aa8c177b85c::t_b8f08d8d6be210 4-9
+  s_ee0aa8c177b85c::t_a4f22f882ffcaf 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "f600c77a7edf1653f82550e7c623a0c6911aa187",
+  "prompts": {},
+  "sessions": {
+    "s_ee0aa8c177b85c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18fa8-b042-7270-a488-d8723271004f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Walter Fan <walter.fan@zoom.us>"
+    }
+  }
+}
