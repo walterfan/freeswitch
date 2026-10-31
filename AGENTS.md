@@ -59,6 +59,8 @@ do not reformat unrelated lines.
 - Make surgical changes: every changed line should trace to the request;
   leave unrelated code and formatting alone.
 - Verify before reporting done; a plausible diff is not proof.
+- For APT mirror changes, verify release-specific indexes and package files;
+  keep `apt-get update` in the same Docker layer as each install.
 
 ## Project Rules
 

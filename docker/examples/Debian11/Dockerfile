@@ -1,11 +1,12 @@
 FROM debian:bullseye
 MAINTAINER Andrey Volk <andrey@signalwire.com>
 
-# Use Alibaba mirrors for Debian packages and security updates.
+# Use Alibaba for Debian packages; Bullseye security packages are archived.
 RUN find /etc/apt -type f \( -name "*.list" -o -name "*.sources" \) \
     -exec sed -i \
-        -e "s|deb\.debian\.org|mirrors.aliyun.com|g" \
-        -e "s|security\.debian\.org|mirrors.aliyun.com|g" {} +
+        -e "s|deb\.debian\.org/debian-security|archive.debian.org/debian-security|g" \
+        -e "s|security\.debian\.org|archive.debian.org|g" \
+        -e "s|deb\.debian\.org/debian|mirrors.aliyun.com/debian|g" {} +
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -yq install git
 
@@ -15,7 +16,7 @@ RUN git clone https://github.com/freeswitch/sofia-sip /usr/src/libs/sofia-sip
 RUN git clone https://github.com/freeswitch/spandsp /usr/src/libs/spandsp
 RUN git clone https://github.com/signalwire/signalwire-c /usr/src/libs/signalwire-c
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get -yq install \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -yq install \
 # build
     build-essential cmake automake autoconf 'libtool-bin|libtool' pkg-config \
 # general
