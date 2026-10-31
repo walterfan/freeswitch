@@ -33,7 +33,7 @@
 
 
 
-
+/* wfnote-sip-flow-2-5: negotiate SDP */
 uint8_t sofia_media_negotiate_sdp(switch_core_session_t *session, const char *r_sdp, switch_sdp_type_t type)
 {
 	uint8_t t, p = 0;
@@ -50,6 +50,7 @@ uint8_t sofia_media_negotiate_sdp(switch_core_session_t *session, const char *r_
 	return t;
 }
 
+/* wfnote-sip-flow-2-6: activate RTP */
 switch_status_t sofia_media_activate_rtp(private_object_t *tech_pvt)
 {
 	switch_status_t status;

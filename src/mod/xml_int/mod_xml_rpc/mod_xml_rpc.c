@@ -28,7 +28,8 @@
  * Garmt Boekholt <garmt@cimico.com>
  * Seven Du <dujinfang@gmail.com>
  *
- * mod_xml_rpc.c -- XML RPC
+ * 
+ * .c -- XML RPC
  *
  * embedded webserver for FS
  * exposes fs api to web (and ajax, javascript, ...)

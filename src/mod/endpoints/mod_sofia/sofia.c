@@ -1470,8 +1470,7 @@ static void sofia_handle_sip_r_refer(nua_t *nua, sofia_profile_t *profile, nua_h
 
 
 
-
-//sofia_dispatch_event_t *de
+/* wfnote-sip-flow-2-3: handle sofia events - sofia_dispatch_event_t *de */
 static void our_sofia_event_callback(nua_event_t event,
 						  int status,
 						  char const *phrase,
@@ -1804,8 +1803,10 @@ static void our_sofia_event_callback(nua_event_t event,
 	case nua_i_invite:
 		if (session && sofia_private) {
 			if (sofia_private->is_call > 1) {
+				/* wfnote-sip-flow-2-3-1: sofia_handle_sip_i_reinvite */
 				sofia_handle_sip_i_reinvite(session, nua, profile, nh, sofia_private, sip, de, tags);
 			} else {
+				/* wfnote-sip-flow-2-3-2: sofia_handle_sip_i_invite */
 				sofia_private->is_call++;
 				sofia_handle_sip_i_invite(session, nua, profile, nh, sofia_private, sip, de, tags);
 			}
@@ -2239,7 +2240,7 @@ void sofia_process_dispatch_event_in_thread(sofia_dispatch_event_t **dep)
 
 	switch_thread_pool_launch_thread(&td);
 }
-
+/* wfnote-sip-flow-2-2: sofia_process_dispatch_event */
 void sofia_process_dispatch_event(sofia_dispatch_event_t **dep)
 {
 	sofia_dispatch_event_t *de = *dep;
@@ -2268,7 +2269,7 @@ void sofia_process_dispatch_event(sofia_dispatch_event_t **dep)
 
 static int msg_queue_threads = 0;
 //static int count = 0;
-
+/* wfnote-sip-flow-2-1: run message thread */
 void *SWITCH_THREAD_FUNC sofia_msg_thread_run(switch_thread_t *thread, void *obj)
 {
 	void *pop;
@@ -2295,7 +2296,7 @@ void *SWITCH_THREAD_FUNC sofia_msg_thread_run(switch_thread_t *thread, void *obj
 			switch_cond_next();
 			continue;
 		}
-
+		/* wfnote-sip-flow-2-1-1: pop queue and dispatch event */
 		if (pop) {
 			sofia_dispatch_event_t *de = (sofia_dispatch_event_t *) pop;
 			sofia_process_dispatch_event(&de);
@@ -7402,7 +7403,7 @@ static void mark_transfer_record(switch_core_session_t *session, const char *br_
 
 }
 
-
+/* wfnote-sip-flow-2-4: handle incoming SIP state changes */
 static void sofia_handle_sip_i_state(switch_core_session_t *session, int status,
 									 char const *phrase,
 									 nua_t *nua, sofia_profile_t *profile, nua_handle_t *nh, sofia_private_t *sofia_private, sip_t const *sip,
@@ -10384,7 +10385,7 @@ switch_status_t sofia_locate_user(char* user, switch_core_session_t *session, si
 
 	return result;
 }
-
+/* wfnote-sip-flow-2-3: handle incoming SIP INVITE */
 void sofia_handle_sip_i_invite(switch_core_session_t *session, nua_t *nua, sofia_profile_t *profile, nua_handle_t *nh, sofia_private_t *sofia_private, sip_t const *sip, sofia_dispatch_event_t *de, tagi_t tags[])
 {
 	char key[128] = "";
@@ -10585,6 +10586,8 @@ void sofia_handle_sip_i_invite(switch_core_session_t *session, nua_t *nua, sofia
 			last_acl = profile->acl[x];
 			switch_log_printf(SWITCH_CHANNEL_LOG, SWITCH_LOG_DEBUG, "verifying acl \"%s\" for ip/port %s:%i.\n",
 							  switch_str_nil(last_acl), network_ip, acl_port);
+
+			/* wfnote-sip-flow-2-3-1: check ACL */
 			if ((ok = switch_check_network_list_ip_port_token(network_ip, acl_port, last_acl, &token))) {
 
 				if (profile->acl_pass_context[x]) {

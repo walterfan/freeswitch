@@ -4783,7 +4783,7 @@ static void switch_core_media_set_rmode(switch_core_session_t *session, switch_m
 
 	switch_channel_set_variable(session->channel, varname, rmode_str);
 }
-
+/* wfnote-sip-flow-2-5-1: switch_core_media_negotiate_sdp */
 //?
 SWITCH_DECLARE(uint8_t) switch_core_media_negotiate_sdp(switch_core_session_t *session, const char *r_sdp, uint8_t *proceed, switch_sdp_type_t sdp_type)
 {
@@ -8524,6 +8524,7 @@ static void check_dtls_reinvite(switch_core_session_t *session, switch_rtp_engin
 	}
 }
 
+/* wfnote-sip-flow-2-6-1: switch_core_media_activate_rtp */
 //?
 SWITCH_DECLARE(switch_status_t) switch_core_media_activate_rtp(switch_core_session_t *session)
 
