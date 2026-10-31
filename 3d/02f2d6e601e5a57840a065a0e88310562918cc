@@ -1,0 +1,21 @@
+AGENTS.md
+  s_ee0aa8c177b85c::t_8f6faa148e1f33 62-63
+docker/examples/Debian11/Dockerfile
+  s_ee0aa8c177b85c::t_5da81dbbff7994 4,7-9,19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "3d02f2d6e601e5a57840a065a0e88310562918cc",
+  "prompts": {},
+  "sessions": {
+    "s_ee0aa8c177b85c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18fa8-b042-7270-a488-d8723271004f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Walter Fan <walter.fan@zoom.us>"
+    }
+  }
+}
